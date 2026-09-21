@@ -1,0 +1,337 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../**/*.jsx';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --color-ink: #25245a;
+    --color-navy: #25245a;
+    --color-teal: #1aa8aa;
+    --color-teal-dark: #148f91;
+    --color-sky: #e7f7fb;
+    --color-gold: #f5c518;
+    --color-leaf: #1aa8aa;
+    --color-moss: #148f91;
+    --color-sand: #e7f7fb;
+    --color-paper: #ffffff;
+    --color-wheat: #f5c518;
+    --color-copper: #f43f5e;
+}
+
+body {
+    background-color: #d8f3fa;
+}
+
+.scan-grid {
+    background-image:
+        linear-gradient(rgba(22, 50, 38, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(22, 50, 38, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+.drop-active {
+    border-color: #1aa8aa !important;
+    background-color: rgba(26, 168, 170, 0.08) !important;
+}
+
+.app-frame {
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 88% 12%, rgba(245, 197, 24, 0.16), transparent 18rem),
+        radial-gradient(circle at 8% 90%, rgba(26, 168, 170, 0.18), transparent 16rem),
+        #d8f3fa;
+    padding: 0.9rem;
+}
+
+.app-sidebar {
+    position: relative;
+    z-index: 30;
+    display: flex;
+    width: 16.75rem;
+    flex-shrink: 0;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1.75rem 1.15rem 1.4rem;
+    color: white;
+    background: #1aa8aa;
+    border-radius: 2rem 0 0 2rem;
+}
+
+.app-sidebar svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+
+.app-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(37, 36, 90, 0.28);
+}
+
+.app-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 1.1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.92);
+    text-align: left;
+}
+
+.app-nav-item.is-active {
+    color: #1aa8aa;
+    background: white;
+    box-shadow: 0 10px 20px rgba(20, 90, 95, 0.12);
+}
+
+.app-upgrade {
+    margin-top: 1.5rem;
+    padding: 1.1rem 1rem 1.15rem;
+    overflow: hidden;
+    border-radius: 1.4rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(13, 92, 96, 0.28));
+}
+
+.app-upgrade-art {
+    position: relative;
+    height: 4.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.app-upgrade-art .blob {
+    position: absolute;
+    border-radius: 999px;
+}
+
+.app-upgrade-art .blob-a {
+    width: 3.4rem;
+    height: 3.4rem;
+    left: 0.2rem;
+    top: 0.4rem;
+    background: #f7b6c8;
+}
+
+.app-upgrade-art .blob-b {
+    width: 2.4rem;
+    height: 2.4rem;
+    left: 2.1rem;
+    top: 1.5rem;
+    background: #7de0c8;
+}
+
+.app-upgrade-art .plant {
+    position: absolute;
+    right: 0.4rem;
+    bottom: 0;
+    width: 2.4rem;
+    height: 3.2rem;
+    background: #f5c518;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    opacity: 0.9;
+}
+
+.app-panel {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    min-width: 0;
+    margin: 0.55rem 0.45rem 0.55rem 0;
+    padding: 1.5rem 1.5rem 2rem;
+    overflow: auto;
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 18px 40px rgba(26, 120, 140, 0.08);
+}
+
+.app-promo {
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem 1.35rem;
+    border-radius: 1.6rem;
+    background: linear-gradient(160deg, #9aeadc 0%, #f7b7c8 48%, #f6d36b 100%);
+}
+
+.app-promo::after {
+    content: '';
+    position: absolute;
+    right: -1rem;
+    bottom: -0.4rem;
+    width: 7rem;
+    height: 7rem;
+    background: rgba(255, 255, 255, 0.28);
+    clip-path: polygon(20% 0, 100% 30%, 70% 100%, 0 70%);
+}
+
+@media (max-width: 767px) {
+    .app-frame {
+        display: block;
+        overflow: visible;
+        padding: 0.6rem;
+    }
+
+    .app-sidebar {
+        position: fixed;
+        top: 0.6rem;
+        bottom: 0.6rem;
+        left: 0.6rem;
+        border-radius: 1.6rem;
+        transform: translateX(-120%);
+        transition: transform 0.2s ease;
+    }
+
+    .app-sidebar.is-open {
+        transform: translateX(0);
+    }
+
+    .app-panel {
+        margin: 0;
+        min-height: calc(100vh - 1.2rem);
+        padding: 1.15rem;
+    }
+}
+
+.auth-screen {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 3rem 1rem 4rem;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.18), transparent 22rem),
+        linear-gradient(160deg, #4fd1a5 0%, #2bb39a 28%, #2aa7b8 62%, #3b9fe0 100%);
+}
+
+.auth-wave {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.auth-wave-a {
+    width: 140vw;
+    height: 70vh;
+    left: -20vw;
+    bottom: -32vh;
+    background: linear-gradient(180deg, rgba(72, 201, 176, 0.55), rgba(46, 134, 193, 0.7));
+}
+
+.auth-wave-b {
+    width: 90vw;
+    height: 55vh;
+    right: -28vw;
+    bottom: -24vh;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.45), rgba(37, 99, 235, 0.35));
+}
+
+.hex-stage {
+    position: relative;
+    width: min(28rem, 94vw);
+    padding-top: 3.4rem;
+    filter: drop-shadow(0 28px 28px rgba(12, 74, 110, 0.28));
+}
+
+.hex-glass {
+    position: relative;
+    padding: 5rem 3rem 3.6rem;
+    color: white;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    clip-path: polygon(50% 0, 97% 20%, 97% 80%, 50% 100%, 3% 80%, 3% 20%);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.hex-avatar {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 3;
+    display: grid;
+    width: 6.4rem;
+    height: 7.1rem;
+    place-items: center;
+    color: #1f6f63;
+    background: linear-gradient(180deg, rgba(232, 255, 247, 0.95), rgba(167, 243, 208, 0.9));
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    transform: translateX(-50%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.hex-avatar-static {
+    position: relative;
+    top: auto;
+    left: auto;
+    z-index: 3;
+    display: grid;
+    width: 6.4rem;
+    height: 7.1rem;
+    margin-bottom: -1.5rem;
+    place-items: center;
+    color: #1f6f63;
+    background: linear-gradient(180deg, rgba(232, 255, 247, 0.95), rgba(167, 243, 208, 0.9));
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    transform: none;
+}
+
+.glass-panel {
+    width: min(34rem, 94vw);
+    padding: 2rem 1.5rem 1.5rem;
+    color: white;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 2rem;
+    box-shadow: 0 28px 40px rgba(12, 74, 110, 0.22);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.auth-input {
+    width: 100%;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(244, 252, 249, 0.96);
+    color: #1f6f63;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.auth-input::placeholder {
+    color: #4ade80;
+}
+
+.auth-login-btn {
+    width: 100%;
+    padding: 0.82rem 1rem;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #1f7a9c, #155e7a);
+    clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.auth-login-btn:hover:not(:disabled) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.auth-login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
