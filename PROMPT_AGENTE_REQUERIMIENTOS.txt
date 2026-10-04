@@ -1,0 +1,523 @@
+PROMPT PARA CUALQUIER AGENTE DE IA
+Proyecto: Roya (RoyaGuard)
+Archivo de contrato: lo que el sistema YA posee y debe seguir funcionando
+Fecha de inventario: 2026-10-03
+Idioma de la interfaz: español
+
+================================================================
+COMO USAR ESTE DOCUMENTO
+================================================================
+
+Eres un agente que va a agregar, quitar o modificar codigo de este proyecto.
+Este archivo describe el comportamiento que YA existe y funciona.
+Tratalo como un contrato. No lo reescribas salvo que el usuario pida actualizar el inventario.
+
+Reglas obligatorias antes de tocar codigo:
+
+1. Lee este archivo completo antes de editar.
+2. Conserva cada requerimiento marcado como IMPLEMENTADO, salvo que el usuario pida explicitamente cambiarlo o quitarlo.
+3. Un cambio nuevo debe sumarse al flujo actual. No reemplaces pantallas, rutas, validaciones, roles ni el modelo de datos para "mejorar" el proyecto por tu cuenta.
+4. Si quitas codigo, verifica que ninguna ruta, vista, componente o regla de este inventario deje de cumplirse.
+5. No inventes funcionalidades que este documento marca como NO IMPLEMENTADAS y no las completes "de paso".
+6. No muevas la entrada activa de la aplicacion. La pantalla real es resources/views/app.blade.php + resources/js/main.jsx.
+7. No borres ni reescribas .env, APP_KEY, base de datos ni migraciones ya aplicadas.
+8. No cambies nombres de rutas, campos JSON, roles ni umbrales de riesgo si el usuario no lo pide: el frontend y el backend dependen de ellos.
+9. Al terminar, comprueba que login, registro, cierre de sesion, guardado de inspeccion, dashboard, historial, busqueda y descarga CSV siguen el contrato de este archivo.
+10. Si un cambio contradice este inventario, deten el cambio y pregunta. No "arregles" el proyecto para que coincida con un test de ejemplo de Laravel.
+
+================================================================
+1. IDENTIDAD DEL PROYECTO
+================================================================
+
+Nombre visible: Roya
+Componente principal de la app autenticada: RoyaGuard
+Proposito: registrar inspecciones de campo de Roya Amarilla en hojas de cultivo.
+El tecnico captura o sube una imagen, el sistema estima una afectacion y guarda la inspeccion en la bitacora del usuario.
+El administrador ve las inspecciones de todos los usuarios. El tecnico solo ve las suyas.
+
+La "IA" actual es una inferencia LOCAL SIMULADA en el navegador.
+No hay modelo de machine learning, ni API externa de vision, ni procesamiento de imagen en el servidor.
+La enfermedad guardada siempre es el texto "Roya Amarilla".
+La afectacion sale de una muestra aleatoria fija en el cliente.
+
+================================================================
+2. STACK QUE YA POSEE (NO FUNCIONAL)
+================================================================
+
+- Backend: PHP ^8.2, Laravel ^12, laravel/tinker.
+- Frontend: React ^19, react-dom, Vite ^7, @vitejs/plugin-react, laravel-vite-plugin ^2, Tailwind CSS ^4 via @tailwindcss/vite.
+- HTTP cliente: axios. Cabeceras por defecto: X-Requested-With=XMLHttpRequest, Accept=application/json, X-CSRF-TOKEN leido de meta csrf-token.
+- Base de datos por defecto: SQLite (DB_CONNECTION=sqlite, archivo database/database.sqlite).
+- Sesion: driver database, SESSION_LIFETIME=120 minutos, SESSION_ENCRYPT=false.
+- Cache: database. Cola: database. Mail: log (no envia correo real).
+- Broadcast: log.
+- Hash de contraseñas: cast 'hashed' de Laravel. BCRYPT_ROUNDS=12 en entorno normal; en phpunit se fuerza BCRYPT_ROUNDS=4.
+- Tests: PHPUnit ^11. Entorno de prueba usa sqlite en memoria, sesion array, cache array, cola sync, mail array.
+- Salud del framework: GET /up (health de Laravel). No es una pantalla de la app.
+- Idioma HTML: es. Titulo de pagina: Roya.
+- Tipografia: Plus Jakarta Sans (Google Fonts), cargada en resources/views/app.blade.php.
+- Paleta activa en resources/css/app.css:
+  navy/ink #25245a, teal #1aa8aa, teal-dark #148f91, sky #e7f7fb, gold #f5c518, copper #f43f5e.
+  Fondo del body: #d8f3fa.
+- No hay routes/api.php. Toda la app vive en routes/web.php con sesion web y CSRF.
+- No hay autenticacion por token, Sanctum, Passport ni roles como middleware. El filtro de rol esta en el controlador.
+
+================================================================
+3. ENTRADA ACTIVA Y CODIGO QUE NO ESTA ENRUTADO
+================================================================
+
+Entrada activa (NO cambiar sin pedido explicito):
+
+- Rutas: routes/web.php
+- Vista unica: resources/views/app.blade.php
+- Bootstrap JS: resources/js/main.jsx
+- Estilos: resources/css/app.css
+- Vite input: resources/css/app.css y resources/js/main.jsx (vite.config.js)
+
+window.RoyaGuard, inyectado por la vista, contiene:
+
+- page: 'login' | 'register' | 'forgot' | 'reset' | 'app'
+- listing: pagina de inspecciones, recent, activity, stats y meta. Null en pantallas de invitado.
+- authUser: usuario autenticado o null
+- reset: token y email, usados solo en page=reset
+- urls: home '/', login '/login', register '/register', forgot '/forgot-password', logout '/logout', store '/analysis', list '/analysis', export '/analysis/export', demoLogin true solo si APP_ENV=local
+
+main.jsx elige el componente segun page:
+
+- login -> resources/js/pages/Login.jsx
+- register -> resources/js/pages/Register.jsx
+- forgot -> resources/js/pages/ForgotPassword.jsx
+- reset -> resources/js/pages/ResetPassword.jsx
+- cualquier otro valor, incluida 'app' -> resources/js/RoyaGuard.jsx
+
+resources/views/welcome.blade.php sigue siendo la plantilla de Laravel y ninguna ruta la usa.
+AnalysisRequest si participa en POST /analysis.
+
+================================================================
+4. REQUERIMIENTOS FUNCIONALES IMPLEMENTADOS
+================================================================
+
+RF-01. Acceso de invitados y de usuarios autenticados
+- Invitado que abre una ruta con middleware auth es redirigido a la ruta nombrada login (/login).
+- Usuario autenticado que abre una ruta con middleware guest es redirigido a la ruta nombrada home (/).
+- Configurado en bootstrap/app.php: redirectGuestsTo login, redirectUsersTo home.
+
+RF-02. Pantalla de inicio de sesion
+- GET /login, nombre login, solo invitados. Vista page=login.
+- Campos: correo, contraseña, casilla Recordarme, enlace a recuperar contraseña, enlace a crear cuenta.
+- Botones "Usar admin" y "Usar tecnico" solo aparecen si urls.demoLogin es true (APP_ENV=local). Solo rellenan el formulario. No envian la peticion solos.
+- Credenciales que rellenan:
+  admin: admin@gmail.com / password / remember_me true
+  tecnico: tecnico@gmail.com / password / remember_me true
+- Esas cuentas las crea database/seeders/DatabaseSeeder.php (updateOrCreate). No asumas que existen si no se ejecuto el seeder.
+- El correo se normaliza en cliente y servidor: trim + minusculas.
+- Validacion de formato Gmail en cliente (resources/js/lib/auth.js) y en servidor (LoginRequest + AuthRules).
+- POST /login espera JSON cuando el cliente es axios (Accept application/json).
+- Respuesta correcta JSON: success true, message "Sesion iniciada correctamente.", redirect a route('home').
+- El cliente redirige con window.location.href a response.data.redirect o a urls.home.
+- Si no es JSON, el servidor hace redirect intended a home.
+- Error de credenciales: mensaje "Las credenciales no son validas." en el campo credentials.
+- Errores de validacion se muestran con firstError (resources/js/components/Field.jsx).
+- Se puede mostrar u ocultar la contraseña.
+- Checkbox remember_me se envia como booleano.
+
+RF-03. Reglas de autenticacion
+- Archivo: app/Support/AuthRules.php
+- Correo obligatorio, string, max 255, regex: /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+- Solo se aceptan correos @gmail.com. No se aceptan otros dominios.
+- Contraseña de login: obligatoria, string. No se reaplica la regla de 8 caracteres en el login.
+- Recordarme: a veces, booleano. Duracion del remember: 43200 minutos (30 dias), via Auth::guard('web')->setRememberDuration.
+- Intentos fallidos: maximo 5 por minuto, por correo e IP juntos. Clave manual: "login-attempt:{email}|{ip}". El middleware throttle:login usa "{email}|{ip}". Decaimiento del limitador manual: 60 segundos.
+- Al superar el limite: "Demasiados intentos. Espera {segundos} segundos e intentalo de nuevo."
+- POST /login tambien lleva middleware throttle:login.
+- throttle:login esta definido en AppServiceProvider: 5 intentos por minuto, por correo e IP.
+- Si el middleware de Laravel responde 429, bootstrap/app.php devuelve JSON cuando la peticion espera JSON:
+  message y errors.credentials = "Demasiados intentos. Espera un momento e intentalo de nuevo."
+- Login exitoso limpia el rate limiter, regenera la sesion y guarda last_login_at = now().
+- En produccion (app()->isProduction()), el login aborta 403 si la peticion no es HTTPS, con texto "El inicio de sesion solo se permite por HTTPS." En local este bloque no aplica.
+
+RF-04. Registro de cuenta
+- GET /register, nombre register, solo invitados. Vista page=register.
+- POST /register, solo invitados.
+- Campos: name obligatorio max 255; email obligatorio unico en users, formato Gmail, max 255; phone opcional max 30; organization opcional max 255; password obligatoria, confirmada, minimo 8, con letras, mayusculas, minusculas y un numero; terms debe estar aceptado.
+- El formulario publico no pide rol. Aunque el cliente envie role=administrador, el servidor guarda role=tecnico. El administrador solo se crea en DatabaseSeeder.
+- terms no se persiste. User::create recibe el payload seguro excepto terms y fuerza role tecnico.
+- Mensajes de validacion en español, definidos en RegisterRequest.
+- Al crear la cuenta: Auth::login, regenerar sesion, last_login_at = now().
+- Respuesta JSON 201: success true, message "Cuenta creada correctamente.", redirect a home.
+- Si no es JSON: redirect a home.
+- Tras el registro el usuario entra directo a la app. No hay verificacion de correo.
+
+RF-05. Recuperacion de contraseña
+- GET /forgot-password, nombre password.request, solo invitados. Vista page=forgot.
+- POST /forgot-password valida email obligatorio con el mismo regex de Gmail.
+- Respuesta JSON siempre con el mismo texto, exista o no el correo:
+  success true, message "Si el correo existe, te enviaremos instrucciones para restablecer la contraseña."
+- Si el correo existe, crea un token en password_reset_tokens y envia App\Notifications\ResetPasswordNotification.
+- El correo usa el mailer de .env. En local (MAIL_MAILER=log) el mensaje queda en storage/logs/laravel.log.
+- Solo si APP_ENV=local y el correo existe, la respuesta incluye reset_url para abrir el enlace sin leer el log. En testing y production esa clave no se envia.
+- GET /reset-password/{token}, nombre password.reset, solo invitados. Vista page=reset. El correo llega por query email.
+- POST /reset-password, nombre password.update. Exige token, gmail y contraseña con las mismas reglas del registro.
+- Si el token sirve: actualiza password, regenera remember_token y responde redirect a login.
+- Si el token no sirve: "El enlace no es valido o ya expiro. Solicita uno nuevo."
+
+RF-06. Cierre de sesion
+- POST /logout, nombre logout, solo autenticados. El cliente llama /logout.
+- Auth::logout, invalida la sesion y regenera el token CSRF.
+- JSON: success true, redirect a route('login').
+- Si no es JSON: redirect a login.
+- Sidebar llama axios.post(logoutUrl) y luego window.location.href = '/login'.
+
+RF-07. Pantalla principal autenticada
+- GET /, nombre home, solo autenticados. AnalysisController@index.
+- Devuelve view app con page=app, listing (pagina, recientes, actividad, stats) y authUser.
+- RoyaGuard muestra dos modos internos, no son rutas distintas:
+  mobile = inspeccion de campo (Scanner)
+  desktop = dashboard + historial
+- Rol administrador abre por defecto en desktop.
+- Cualquier otro rol, incluido tecnico, abre por defecto en mobile.
+- Sidebar: Campo (mobile), Dashboard (desktop), Salir, y tarjeta "Nueva captura" que fuerza modo mobile.
+- En viewport pequeño el sidebar es un menu deslizable con fondo oscuro. En md o mayor queda fijo.
+- Topbar: buscador, iniciales del nombre, nombre y etiqueta de rol. No hay campana de notificaciones.
+- Etiqueta de rol: administrador -> "Administrador"; cualquier otro -> "Tecnico de campo".
+
+RF-08. Visibilidad de inspecciones por rol
+- AnalysisController::visibleAnalyses:
+  si role !== 'administrador', filtra analyses.user_id = usuario actual.
+  si role === 'administrador', devuelve todas.
+- Orden: latest() (created_at descendente) con relacion user cargada.
+- User::isAdmin() existe y compara role === 'administrador', pero el controlador compara el string directamente. Conserva ambos comportamientos.
+
+RF-09. Inspeccion de campo (Scanner)
+- Componente: resources/js/components/Scanner.jsx
+- Dos fuentes, controladas en el cliente: Camara y Subir archivo.
+- Camara: getUserMedia con video facingMode ideal environment, sin audio.
+- Si el navegador no tiene mediaDevices, mensaje para usar la pestaña de subida.
+- Si el permiso falla, mensaje para revisar permisos o usar subida.
+- Botones: Activar camara y Tomar fotografia. Tomar fotografia permanece deshabilitado hasta que la camara este lista.
+- La foto se dibuja en un canvas oculto y se convierte a JPEG data URL con calidad 0.82.
+- Subida: input file accept image/jpeg, image/png, image/webp, y arrastrar y soltar.
+- El cliente solo comprueba que file.type empiece por "image/". No impone 5 MB en el navegador.
+- Campo de ubicacion libre, placeholder "Lote, vereda o finca". Si queda vacio se envia null.
+- Boton "Escanear con IA" deshabilitado si no hay imagen o si ya se esta guardando.
+- Al escanear el cliente solo envia image_base64 y location. No envia disease_detected ni confidence.
+- El servidor asigna disease_detected "Roya Amarilla" y una confidence simulada. Muestras unicas, en App\Support\SimulatedInspection: 5, 8, 14, 22, 36, 49, 67, 82, divididas entre 100.
+- El resultado visual usa response.estimate y solo aparece si el POST responde 201.
+- Exito: "Estimacion simulada guardada: {severity}% de afectacion." Luego se recarga el listado.
+- Fallo: muestra el error de image_base64 o location, o "No se pudo guardar la inspeccion." No muestra diagnostico.
+- La pantalla dice que la estimacion es simulada.
+
+RF-10. Clasificacion de riesgo y recomendaciones
+- Una sola escala, en App\Support\Risk.php y resources/js/lib/risk.js.
+- confidence de 0 a 1:
+  mayor que 0.3 -> critical, etiqueta CRITICO, recomendacion "Cuarentena inmediata y aplicacion de fungicida sistemico"
+  mayor o igual a 0.1 y menor o igual a 0.3 -> medium, etiqueta ALERTA MEDIA, recomendacion "Reinspeccionar en 48 horas y vigilar humedad"
+  menor que 0.1 -> healthy, etiqueta SANO, recomendacion "Mantener plan preventivo"
+- El escaneo muestra la etiqueta y la recomendacion que devuelve el servidor en estimate.
+- summarizeAnalyses cuenta total, critical (confidence > 0.3), medium (>= 0.1 y <= 0.3) y healthy (< 0.1).
+- percent(value) muestra value * 100 con 1 decimal por defecto. El historial y las alertas usan 0 decimales.
+- formatDateTime: dd/mm/aaaa hh:mm en hora local del navegador.
+
+RF-11. Guardado de inspeccion en servidor
+- POST /analysis, nombre analysis.store, solo autenticados. AnalysisController@store usa AnalysisRequest.
+- Validacion: image_base64 required string max 8000000 caracteres; location nullable string max 255.
+- App\Support\InspectionImage exige data URL jpeg, png o webp, archivo real y maximo 5 MB. La guarda en el disco public, ruta analyses/{userId}/{uuid}.ext.
+- image_base64 de la base queda null en registros nuevos. image_path guarda la ruta. El JSON oculta image_base64 e image_path y expone image_url.
+- Registros viejos sin image_path siguen mostrando su image_base64 a traves de image_url.
+- user_id, disease_detected y confidence los asigna el servidor. El cliente no elige dueno ni diagnostico.
+- Respuesta JSON 201: success, message "Inspeccion guardada correctamente.", analysis con user, y estimate (level, label, severity, recommendation).
+
+RF-12. Dashboard
+- Componente: resources/js/components/Dashboard.jsx
+- Titulo "Mis inspecciones".
+- Boton "Descargar reporte" abre GET /analysis/export, nombre analysis.export. El servidor arma inspecciones-roya.csv con fputcsv.
+- Respeta rol y el parametro q. No aplica el filtro de riesgo del historial.
+- Columnas: fecha, diagnostico, afectacion, riesgo, ubicacion, tecnico. La fecha sale como d/m/Y H:i.
+- Grafico de barras de los ultimos 14 dias en el navegador, usando listing.activity (created_at de los ultimos 16 dias). El dia de hoy se pinta en gold y muestra "{n} hoy".
+- Alertas recientes: listing.recent, las 3 ultimas de la busqueda, no de la pagina del historial. Imagen via image_url, enfermedad, ubicacion, etiqueta de riesgo y porcentaje.
+- Enlace "Mostrar todo" apunta a #history-title.
+- Tarjeta "Alerta de roya" con boton Crear, que cambia a modo campo.
+- Tres contadores: Total, Criticos, Sanos. Usan stats del conjunto visible (si hay busqueda, los stats del dashboard usan el subconjunto filtrado).
+
+RF-13. Historial
+- Componente: resources/js/components/History.jsx
+- Lista la pagina actual, 12 registros. GET /analysis?page=&q=&risk=
+- Filtro en servidor: all, critical, medium, healthy. El filtro no cambia stats ni el grafico.
+- Si hay mas de una pagina, muestra Anterior y Siguiente.
+- Cada fila: miniatura image_url, disease_detected, location o "Sin ubicacion", etiqueta de riesgo, porcentaje, fecha formateada.
+- Vacio: "Aun no hay inspecciones registradas."
+- No hay editar, borrar ni abrir un detalle aparte.
+
+RF-14. Busqueda
+- El buscador pide GET /analysis con q. Compara disease_detected, location y user.name.
+- La busqueda actualiza historial, alertas, grafico, contadores del dashboard y contadores de campo.
+- El filtro de riesgo del historial no entra en esos contadores.
+
+RF-15. Datos de usuario sembrados
+- DatabaseSeeder borra usuarios con email admin@royaguard.test y tecnico@royaguard.test (cuentas viejas).
+- Crea o actualiza:
+  admin@gmail.com, nombre Ana Rios, password password, role administrador, phone 3105550101, organization Cooperativa El Roble.
+  tecnico@gmail.com, nombre Luis Mora, password password, role tecnico, phone 3205550199, organization Finca La Esperanza.
+- UserFactory genera correos usuario{digitos}@gmail.com, role tecnico por defecto, y tiene estado admin() y unverified().
+
+================================================================
+5. REQUERIMIENTOS NO FUNCIONALES IMPLEMENTADOS
+================================================================
+
+RNF-01. Seguridad de sesion
+- Login y registro regeneran la sesion.
+- Logout invalida la sesion y regenera el token CSRF.
+- Contrasena oculta en serializacion del usuario (hidden: password, remember_token) y almacenada con hash.
+- CSRF obligatorio en peticiones web. Axios lo envia.
+
+RNF-02. Control de acceso
+- Pantallas de auth: middleware guest.
+- Home, guardar inspeccion y logout: middleware auth.
+- Un tecnico no recibe en el HTML inicial las inspecciones de otros usuarios.
+- El administrador si las recibe todas.
+- No hay policies, gates ni middleware de rol adicionales.
+
+RNF-03. Limitacion de intentos de login
+- Doble control ya descrito: RateLimiter manual en AuthController y throttle:login.
+- Ambos usan 5 intentos por minuto por correo e IP.
+- El limitador manual ademas informa los segundos restantes.
+
+RNF-04. Transporte
+- HTTPS obligatorio para el login solo cuando APP_ENV es production.
+- En local se permite HTTP.
+
+RNF-05. Validacion y mensajes
+- Mensajes de auth y de AnalysisRequest estan en español.
+- AnalysisRequest valida el POST /analysis. InspectionImage valida el contenido de la imagen.
+- El correo se normaliza antes de validar en login, registro y recuperacion.
+
+RNF-06. Persistencia
+- Migraciones existentes, en este orden logico:
+  0001_01_01_000000_create_users_table.php
+    users: id, name, email unico, email_verified_at nullable, password, remember_token, timestamps
+    password_reset_tokens: email PK, token, created_at
+    sessions: id PK, user_id nullable index, ip_address, user_agent, payload, last_activity
+  0001_01_01_000001_create_cache_table.php
+  0001_01_01_000002_create_jobs_table.php
+  2026_09_08_000003_create_analyses_table.php
+    analyses: id, disease_detected string, confidence float, image_base64 longText, location string nullable, timestamps
+  2026_09_20_000001_add_profile_fields_to_users_table.php
+    users.role string(32) default tecnico
+    users.phone string(30) nullable
+    users.organization string nullable
+    users.last_login_at timestamp nullable
+  2026_09_20_000002_add_user_id_to_analyses_table.php
+    analyses.user_id foreignId nullable, constrained, nullOnDelete
+  2026_10_03_000001_add_image_path_to_analyses_table.php
+    analyses.image_path string nullable
+    analyses.image_base64 pasa a nullable para los registros nuevos
+- No crees una migracion nueva que duplique estas columnas.
+- No cambies nullOnDelete: si se borra un usuario, sus inspecciones quedan con user_id null.
+
+RNF-07. Modelo Analysis
+- Fillable: user_id, disease_detected, confidence, image_base64, image_path, location.
+- Hidden: image_base64, image_path. Appends: image_url.
+- confidence se castea a float.
+- Relacion user(): belongsTo User.
+
+RNF-08. Modelo User
+- Fillable: name, email, password, role, phone, organization, last_login_at.
+- Hidden: password, remember_token.
+- Casts: email_verified_at datetime, last_login_at datetime, password hashed.
+- Relacion analyses(): hasMany Analysis.
+- isAdmin(): role === 'administrador'.
+- El registro publico siempre guarda tecnico. administrador solo entra por el seeder o por una escritura explicita. El default de base de datos es tecnico.
+- sendPasswordResetNotification envia ResetPasswordNotification.
+
+RNF-09. Contrato JSON que el frontend ya consume
+No renombres estas claves:
+
+Login y registro correctos: success, message, redirect
+Logout correcto: success, redirect
+Recuperacion: success, message
+Guardado de inspeccion: success, message, analysis
+Errores de validacion Laravel: errors.{campo} como arreglo de strings
+Error de credenciales: errors.credentials
+Analisis: id, user_id, disease_detected, confidence, image_url, location, created_at, updated_at, user
+Guardado correcto ademas incluye estimate.level, estimate.label, estimate.severity, estimate.recommendation
+Usuario anidado o authUser: al menos id, name, email, role, phone, organization, last_login_at
+El frontend lee analysis.user.name, analysis.image_url, analysis.confidence, analysis.location, analysis.disease_detected, analysis.created_at, user.role, user.name.
+
+RNF-10. Experiencia de interfaz
+- Una sola pagina Blade. La navegacion Campo/Dashboard es estado de React, sin cambiar la URL.
+- Formularios de auth usan noValidate y validan Gmail antes del POST.
+- Botones de envio se deshabilitan mientras submitting/saving y cambian el texto: Entrando..., Creando..., Enviando..., y el escaneo muestra "Ejecutando inferencia local simulada...".
+- Layout autenticado: sidebar teal a la izquierda, panel claro a la derecha, responsive.
+- Accesibilidad minima ya presente: labels aria en menu, buscador, filtro, cerrar resultado, mostrar/ocultar contraseña, role=status en el feedback del escaner, alt en imagenes del historial.
+
+RNF-11. Rendimiento y limites conocidos del diseño actual
+- El HTML inicial incluye la primera pagina (12), las 3 recientes, la actividad de 16 dias y los contadores. El resto se pide con GET /analysis.
+- Las fotos nuevas viajan como image_url. El POST sigue enviando la captura en base64 y el servidor la convierte en archivo.
+- La busqueda y el filtro de riesgo los resuelve el servidor. El grafico de 14 dias se dibuja en el navegador con listing.activity. El CSV lo genera el servidor.
+
+RNF-12. Entorno y arranque
+- composer setup: copia .env.example si falta .env, key:generate, migrate --force, npm install, npm run build.
+- composer dev levanta php artisan serve, queue:listen, pail y npm run dev.
+- composer test: config:clear y php artisan test.
+- .env.example usa APP_NAME=Roya, APP_LOCALE=en, DB sqlite, SESSION database, MAIL log.
+- La interfaz esta en español aunque APP_LOCALE sea en. No dependas de archivos lang/ para los textos de esta app: estan escritos en los componentes y en los FormRequest.
+- No documentes ni copies secretos reales del .env (APP_KEY, contraseñas, claves de terceros).
+
+RNF-13. Pruebas automaticas que existen hoy
+- tests/Feature/ExampleTest.php: un invitado que abre / va a login.
+- tests/Feature/AuthTest.php: login, limite de intentos, registro como tecnico, contraseña debil y recuperacion.
+- tests/Feature/AnalysisTest.php: guardado de archivo, imagen invalida, visibilidad por rol, filtro de riesgo y CSV.
+- tests/Unit/RiskTest.php: umbrales de confidence.
+- tests/Unit/ExampleTest.php sigue siendo el ejemplo vacio de Laravel.
+- No quites el middleware auth. El invitado que abre / recibe redireccion, no 200.
+
+================================================================
+6. LO QUE EL PROYECTO NO POSEE
+================================================================
+
+No lo implementes salvo que el usuario lo pida en ese momento. No lo describas como si ya existiera.
+
+- Modelo real de vision o de IA. La severidad sigue siendo una muestra aleatoria y la enfermedad es siempre "Roya Amarilla". El resultado ya no se muestra si el guardado falla.
+- Verificacion de email (email_verified_at existe en la tabla, el flujo no lo exige).
+- Editar usuario, cambiar contraseña estando autenticado, borrar cuenta.
+- Editar, borrar o detallar una inspeccion.
+- Geolocalizacion automatica. location es texto libre.
+- Notificaciones dentro de la app.
+- Roles distintos de tecnico y administrador, ni permisos finos.
+- API REST publica con token, aplicacion movil nativa, colas de inferencia, ni jobs propios.
+- Reportes PDF.
+- Filtro de fechas en el servidor.
+- Internacionalizacion por archivos de idioma.
+
+================================================================
+7. MAPA DE ARCHIVOS VIGENTES
+================================================================
+
+Backend
+- routes/web.php
+- app/Http/Controllers/AuthController.php
+- app/Http/Controllers/AnalysisController.php
+- app/Http/Requests/LoginRequest.php
+- app/Http/Requests/RegisterRequest.php
+- app/Support/AuthRules.php
+- app/Support/Risk.php
+- app/Support/SimulatedInspection.php
+- app/Support/InspectionImage.php
+- app/Notifications/ResetPasswordNotification.php
+- app/Http/Requests/AnalysisRequest.php
+- app/Models/User.php
+- app/Models/Analysis.php
+- app/Providers/AppServiceProvider.php
+- bootstrap/app.php
+- database/migrations/* (las siete listadas arriba)
+- database/seeders/DatabaseSeeder.php
+- database/factories/UserFactory.php
+
+Frontend vigente
+- resources/views/app.blade.php
+- resources/js/main.jsx
+- resources/js/bootstrap.js
+- resources/js/RoyaGuard.jsx
+- resources/js/pages/Login.jsx
+- resources/js/pages/Register.jsx
+- resources/js/pages/ForgotPassword.jsx
+- resources/js/pages/ResetPassword.jsx
+- resources/js/components/AuthShell.jsx
+- resources/js/components/Sidebar.jsx
+- resources/js/components/Topbar.jsx
+- resources/js/components/Scanner.jsx
+- resources/js/components/Dashboard.jsx
+- resources/js/components/History.jsx
+- resources/js/components/Field.jsx
+- resources/js/components/Icons.jsx
+- resources/js/lib/auth.js
+- resources/js/lib/risk.js
+- resources/css/app.css
+- vite.config.js
+
+================================================================
+8. CHECKLIST ANTES DE DAR POR TERMINADO UN CAMBIO
+================================================================
+
+- Un invitado puede abrir /login, /register y /forgot-password.
+- Un invitado que abre / termina en /login.
+- Un autenticado que abre /login termina en /.
+- Login con correo que no sea @gmail.com muestra el error de formato y no crea sesion.
+- Login incorrecto muestra "Las credenciales no son validas."
+- Login correcto entra a RoyaGuard y actualiza last_login_at.
+- Registro exige nombre, gmail unico, contraseña de 8 caracteres con mayusculas, minusculas y numero, y terminos. La cuenta queda como tecnico.
+- Registro inicia sesion y lleva a /.
+- Recuperar contraseña crea token y envia el correo si la cuenta existe. La pantalla de nueva contraseña esta en /reset-password/{token}.
+- Logout vuelve a /login y la sesion deja de servir para / y /analysis.
+- Tecnico solo ve sus inspecciones. Administrador ve todas.
+- Administrador abre en Dashboard. Tecnico abre en Campo.
+- Escanear exige imagen JPG, PNG o WEBP de hasta 5 MB. El servidor guarda el archivo, asigna Roya Amarilla y la confidence simulada, y el diagnostico solo aparece si la respuesta es 201.
+- Riesgo: confidence > 0.3 critico, >= 0.1 y <= 0.3 alerta media, < 0.1 sano.
+- Busqueda filtra en el servidor por enfermedad, ubicacion y nombre del tecnico.
+- Historial filtra por nivel de riesgo y pagina de 12.
+- Descargar reporte abre /analysis/export y escapa comas con fputcsv.
+- No se rompio CSRF, el remember de 30 dias, ni el limite de 5 intentos por minuto por correo e IP.
+
+================================================================
+9. ISO Y CONDICION DE SAAS
+================================================================
+
+Conclusion: el proyecto NO tiene ninguna ISO implementada y NO es un SaaS.
+No hay certificacion, politica, manual, matriz de controles, evaluacion de riesgos ni declaracion de aplicabilidad.
+No hay multi-tenant, planes, facturacion, aislamiento de organizaciones ni acuerdo de nivel de servicio.
+Un agente no debe describir Roya como certificado, conforme o "listo para SaaS". No debe agregar controles de ISO ni arquitectura SaaS salvo que el usuario lo pida en ese momento.
+
+Inventario por norma. Estado real en este repositorio:
+
+ISO/IEC 27001 (sistema de gestion de seguridad de la informacion)
+- NO IMPLEMENTADA.
+- No existe SGSI, alcance, dueno del riesgo, tratamiento de riesgos, auditoria interna ni mejora continua.
+- Lo unico cercano, y no equivale a la norma, es tecnico: hash de contraseñas, CSRF, regeneracion de sesion, limite de 5 intentos de login por correo e IP, HTTPS obligatorio solo en el login cuando APP_ENV=production, y filtro de inspecciones por rol dentro de una sola base de datos.
+
+ISO/IEC 27002 (controles de seguridad)
+- NO IMPLEMENTADA como catalogo de controles.
+- No hay inventario de activos, control de accesos formal, gestion de cambios, copias de seguridad, registro de auditoria ni gestion de incidentes.
+- last_login_at es la unica marca de acceso persistida. No hay log de quien creo, vio, exporto o intento borrar datos.
+
+ISO/IEC 27017 (controles de seguridad para servicios en la nube)
+- NO IMPLEMENTADA.
+- La app no declara un modelo de responsabilidad compartida, ni separacion entre clientes de nube, ni configuracion de proveedor cloud.
+- Corre en un solo despliegue (por defecto SQLite local, pensado para XAMPP o php artisan serve). Un administrador ve los datos de todos los usuarios.
+
+ISO/IEC 27018 (proteccion de datos personales en nube publica)
+- NO IMPLEMENTADA.
+- Se guardan datos personales (nombre, correo, telefono, organizacion, imagenes de campo en base64) sin politica de privacidad, sin finalidad documentada, sin plazo de conservacion, sin derecho de acceso, rectificacion o supresion, y sin cifrado de la base.
+- SESSION_ENCRYPT=false. La imagen viaja y se almacena como texto.
+- La casilla "Acepto el uso de datos para inspecciones agricolas" no es un aviso de privacidad ni un contrato de encargado de tratamiento.
+
+ISO/IEC 27701 (gestion de privacidad)
+- NO IMPLEMENTADA. No hay sistema de gestion de informacion de privacidad ni roles de responsable y encargado.
+
+ISO/IEC 25010 (calidad del producto de software)
+- NO ADOPTADA. Nadie evaluo el producto contra sus caracteristicas (adecuacion funcional, rendimiento, compatibilidad, usabilidad, fiabilidad, seguridad, mantenibilidad, portabilidad).
+- Hay calidad parcial de hecho (interfaz en español, validacion, roles, responsive), pero eso no es una implementacion de la norma.
+
+ISO 9001 (gestion de la calidad)
+- NO IMPLEMENTADA. No hay procesos documentados, no conformidades, acciones correctivas ni auditoria de calidad.
+
+ISO/IEC 20000 (gestion de servicios de TI)
+- NO IMPLEMENTADA. No hay catalogo de servicio, mesa de ayuda, cambios, entregas ni SLA.
+
+ISO 22301 (continuidad del negocio)
+- NO IMPLEMENTADA. No hay plan de continuidad, respaldo operativo ni recuperacion ante desastre. Perder database/database.sqlite pierde usuarios e inspecciones.
+
+Por que tampoco es un SaaS:
+
+- Un SaaS se entrega por internet a varios clientes, con alta centralizada, aislamiento de los datos de cada cliente y, en la practica, suscripcion.
+- Roya es una aplicacion web de una sola organizacion logica: usuarios comparten la misma base y el rol administrador cruza todos los registros.
+- El registro crea un usuario, no un inquilino ni una suscripcion.
+- No hay cobro, planes, limites por cliente, panel de operador ni aprovisionamiento automatico.
+- No hay API para que otros sistemas consuman el servicio.
+
+Controles tecnicos que SI existen y un agente debe conservar, sin llamarlos ISO ni SaaS:
+
+- Autenticacion por sesion, CSRF, hash de contraseña, remember de 30 dias.
+- Limite de 5 intentos de login por minuto por correo e IP.
+- HTTPS forzado solo en el login de produccion.
+- Separacion tecnico/administrador sobre las inspecciones, dentro de la misma base.
+- Validacion de correo @gmail.com, contraseña minima de 8 caracteres en el registro y aceptacion de terminos.
