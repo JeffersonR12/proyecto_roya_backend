@@ -9,6 +9,7 @@ export default function ForgotPassword({ urls }) {
     const [email, setEmail] = useState('');
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
+    const [resetUrl, setResetUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
     const submit = async (event) => {
@@ -16,6 +17,7 @@ export default function ForgotPassword({ urls }) {
         setSubmitting(true);
         setErrors({});
         setMessage('');
+        setResetUrl('');
 
         const normalizedEmail = email.trim().toLowerCase();
 
@@ -28,6 +30,7 @@ export default function ForgotPassword({ urls }) {
         try {
             const response = await axios.post(urls.forgot, { email: normalizedEmail });
             setMessage(response.data.message);
+            setResetUrl(response.data.reset_url ?? '');
         } catch (error) {
             setErrors(error.response?.data?.errors ?? { email: ['No se pudo procesar la solicitud.'] });
         } finally {
@@ -56,6 +59,11 @@ export default function ForgotPassword({ urls }) {
                         />
                         {firstError(errors, 'email') ? <p className="text-center text-xs text-red-100">{firstError(errors, 'email')}</p> : null}
                         {message ? <p className="text-center text-xs text-emerald-100">{message}</p> : null}
+                        {resetUrl ? (
+                            <a href={resetUrl} className="block text-center text-xs font-semibold text-white underline">
+                                Abrir enlace de restablecimiento
+                            </a>
+                        ) : null}
                         <button type="submit" disabled={submitting} className="auth-login-btn">
                             {submitting ? 'Enviando...' : 'Enviar'}
                         </button>

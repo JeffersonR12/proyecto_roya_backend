@@ -10,7 +10,6 @@ const emptyForm = {
     email: '',
     phone: '',
     organization: '',
-    role: 'tecnico',
     password: '',
     password_confirmation: '',
     terms: false,
@@ -76,10 +75,7 @@ export default function Register({ urls }) {
                             <input className="auth-input px-4 py-3" placeholder="Finca o cooperativa" value={form.organization} onChange={(event) => update('organization', event.target.value)} />
                         </div>
 
-                        <select className="auth-input px-4 py-3" value={form.role} onChange={(event) => update('role', event.target.value)}>
-                            <option value="tecnico">Tecnico de campo</option>
-                            <option value="administrador">Administrador</option>
-                        </select>
+                        <p className="px-1 text-xs text-white/80">La cuenta nueva queda como tecnico de campo.</p>
 
                         <label className="relative block">
                             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/80">
@@ -97,6 +93,7 @@ export default function Register({ urls }) {
                                 {showPassword ? <EyeOffGlyph /> : <EyeGlyph />}
                             </button>
                         </label>
+                        <p className="px-1 text-xs text-white/75">Minimo 8 caracteres, con mayusculas, minusculas y un numero.</p>
                         {firstError(errors, 'password') ? <p className="text-xs text-red-100">{firstError(errors, 'password')}</p> : null}
 
                         <input

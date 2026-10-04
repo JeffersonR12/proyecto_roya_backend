@@ -126,22 +126,24 @@ export default function Login({ urls }) {
                 </div>
             </div>
 
-            <div className="relative z-10 mt-6 flex flex-wrap justify-center gap-2">
-                <button
-                    type="button"
-                    onClick={() => setForm(DEMO_ACCOUNTS.admin)}
-                    className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur hover:bg-white/30"
-                >
-                    Usar admin
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setForm(DEMO_ACCOUNTS.tecnico)}
-                    className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur hover:bg-white/30"
-                >
-                    Usar tecnico
-                </button>
-            </div>
+            {urls.demoLogin ? (
+                <div className="relative z-10 mt-6 flex flex-wrap justify-center gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setForm(DEMO_ACCOUNTS.admin)}
+                        className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur hover:bg-white/30"
+                    >
+                        Usar admin
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setForm(DEMO_ACCOUNTS.tecnico)}
+                        className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur hover:bg-white/30"
+                    >
+                        Usar tecnico
+                    </button>
+                </div>
+            ) : null}
             <p className="relative z-10 mt-3 text-center text-sm text-white/90">
                 No tienes cuenta?{' '}
                 <a href={urls.register} className="font-bold underline decoration-white/50 underline-offset-4">

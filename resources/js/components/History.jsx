@@ -1,16 +1,7 @@
-import { useMemo, useState } from 'react';
 import { formatDateTime, getRiskLevel, getRiskMeta, percent } from '../lib/risk.js';
 
-export default function History({ analyses }) {
-    const [filter, setFilter] = useState('all');
-
-    const rows = useMemo(() => {
-        if (filter === 'all') {
-            return analyses;
-        }
-
-        return analyses.filter((analysis) => getRiskLevel(analysis.confidence) === filter);
-    }, [analyses, filter]);
+export default function History({ analyses, filter, onFilterChange, meta, onPageChange }) {
+    const rows = analyses;
 
     return (
         <section aria-labelledby="history-title" className="mt-10">
@@ -19,7 +10,7 @@ export default function History({ analyses }) {
                 <select
                     id="risk-filter"
                     value={filter}
-                    onChange={(event) => setFilter(event.target.value)}
+                    onChange={(event) => onFilterChange(event.target.value)}
                     className="rounded-full bg-sky px-4 py-2 text-xs font-semibold text-navy outline-none"
                     aria-label="Filtrar riesgo"
                 >
@@ -39,7 +30,7 @@ export default function History({ analyses }) {
                         return (
                             <article key={analysis.id} className="flex flex-wrap items-center gap-4 py-4">
                                 <img
-                                    src={analysis.image_base64}
+                                    src={analysis.image_url || analysis.image_base64}
                                     alt={`Captura de ${analysis.disease_detected}`}
                                     className="h-12 w-12 rounded-full object-cover"
                                 />
@@ -55,6 +46,27 @@ export default function History({ analyses }) {
                     })
                 )}
             </div>
+            {meta?.last_page > 1 ? (
+                <div className="mt-4 flex items-center justify-between gap-3 text-sm">
+                    <button
+                        type="button"
+                        disabled={meta.current_page <= 1}
+                        onClick={() => onPageChange(meta.current_page - 1)}
+                        className="rounded-full bg-sky px-4 py-2 font-semibold text-navy disabled:opacity-40"
+                    >
+                        Anterior
+                    </button>
+                    <span className="text-navy/50">Pagina {meta.current_page} de {meta.last_page}</span>
+                    <button
+                        type="button"
+                        disabled={meta.current_page >= meta.last_page}
+                        onClick={() => onPageChange(meta.current_page + 1)}
+                        className="rounded-full bg-sky px-4 py-2 font-semibold text-navy disabled:opacity-40"
+                    >
+                        Siguiente
+                    </button>
+                </div>
+            ) : null}
         </section>
     );
 }

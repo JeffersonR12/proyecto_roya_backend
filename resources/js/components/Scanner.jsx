@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { classifySeverity } from '../lib/risk';
-
-const SEVERITY_SAMPLES = [5, 8, 14, 22, 36, 49, 67, 82];
+import { inspectionCard } from '../lib/risk';
 
 export default function Scanner({ storeUrl, onSaved }) {
     const videoRef = useRef(null);
@@ -109,23 +107,31 @@ export default function Scanner({ storeUrl, onSaved }) {
         }
 
         setSaving(true);
-        showFeedback('Ejecutando inferencia local simulada...');
-
-        const severity = SEVERITY_SAMPLES[Math.floor(Math.random() * SEVERITY_SAMPLES.length)];
-        setRiskResult({ severity, ...classifySeverity(severity) });
+        setRiskResult(null);
+        showFeedback('Guardando inspeccion...');
 
         try {
             const response = await axios.post(storeUrl, {
-                disease_detected: 'Roya Amarilla',
-                confidence: severity / 100,
                 image_base64: imageBase64,
                 location: location || null,
             });
+            const estimate = response.data.estimate;
+            const card = inspectionCard(estimate.level);
 
-            showFeedback(`Resultado guardado: ${severity}% de afectacion.`, 'success');
+            setRiskResult({
+                severity: estimate.severity,
+                label: estimate.label,
+                recommendation: estimate.recommendation,
+                classes: card.classes,
+            });
+            showFeedback(`Estimacion simulada guardada: ${estimate.severity}% de afectacion.`, 'success');
             onSaved(response.data.analysis);
-        } catch {
-            showFeedback('No se pudo guardar la inspeccion.', 'error');
+        } catch (error) {
+            const errors = error.response?.data?.errors;
+            const message = errors?.image_base64?.[0]
+                || errors?.location?.[0]
+                || 'No se pudo guardar la inspeccion.';
+            showFeedback(message, 'error');
         } finally {
             setSaving(false);
         }
@@ -260,6 +266,9 @@ export default function Scanner({ storeUrl, onSaved }) {
                     Escanear con IA
                 </button>
             </div>
+            <p className="mt-3 text-xs leading-5 text-navy/45">
+                Estimacion simulada. El porcentaje aparece solo si la inspeccion queda guardada.
+            </p>
             <p className={`mt-4 min-h-5 text-sm ${feedbackClass}`} role="status">
                 {feedback.message}
             </p>

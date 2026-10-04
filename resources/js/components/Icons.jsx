@@ -82,15 +82,6 @@ export function SearchGlyph({ className = 'h-4 w-4' }) {
     );
 }
 
-export function BellGlyph({ className = 'h-5 w-5' }) {
-    return (
-        <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-            <path d="M6 9a6 6 0 1 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9Z" />
-            <path d="M10 18.5a2 2 0 0 0 4 0" />
-        </svg>
-    );
-}
-
 export function DownloadGlyph({ className = 'h-4 w-4' }) {
     return (
         <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">

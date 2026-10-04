@@ -36,32 +36,21 @@ function rangeLabel() {
     return `${format(start)} - ${format(end)}`;
 }
 
-export default function Dashboard({ analyses, stats, onInspect }) {
-    const bars = buildBars(analyses);
-    const recent = analyses.slice(0, 3);
+export default function Dashboard({ recent = [], activity = [], stats, onInspect, exportUrl, query = '' }) {
+    const bars = buildBars(activity);
     const todayBar = bars.find((bar) => bar.isToday);
     const todayLabel = todayBar ? `${todayBar.count} hoy` : '0 hoy';
 
     const downloadReport = () => {
-        const header = 'fecha,diagnostico,afectacion,riesgo,ubicacion,tecnico';
-        const rows = analyses.map((analysis) => {
-            const meta = getRiskMeta(getRiskLevel(analysis.confidence));
-            return [
-                analysis.created_at,
-                analysis.disease_detected,
-                percent(analysis.confidence),
-                meta.label,
-                analysis.location || 'Sin ubicacion',
-                analysis.user?.name || 'Sin asignar',
-            ].join(',');
-        });
-        const blob = new Blob([[header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'inspecciones-roya.csv';
-        link.click();
-        URL.revokeObjectURL(url);
+        const params = new URLSearchParams();
+        const term = query.trim();
+
+        if (term) {
+            params.set('q', term);
+        }
+
+        const suffix = params.toString() ? `?${params}` : '';
+        window.location.href = `${exportUrl}${suffix}`;
     };
 
     return (
@@ -128,7 +117,7 @@ export default function Dashboard({ analyses, stats, onInspect }) {
                                 return (
                                     <article key={analysis.id} className="flex items-center gap-4 py-4">
                                         <img
-                                            src={analysis.image_base64}
+                                            src={analysis.image_url || analysis.image_base64}
                                             alt=""
                                             className="h-12 w-12 rounded-full object-cover"
                                         />

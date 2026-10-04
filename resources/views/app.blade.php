@@ -10,8 +10,12 @@
     <script>
         window.RoyaGuard = {
             page: @json($page),
-            analyses: @json($analyses),
+            listing: @json($listing ?? null),
             authUser: @json($authUser),
+            reset: {
+                token: @json($resetToken ?? ''),
+                email: @json($resetEmail ?? ''),
+            },
             urls: {
                 home: '/',
                 login: '/login',
@@ -19,6 +23,9 @@
                 forgot: '/forgot-password',
                 logout: '/logout',
                 store: '/analysis',
+                list: '/analysis',
+                export: '/analysis/export',
+                demoLogin: @json(app()->environment('local')),
             },
         };
     </script>

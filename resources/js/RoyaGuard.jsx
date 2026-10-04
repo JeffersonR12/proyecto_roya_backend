@@ -1,44 +1,49 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
 import Scanner from './components/Scanner.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import History from './components/History.jsx';
-import { summarizeAnalyses } from './lib/risk.js';
 
-export default function RoyaGuard({ initialAnalyses, urls, user }) {
+const emptyListing = {
+    data: [],
+    recent: [],
+    activity: [],
+    stats: { total: 0, critical: 0, medium: 0, healthy: 0 },
+    meta: { current_page: 1, last_page: 1, per_page: 12, total: 0 },
+};
+
+export default function RoyaGuard({ listing, urls, user }) {
     const [mode, setMode] = useState(user?.role === 'administrador' ? 'desktop' : 'mobile');
-    const [analyses, setAnalyses] = useState(initialAnalyses);
+    const [data, setData] = useState(listing ?? emptyListing);
     const [query, setQuery] = useState('');
+    const [filter, setFilter] = useState('all');
+    const [page, setPage] = useState(listing?.meta?.current_page ?? 1);
     const [menuOpen, setMenuOpen] = useState(false);
     const panelRef = useRef(null);
-    const stats = useMemo(() => summarizeAnalyses(analyses), [analyses]);
+    const skipFirstFetch = useRef(true);
+    const stats = data.stats ?? emptyListing.stats;
 
-    const visibleAnalyses = useMemo(() => {
-        const term = query.trim().toLowerCase();
+    const loadListing = async (nextPage, nextQuery, nextFilter) => {
+        const response = await axios.get(urls.list, {
+            params: {
+                page: nextPage,
+                q: nextQuery,
+                risk: nextFilter,
+            },
+        });
+        setData(response.data);
+    };
 
-        if (!term) {
-            return analyses;
+    const handleSaved = () => {
+        if (page === 1 && filter === 'all') {
+            loadListing(1, query, 'all');
+            return;
         }
 
-        return analyses.filter((analysis) => {
-            const haystack = [
-                analysis.disease_detected,
-                analysis.location,
-                analysis.user?.name,
-            ]
-                .filter(Boolean)
-                .join(' ')
-                .toLowerCase();
-
-            return haystack.includes(term);
-        });
-    }, [analyses, query]);
-
-    const visibleStats = useMemo(() => summarizeAnalyses(visibleAnalyses), [visibleAnalyses]);
-
-    const handleSaved = (analysis) => {
-        setAnalyses((current) => [analysis, ...current]);
+        setFilter('all');
+        setPage(1);
     };
 
     const goToField = () => setMode('mobile');
@@ -46,6 +51,19 @@ export default function RoyaGuard({ initialAnalyses, urls, user }) {
     useEffect(() => {
         panelRef.current?.scrollTo({ top: 0 });
     }, [mode]);
+
+    useEffect(() => {
+        if (skipFirstFetch.current) {
+            skipFirstFetch.current = false;
+            return;
+        }
+
+        const handle = setTimeout(() => {
+            loadListing(page, query, filter);
+        }, 250);
+
+        return () => clearTimeout(handle);
+    }, [page, query, filter]);
 
     return (
         <div className="app-frame">
@@ -62,7 +80,10 @@ export default function RoyaGuard({ initialAnalyses, urls, user }) {
                 <Topbar
                     user={user}
                     query={query}
-                    onQueryChange={setQuery}
+                    onQueryChange={(value) => {
+                        setQuery(value);
+                        setPage(1);
+                    }}
                     onMenu={() => setMenuOpen(true)}
                 />
 
@@ -97,8 +118,24 @@ export default function RoyaGuard({ initialAnalyses, urls, user }) {
                     </div>
                 ) : (
                     <>
-                        <Dashboard analyses={visibleAnalyses} stats={visibleStats} onInspect={goToField} />
-                        <History analyses={visibleAnalyses} />
+                        <Dashboard
+                            recent={data.recent ?? []}
+                            activity={data.activity ?? []}
+                            stats={stats}
+                            onInspect={goToField}
+                            exportUrl={urls.export}
+                            query={query}
+                        />
+                        <History
+                            analyses={data.data ?? []}
+                            filter={filter}
+                            onFilterChange={(value) => {
+                                setFilter(value);
+                                setPage(1);
+                            }}
+                            meta={data.meta}
+                            onPageChange={setPage}
+                        />
                     </>
                 )}
             </section>

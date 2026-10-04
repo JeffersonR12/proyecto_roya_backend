@@ -1,4 +1,4 @@
-import { BellGlyph, MenuGlyph, SearchGlyph } from './Icons.jsx';
+import { MenuGlyph, SearchGlyph } from './Icons.jsx';
 import { roleLabel } from '../lib/risk.js';
 
 export default function Topbar({ user, query, onQueryChange, onMenu }) {
@@ -34,13 +34,9 @@ export default function Topbar({ user, query, onQueryChange, onMenu }) {
                     <p className="text-sm font-bold text-navy">{user?.name}</p>
                     <p className="text-xs text-navy/45">{roleLabel(user?.role)}</p>
                 </div>
-                <div className="grid h-11 w-11 place-items-center rounded-full bg-teal text-sm font-extrabold text-white">
+                <div className="grid h-11 w-11 place-items-center rounded-full bg-teal text-sm font-extrabold text-white" aria-hidden="true">
                     {initials}
                 </div>
-                <button type="button" className="relative grid h-11 w-11 place-items-center rounded-full bg-sky text-teal" aria-label="Notificaciones">
-                    <BellGlyph />
-                    <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-gold" />
-                </button>
             </div>
         </div>
     );

@@ -5,9 +5,10 @@ import RoyaGuard from './RoyaGuard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 
 const root = document.getElementById('app');
-const config = window.RoyaGuard ?? { page: 'login', analyses: [], urls: {}, authUser: null };
+const config = window.RoyaGuard ?? { page: 'login', listing: null, urls: {}, authUser: null, reset: {} };
 
 function Root() {
     if (config.page === 'login') {
@@ -22,9 +23,13 @@ function Root() {
         return <ForgotPassword urls={config.urls} />;
     }
 
+    if (config.page === 'reset') {
+        return <ResetPassword urls={config.urls} reset={config.reset} />;
+    }
+
     return (
         <RoyaGuard
-            initialAnalyses={config.analyses ?? []}
+            listing={config.listing}
             urls={config.urls}
             user={config.authUser}
         />

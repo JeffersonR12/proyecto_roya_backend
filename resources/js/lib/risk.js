@@ -37,8 +37,8 @@ export function getRiskMeta(level) {
     };
 }
 
-export function classifySeverity(severity) {
-    if (severity > 30) {
+export function inspectionCard(level) {
+    if (level === 'critical') {
         return {
             label: 'CRITICO',
             recommendation: 'Cuarentena inmediata y aplicacion de fungicida sistemico',
@@ -46,7 +46,7 @@ export function classifySeverity(severity) {
         };
     }
 
-    if (severity >= 10) {
+    if (level === 'medium') {
         return {
             label: 'ALERTA MEDIA',
             recommendation: 'Reinspeccionar en 48 horas y vigilar humedad',
@@ -55,9 +55,19 @@ export function classifySeverity(severity) {
     }
 
     return {
-        label: 'BAJO RIESGO / SANO',
+        label: 'SANO',
         recommendation: 'Mantener plan preventivo',
-            classes: 'border-teal/20 bg-white text-navy',
+        classes: 'border-teal/20 bg-white text-navy',
+    };
+}
+
+export function classifyFromConfidence(confidence) {
+    const level = getRiskLevel(confidence);
+
+    return {
+        severity: Math.round(Number(confidence) * 100),
+        level,
+        ...inspectionCard(level),
     };
 }
 

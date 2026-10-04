@@ -10,7 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -18,29 +20,17 @@ class AuthController extends Controller
 {
     public function showLogin(): View
     {
-        return view('app', [
-            'page' => 'login',
-            'analyses' => [],
-            'authUser' => null,
-        ]);
+        return $this->guestPage('login');
     }
 
     public function showRegister(): View
     {
-        return view('app', [
-            'page' => 'register',
-            'analyses' => [],
-            'authUser' => null,
-        ]);
+        return $this->guestPage('register');
     }
 
     public function showForgot(): View
     {
-        return view('app', [
-            'page' => 'forgot',
-            'analyses' => [],
-            'authUser' => null,
-        ]);
+        return $this->guestPage('forgot');
     }
 
     public function sendResetLink(Request $request): JsonResponse
@@ -56,9 +46,69 @@ class AuthController extends Controller
             'email.regex' => 'El correo debe tener el formato usuario@gmail.com.',
         ]);
 
-        return response()->json([
+        $payload = [
             'success' => true,
             'message' => 'Si el correo existe, te enviaremos instrucciones para restablecer la contraseña.',
+        ];
+
+        $user = User::query()->where('email', $request->string('email'))->first();
+
+        if ($user) {
+            $token = Password::broker()->createToken($user);
+            $user->sendPasswordResetNotification($token);
+
+            if (app()->environment('local')) {
+                $payload['reset_url'] = url('/reset-password/'.$token.'?email='.urlencode($user->email));
+            }
+        }
+
+        return response()->json($payload);
+    }
+
+    public function showReset(Request $request, string $token): View
+    {
+        return $this->guestPage('reset', [
+            'resetToken' => $token,
+            'resetEmail' => strtolower(trim((string) $request->query('email', ''))),
+        ]);
+    }
+
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->merge([
+            'email' => strtolower(trim((string) $request->input('email'))),
+        ]);
+
+        $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'string', AuthRules::GMAIL_REGEX],
+            'password' => ['required', 'confirmed', AuthRules::password()],
+        ], array_merge([
+            'token.required' => 'El enlace de recuperacion no es valido.',
+            'email.required' => 'El correo es obligatorio.',
+            'email.regex' => 'El correo debe tener el formato usuario@gmail.com.',
+        ], AuthRules::passwordMessages()));
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password): void {
+                $user->forceFill([
+                    'password' => $password,
+                    'remember_token' => Str::random(60),
+                ])->save();
+            }
+        );
+
+        if ($status !== Password::PASSWORD_RESET) {
+            throw ValidationException::withMessages([
+                'email' => 'El enlace no es valido o ya expiro. Solicita uno nuevo.',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contraseña actualizada. Ya puedes iniciar sesion.',
+            'redirect' => route('login'),
         ]);
     }
 
@@ -100,7 +150,10 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse|RedirectResponse
     {
-        $user = User::create($request->safe()->except('terms'));
+        $user = User::create([
+            ...$request->safe()->except('terms'),
+            'role' => 'tecnico',
+        ]);
 
         Auth::login($user);
         $request->session()->regenerate();
@@ -148,6 +201,19 @@ class AuthController extends Controller
 
     private function throttleKey(Request $request): string
     {
-        return 'login-ip:'.$request->ip();
+        $email = strtolower(trim((string) $request->input('email')));
+
+        return 'login-attempt:'.$email.'|'.$request->ip();
+    }
+
+    private function guestPage(string $page, array $extra = []): View
+    {
+        return view('app', array_merge([
+            'page' => $page,
+            'listing' => null,
+            'authUser' => null,
+            'resetToken' => '',
+            'resetEmail' => '',
+        ], $extra));
     }
 }
