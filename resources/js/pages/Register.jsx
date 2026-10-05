@@ -77,6 +77,7 @@ export default function Register({ urls }) {
                         </div>
 
                         <select className="auth-input px-4 py-3" value={form.role} onChange={(event) => update('role', event.target.value)}>
+                            <option value="agricultor">Agricultor</option>
                             <option value="tecnico">Tecnico de campo</option>
                             <option value="administrador">Administrador</option>
                         </select>

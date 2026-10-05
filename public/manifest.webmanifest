@@ -1,0 +1,19 @@
+{
+    "name": "Roya — detección de Roya Amarilla",
+    "short_name": "Roya",
+    "description": "Diagnóstico Edge offline-first de Roya Amarilla en trigo (Valle del Mantaro).",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#e7f7fb",
+    "theme_color": "#1aa8aa",
+    "lang": "es",
+    "icons": [
+        {
+            "src": "/icons/roya.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

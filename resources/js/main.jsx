@@ -5,6 +5,9 @@ import RoyaGuard from './RoyaGuard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
+import { registerEdgeWorker } from './lib/pwa.js';
+
+registerEdgeWorker();
 
 const root = document.getElementById('app');
 const config = window.RoyaGuard ?? { page: 'login', analyses: [], urls: {}, authUser: null };
@@ -24,7 +27,6 @@ function Root() {
 
     return (
         <RoyaGuard
-            initialAnalyses={config.analyses ?? []}
             urls={config.urls}
             user={config.authUser}
         />

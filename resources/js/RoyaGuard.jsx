@@ -4,15 +4,16 @@ import Topbar from './components/Topbar.jsx';
 import Scanner from './components/Scanner.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import History from './components/History.jsx';
-import { summarizeAnalyses } from './lib/risk.js';
+import { listDiagnosticos } from './lib/diagnosticosDb.js';
+import { summarizeDiagnosticos, toViewModel } from './lib/inference.js';
 
-export default function RoyaGuard({ initialAnalyses, urls, user }) {
+export default function RoyaGuard({ urls, user }) {
     const [mode, setMode] = useState(user?.role === 'administrador' ? 'desktop' : 'mobile');
-    const [analyses, setAnalyses] = useState(initialAnalyses);
+    const [analyses, setAnalyses] = useState([]);
     const [query, setQuery] = useState('');
     const [menuOpen, setMenuOpen] = useState(false);
     const panelRef = useRef(null);
-    const stats = useMemo(() => summarizeAnalyses(analyses), [analyses]);
+    const stats = useMemo(() => summarizeDiagnosticos(analyses), [analyses]);
 
     const visibleAnalyses = useMemo(() => {
         const term = query.trim().toLowerCase();
@@ -24,8 +25,10 @@ export default function RoyaGuard({ initialAnalyses, urls, user }) {
         return analyses.filter((analysis) => {
             const haystack = [
                 analysis.disease_detected,
+                analysis.clase,
                 analysis.location,
-                analysis.user?.name,
+                analysis.uuid_local,
+                analysis.sync_status,
             ]
                 .filter(Boolean)
                 .join(' ')
@@ -35,10 +38,16 @@ export default function RoyaGuard({ initialAnalyses, urls, user }) {
         });
     }, [analyses, query]);
 
-    const visibleStats = useMemo(() => summarizeAnalyses(visibleAnalyses), [visibleAnalyses]);
+    const visibleStats = useMemo(() => summarizeDiagnosticos(visibleAnalyses), [visibleAnalyses]);
+
+    useEffect(() => {
+        listDiagnosticos()
+            .then((rows) => setAnalyses(rows.map(toViewModel)))
+            .catch(() => setAnalyses([]));
+    }, []);
 
     const handleSaved = (analysis) => {
-        setAnalyses((current) => [analysis, ...current]);
+        setAnalyses((current) => [analysis, ...current.filter((row) => row.uuid_local !== analysis.uuid_local)]);
     };
 
     const goToField = () => setMode('mobile');
@@ -76,7 +85,7 @@ export default function RoyaGuard({ initialAnalyses, urls, user }) {
                                 <span className="text-teal">Actua a tiempo.</span>
                             </h1>
                             <p className="mt-4 max-w-md text-sm leading-7 text-navy/60">
-                                Captura o sube una imagen para registrar Roya Amarilla. El resultado queda en tu bitacora.
+                                La CNN corre en el navegador (ONNX). Sin red también diagnostica; el resultado queda en IndexedDB.
                             </p>
                             <div className="mt-8 grid max-w-md grid-cols-3 gap-3 border-y border-sky py-5 text-center">
                                 <div>
@@ -93,7 +102,7 @@ export default function RoyaGuard({ initialAnalyses, urls, user }) {
                                 </div>
                             </div>
                         </div>
-                        <Scanner storeUrl={urls.store} onSaved={handleSaved} />
+                        <Scanner onSaved={handleSaved} />
                     </div>
                 ) : (
                     <>
