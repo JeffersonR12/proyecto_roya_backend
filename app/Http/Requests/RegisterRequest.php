@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             'email' => ['required', 'string', 'max:255', 'unique:users,email', AuthRules::GMAIL_REGEX],
             'phone' => ['nullable', 'string', 'max:30'],
             'organization' => ['nullable', 'string', 'max:255'],
-            'role' => ['required', 'in:tecnico,administrador'],
+            'role' => ['required', 'in:agricultor,tecnico,administrador'],
             'password' => ['required', 'confirmed', Password::min(8)],
             'terms' => ['accepted'],
         ];

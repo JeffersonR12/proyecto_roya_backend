@@ -16,6 +16,8 @@
 /public/build
 /public/hot
 /public/storage
+/public/onnx/*.wasm
+/public/onnx/*.mjs
 /storage/*.key
 /storage/pail
 /vendor

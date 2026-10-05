@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\Role;
+use App\Models\Tenant;
 use App\Models\User;
 use App\Support\AuthRules;
 use Illuminate\Http\JsonResponse;
@@ -100,7 +102,26 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse|RedirectResponse
     {
-        $user = User::create($request->safe()->except('terms'));
+        $tenant = Tenant::query()->firstOrCreate(
+            ['codigo' => str()->slug($request->input('organization') ?: 'cooperativa-el-roble')],
+            [
+                'nombre' => $request->input('organization') ?: 'Cooperativa El Roble',
+                'activo' => true,
+            ]
+        );
+
+        $rolNombre = $request->input('role') === 'administrador' ? 'administrador' : $request->input('role');
+        $rol = Role::query()->firstOrCreate(
+            ['nombre' => $rolNombre],
+            ['descripcion' => 'Rol '.$rolNombre]
+        );
+
+        $user = User::create([
+            ...$request->safe()->except('terms'),
+            'tenant_id' => $tenant->id,
+            'rol_id' => $rol->id,
+            'activo' => true,
+        ]);
 
         Auth::login($user);
         $request->session()->regenerate();

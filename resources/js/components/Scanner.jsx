@@ -1,10 +1,50 @@
 import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import { classifySeverity } from '../lib/risk';
+import { saveDiagnostico } from '../lib/diagnosticosDb.js';
+import {
+    CLASE_LABELS,
+    createDiagnosticoLocal,
+    resultadoVista,
+    toViewModel,
+} from '../lib/inference.js';
+import { describeEngineError, inferDataUrl } from '../lib/onnxEngine.js';
 
-const SEVERITY_SAMPLES = [5, 8, 14, 22, 36, 49, 67, 82];
+async function readGeo() {
+    if (!navigator.geolocation) {
+        return { latitud: null, longitud: null };
+    }
 
-export default function Scanner({ storeUrl, onSaved }) {
+    return new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+            (position) =>
+                resolve({
+                    latitud: position.coords.latitude,
+                    longitud: position.coords.longitude,
+                }),
+            () => resolve({ latitud: null, longitud: null }),
+            { enableHighAccuracy: false, timeout: 4000, maximumAge: 120000 },
+        );
+    });
+}
+
+function compressThumb(dataUrl) {
+    return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => {
+            const canvas = document.createElement('canvas');
+            const max = 480;
+            const scale = Math.min(1, max / Math.max(image.width, image.height));
+            canvas.width = Math.max(1, Math.round(image.width * scale));
+            canvas.height = Math.max(1, Math.round(image.height * scale));
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.72));
+        };
+        image.onerror = () => resolve(dataUrl);
+        image.src = dataUrl;
+    });
+}
+
+export default function Scanner({ onSaved }) {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const streamRef = useRef(null);
@@ -18,9 +58,19 @@ export default function Scanner({ storeUrl, onSaved }) {
     const [saving, setSaving] = useState(false);
     const [dropActive, setDropActive] = useState(false);
     const [riskResult, setRiskResult] = useState(null);
+    const [online, setOnline] = useState(typeof navigator === 'undefined' ? true : navigator.onLine);
 
     useEffect(() => {
-        return () => stopCamera();
+        const on = () => setOnline(true);
+        const off = () => setOnline(false);
+        window.addEventListener('online', on);
+        window.addEventListener('offline', off);
+
+        return () => {
+            window.removeEventListener('online', on);
+            window.removeEventListener('offline', off);
+            stopCamera();
+        };
     }, []);
 
     const stopCamera = () => {
@@ -91,7 +141,7 @@ export default function Scanner({ storeUrl, onSaved }) {
 
     const readImage = (file) => {
         if (!file || !file.type.startsWith('image/')) {
-            showFeedback('Selecciona un archivo de imagen valido.', 'error');
+            showFeedback('Selecciona un archivo de imagen valido (JPG, PNG o WEBP).', 'error');
             return;
         }
 
@@ -103,29 +153,53 @@ export default function Scanner({ storeUrl, onSaved }) {
         reader.readAsDataURL(file);
     };
 
-    const saveAnalysis = async () => {
+    const scanLocal = async () => {
         if (!imageBase64 || saving) {
             return;
         }
 
         setSaving(true);
-        showFeedback('Ejecutando inferencia local simulada...');
-
-        const severity = SEVERITY_SAMPLES[Math.floor(Math.random() * SEVERITY_SAMPLES.length)];
-        setRiskResult({ severity, ...classifySeverity(severity) });
+        showFeedback('Inferencia ONNX local (sin FastAPI ni Laravel)...');
 
         try {
-            const response = await axios.post(storeUrl, {
-                disease_detected: 'Roya Amarilla',
-                confidence: severity / 100,
-                image_base64: imageBase64,
-                location: location || null,
+            const prediccion = await inferDataUrl(imageBase64);
+            const geo = await readGeo();
+            const thumb = await compressThumb(imageBase64);
+            const diagnostico = createDiagnosticoLocal({
+                prediccion,
+                imagen_thumb: thumb,
+                parcela_nota: location,
+                latitud: geo.latitud,
+                longitud: geo.longitud,
+                modelo_version: prediccion.modelo_version,
             });
 
-            showFeedback(`Resultado guardado: ${severity}% de afectacion.`, 'success');
-            onSaved(response.data.analysis);
-        } catch {
-            showFeedback('No se pudo guardar la inspeccion.', 'error');
+            await saveDiagnostico(diagnostico);
+
+            const vista = resultadoVista(prediccion);
+            setRiskResult({
+                ...vista,
+                confianza: prediccion.confianza,
+                severidad: prediccion.severidad,
+                clase: prediccion.clase,
+                latency_ms: prediccion.latency_ms,
+                modelo_version: prediccion.modelo_version,
+            });
+
+            if (prediccion.runtime === 'placeholder-uniform') {
+                showFeedback(
+                    `Sin pesos ONNX: no se afirma clase (no_concluyente, ${prediccion.confianza}%). Coloca public/models/modelo_roya.onnx. Guardado local ${diagnostico.sync_status}.`,
+                    'success',
+                );
+            } else {
+                showFeedback(
+                    `${CLASE_LABELS[prediccion.clase]} · confianza ${prediccion.confianza}% · ${prediccion.latency_ms} ms · local ${diagnostico.sync_status}`,
+                    'success',
+                );
+            }
+            onSaved?.(toViewModel(diagnostico));
+        } catch (error) {
+            showFeedback(describeEngineError(error), 'error');
         } finally {
             setSaving(false);
         }
@@ -138,11 +212,11 @@ export default function Scanner({ storeUrl, onSaved }) {
         <section className="rounded-[1.75rem] bg-sky/60 p-4 sm:p-6" aria-labelledby="scanner-title">
             <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-[.18em] text-teal">Unidad de campo</p>
+                    <p className="text-xs font-semibold uppercase tracking-[.18em] text-teal">Unidad de campo · Edge</p>
                     <h2 id="scanner-title" className="mt-1 text-xl font-extrabold text-navy">Nueva inspeccion</h2>
                 </div>
-                <span className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${cameraActive ? 'bg-teal/15 text-teal' : 'bg-white text-navy/45'}`}>
-                    {cameraActive ? 'Camara activa' : 'Camara inactiva'}
+                <span className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${online ? 'bg-teal/15 text-teal' : 'bg-gold/30 text-navy'}`}>
+                    {online ? 'En linea (inferencia local)' : 'Sin red · offline'}
                 </span>
             </div>
 
@@ -183,7 +257,7 @@ export default function Scanner({ storeUrl, onSaved }) {
                         <div className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl ${riskResult.classes}`}>
                             <div className="flex items-start justify-between gap-4">
                                 <div>
-                                    <p className="text-xs uppercase tracking-[.2em] opacity-70">Foco detectado</p>
+                                    <p className="text-xs uppercase tracking-[.2em] opacity-70">Clase (CNN)</p>
                                     <h3 className="mt-1 font-display text-xl font-bold">{riskResult.label}</h3>
                                 </div>
                                 <button type="button" onClick={() => setRiskResult(null)} className="rounded-lg border border-current/20 px-2 py-1 text-xs opacity-70 hover:opacity-100" aria-label="Cerrar resultado">
@@ -191,10 +265,17 @@ export default function Scanner({ storeUrl, onSaved }) {
                                 </button>
                             </div>
                             <div className="mt-5 flex items-end gap-2">
-                                <span className="font-display text-5xl font-bold">{riskResult.severity}%</span>
-                                <span className="pb-2 text-sm opacity-70">afectacion estimada</span>
+                                <span className="font-display text-5xl font-bold">{riskResult.confianza}%</span>
+                                <span className="pb-2 text-sm opacity-70">confianza</span>
                             </div>
+                            <p className="mt-2 text-xs opacity-70">
+                                Severidad foliar: {riskResult.severidad == null ? 'no calculada (distinta de la confianza)' : `${riskResult.severidad}%`}
+                            </p>
                             <p className="mt-4 border-t border-current/20 pt-4 text-sm leading-6">{riskResult.recommendation}</p>
+                            <p className="mt-2 text-[11px] opacity-50">
+                                {riskResult.modelo_version}
+                                {riskResult.latency_ms != null ? ` · ${riskResult.latency_ms} ms` : ''}
+                            </p>
                         </div>
                     </div>
                 ) : null}
@@ -254,10 +335,10 @@ export default function Scanner({ storeUrl, onSaved }) {
                 <button
                     type="button"
                     disabled={!imageBase64 || saving}
-                    onClick={saveAnalysis}
+                    onClick={scanLocal}
                     className="rounded-full bg-gold px-5 py-3 font-extrabold text-navy transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                    Escanear con IA
+                    {saving ? 'Inferiendo…' : 'Escanear en el dispositivo'}
                 </button>
             </div>
             <p className={`mt-4 min-h-5 text-sm ${feedbackClass}`} role="status">

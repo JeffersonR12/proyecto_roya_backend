@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,6 +15,9 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'tenant_id',
+        'rol_id',
+        'activo',
         'name',
         'email',
         'password',
@@ -34,7 +38,28 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
             'password' => 'hashed',
+            'activo' => 'boolean',
         ];
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function rol(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'rol_id');
+    }
+
+    public function parcelas(): HasMany
+    {
+        return $this->hasMany(Parcela::class, 'usuario_id');
+    }
+
+    public function diagnosticos(): HasMany
+    {
+        return $this->hasMany(Diagnostico::class, 'usuario_id');
     }
 
     public function analyses(): HasMany
@@ -44,6 +69,11 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'administrador';
+        return $this->rol?->nombre === 'administrador' || $this->role === 'administrador';
+    }
+
+    public function roleName(): string
+    {
+        return $this->rol?->nombre ?? $this->role ?? 'tecnico';
     }
 }

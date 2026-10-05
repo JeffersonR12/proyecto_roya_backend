@@ -37,7 +37,7 @@ export default function History({ analyses }) {
                         const meta = getRiskMeta(getRiskLevel(analysis.confidence));
 
                         return (
-                            <article key={analysis.id} className="flex flex-wrap items-center gap-4 py-4">
+                            <article key={analysis.uuid_local || analysis.id} className="flex flex-wrap items-center gap-4 py-4">
                                 <img
                                     src={analysis.image_base64}
                                     alt={`Captura de ${analysis.disease_detected}`}
@@ -49,6 +49,9 @@ export default function History({ analyses }) {
                                 </div>
                                 <span className={`text-sm font-bold ${meta.textClass}`}>{meta.label}</span>
                                 <span className="font-extrabold text-navy">{percent(analysis.confidence, 0)}</span>
+                                <span className="rounded-full bg-sky px-2 py-1 text-[10px] font-semibold uppercase text-navy/50">
+                                    {analysis.sync_status || 'local'}
+                                </span>
                                 <span className="text-xs text-navy/40">{formatDateTime(analysis.created_at)}</span>
                             </article>
                         );

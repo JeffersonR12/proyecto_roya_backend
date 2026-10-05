@@ -1,0 +1,34 @@
+---
+description: Constitución del sistema Roya Edge-Cloud. Aplicar siempre.
+alwaysApply: true
+---
+
+# Roya — reglas permanentes
+
+Leer y cumplir `rules/rules.md` y `Docs/*.md`. Si el código legado choca con esas reglas, adaptar el código.
+
+## Arquitectura
+
+- Offline-first: inferencia en PWA/ONNX o TFLite. FastAPI es auxiliar, no el camino crítico sin red.
+- Laravel = Core SaaS (API REST, RBAC, tenant, sync). PostgreSQL prod; SQLite/IndexedDB en Edge.
+- Sync REST/HTTPS con UUID único. Cola `pending → sending → confirmed|error`. Sin duplicados.
+
+## Dominio
+
+- Roles: agricultor, tecnico, administrador. Aislar por tenant.
+- Clases: sana | roya_amarilla | otra_enfermedad | no_concluyente.
+- `confianza` y `severidad` son campos distintos (0–100). Baja confianza → no_concluyente.
+- Entidades objetivo: tenants, roles, usuarios, parcelas, catalogo, diagnosticos, alertas, sync_events.
+
+## Calidad y seguridad
+
+- SOLID + TDD. ISO 25010, 29119, 27001.
+- Secretos fuera de Git. HTTPS prod. Rate limit en auth. Errores de login genéricos.
+- CI (GitHub Actions), Docker, health checks, métricas (Prometheus/Grafana/ELK).
+
+## No hacer
+
+- No mezclar confianza del modelo con severidad foliar.
+- No crear diagnósticos cloud sin `uuid_local` ni `modelo_version`.
+- No permitir acceso cruzado entre tenants.
+- No bloquear el diagnóstico de campo si no hay red.

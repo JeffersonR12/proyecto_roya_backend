@@ -43,18 +43,18 @@ export default function Dashboard({ analyses, stats, onInspect }) {
     const todayLabel = todayBar ? `${todayBar.count} hoy` : '0 hoy';
 
     const downloadReport = () => {
-        const header = 'fecha,diagnostico,afectacion,riesgo,ubicacion,tecnico';
-        const rows = analyses.map((analysis) => {
-            const meta = getRiskMeta(getRiskLevel(analysis.confidence));
-            return [
+        const header = 'uuid_local,fecha,clase,confianza,severidad,sync,ubicacion';
+        const rows = analyses.map((analysis) =>
+            [
+                analysis.uuid_local,
                 analysis.created_at,
-                analysis.disease_detected,
-                percent(analysis.confidence),
-                meta.label,
+                analysis.clase || analysis.disease_detected,
+                analysis.confianza ?? '',
+                analysis.severidad ?? '',
+                analysis.sync_status || '',
                 analysis.location || 'Sin ubicacion',
-                analysis.user?.name || 'Sin asignar',
-            ].join(',');
-        });
+            ].join(','),
+        );
         const blob = new Blob([[header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');

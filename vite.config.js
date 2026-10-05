@@ -12,6 +12,9 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    optimizeDeps: {
+        exclude: ['onnxruntime-web'],
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
