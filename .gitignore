@@ -18,6 +18,8 @@
 /public/storage
 /public/onnx/*.wasm
 /public/onnx/*.mjs
+/public/models/*.onnx
+/storage/ml
 /storage/*.key
 /storage/pail
 /vendor
