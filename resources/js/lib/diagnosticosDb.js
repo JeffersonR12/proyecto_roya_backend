@@ -82,7 +82,7 @@ export async function listPending() {
     return rows.filter((row) => row.sync_status === 'pending' || row.sync_status === 'error');
 }
 
-export async function markSyncStatus(uuidLocal, syncStatus) {
+export async function updateDiagnostico(uuidLocal, patch) {
     const db = await openDb();
 
     return new Promise((resolve, reject) => {
@@ -99,8 +99,7 @@ export async function markSyncStatus(uuidLocal, syncStatus) {
                 return;
             }
 
-            current.sync_status = syncStatus;
-            store.put(current);
+            store.put({ ...current, ...patch, uuid_local: uuidLocal });
         };
 
         tx.oncomplete = () => {
@@ -112,4 +111,8 @@ export async function markSyncStatus(uuidLocal, syncStatus) {
             reject(tx.error);
         };
     });
+}
+
+export async function markSyncStatus(uuidLocal, syncStatus) {
+    return updateDiagnostico(uuidLocal, { sync_status: syncStatus });
 }

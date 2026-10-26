@@ -88,6 +88,8 @@ export function createDiagnosticoLocal({ prediccion, imagen_thumb, parcela_nota,
         longitud: longitud ?? null,
         modelo_version: modelo_version || MODELO_VERSION,
         sync_status: 'pending',
+        hitl_status: prediccion.clase === 'sana' ? 'not_required' : 'pending',
+        etiqueta_humana: null,
         retry_count: 0,
         captured_at: new Date().toISOString(),
     };
@@ -121,6 +123,8 @@ export function toViewModel(diagnostico) {
         created_at: diagnostico.captured_at,
         modelo_version: diagnostico.modelo_version,
         sync_status: diagnostico.sync_status,
+        hitl_status: diagnostico.hitl_status || (diagnostico.clase === 'sana' ? 'not_required' : 'pending'),
+        etiqueta_humana: diagnostico.etiqueta_humana || null,
         latitud: diagnostico.latitud,
         longitud: diagnostico.longitud,
     };

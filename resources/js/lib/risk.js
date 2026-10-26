@@ -1,9 +1,17 @@
-export function getRiskLevel(confidence) {
-    if (confidence > 0.3) {
+// El riesgo se mide por severidad foliar (0-100), nunca por la confianza del modelo.
+export const UMBRAL_MEDIO = 10;
+export const UMBRAL_CRITICO = 30;
+
+export function getRiskLevel(severidad) {
+    if (severidad == null || severidad === '' || !Number.isFinite(Number(severidad))) {
+        return 'sin_dato';
+    }
+
+    if (Number(severidad) >= UMBRAL_CRITICO) {
         return 'critical';
     }
 
-    if (confidence >= 0.1) {
+    if (Number(severidad) >= UMBRAL_MEDIO) {
         return 'medium';
     }
 
@@ -14,6 +22,7 @@ export function getRiskMeta(level) {
     if (level === 'critical') {
         return {
             label: 'CRITICO',
+            recommendation: 'Severidad sobre el umbral. El tecnico valida HITL antes de aplicar fungicida.',
             className: 'text-rose-600 bg-rose-50',
             dotClass: 'bg-rose-500',
             textClass: 'text-rose-500',
@@ -23,51 +32,42 @@ export function getRiskMeta(level) {
     if (level === 'medium') {
         return {
             label: 'ALERTA MEDIA',
+            recommendation: 'Reinspeccionar en 48 horas y vigilar humedad.',
             className: 'text-amber-600 bg-amber-50',
             dotClass: 'bg-gold',
             textClass: 'text-amber-500',
         };
     }
 
+    if (level === 'sin_dato') {
+        return {
+            label: 'SIN SEVERIDAD',
+            recommendation: 'El tecnico debe estimar la severidad foliar en campo.',
+            className: 'text-navy/60 bg-sky',
+            dotClass: 'bg-navy/30',
+            textClass: 'text-navy/50',
+        };
+    }
+
     return {
-        label: 'SANO',
+        label: 'BAJO RIESGO',
+        recommendation: 'Mantener vigilancia semanal del lote.',
         className: 'text-teal bg-teal/10',
         dotClass: 'bg-teal',
         textClass: 'text-teal',
     };
 }
 
-export function classifySeverity(severity) {
-    if (severity > 30) {
-        return {
-            label: 'CRITICO',
-            recommendation: 'Cuarentena inmediata y aplicacion de fungicida sistemico',
-            classes: 'border-rose-100 bg-white text-navy',
-        };
-    }
-
-    if (severity >= 10) {
-        return {
-            label: 'ALERTA MEDIA',
-            recommendation: 'Reinspeccionar en 48 horas y vigilar humedad',
-            classes: 'border-gold/40 bg-white text-navy',
-        };
-    }
+export function summarizeAnalyses(analyses) {
+    const levels = analyses.map((analysis) => getRiskLevel(analysis.severidad));
 
     return {
-        label: 'BAJO RIESGO / SANO',
-        recommendation: 'Mantener plan preventivo',
-            classes: 'border-teal/20 bg-white text-navy',
+        total: analyses.length,
+        critical: levels.filter((level) => level === 'critical').length,
+        medium: levels.filter((level) => level === 'medium').length,
+        healthy: levels.filter((level) => level === 'healthy').length,
+        sinDato: levels.filter((level) => level === 'sin_dato').length,
     };
-}
-
-export function summarizeAnalyses(analyses) {
-    const total = analyses.length;
-    const critical = analyses.filter((analysis) => analysis.confidence > 0.3).length;
-    const medium = analyses.filter((analysis) => analysis.confidence >= 0.1 && analysis.confidence <= 0.3).length;
-    const healthy = analyses.filter((analysis) => analysis.confidence < 0.1).length;
-
-    return { total, critical, medium, healthy };
 }
 
 export function formatDateTime(value) {

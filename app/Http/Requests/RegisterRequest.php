@@ -17,6 +17,7 @@ class RegisterRequest extends FormRequest
     {
         $this->merge([
             'email' => strtolower(trim((string) $this->input('email'))),
+            'phone' => AuthRules::normalizePeruPhone($this->input('phone')),
         ]);
     }
 
@@ -25,7 +26,7 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'max:255', 'unique:users,email', AuthRules::GMAIL_REGEX],
-            'phone' => ['nullable', 'string', 'max:30'],
+            'phone' => ['required', 'string', 'max:16', AuthRules::PERU_PHONE_REGEX],
             'organization' => ['nullable', 'string', 'max:255'],
             'role' => ['required', 'in:agricultor,tecnico,administrador'],
             'password' => ['required', 'confirmed', Password::min(8)],
@@ -40,6 +41,8 @@ class RegisterRequest extends FormRequest
             'email.required' => 'El correo es obligatorio.',
             'email.regex' => 'El correo debe tener el formato usuario@gmail.com.',
             'email.unique' => 'Este correo ya esta registrado.',
+            'phone.required' => 'El celular peruano es obligatorio.',
+            'phone.regex' => 'Ingresa un celular peruano: +51 9 seguido de 8 digitos.',
             'role.required' => 'Selecciona un rol.',
             'role.in' => 'El rol seleccionado no es valido.',
             'password.required' => 'La contraseña es obligatoria.',

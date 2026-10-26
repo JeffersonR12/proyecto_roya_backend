@@ -21,6 +21,7 @@
         "vitest": "^3.2.4"
     },
     "dependencies": {
+        "framer-motion": "^14.0.0",
         "onnxruntime-web": "^1.21.0",
         "react": "^19.3.0",
         "react-dom": "^19.3.0"
