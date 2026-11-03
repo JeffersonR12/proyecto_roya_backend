@@ -168,6 +168,59 @@ export function ChatGlyph({ className = 'h-5 w-5' }) {
     );
 }
 
+export function SunGlyph({ className = 'h-5 w-5' }) {
+    return (
+        <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" />
+        </svg>
+    );
+}
+
+export function RulerGlyph({ className = 'h-5 w-5' }) {
+    return (
+        <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <path d="M3.5 15.5 15.5 3.5l5 5-12 12-5-5Z" />
+            <path d="m7 12 2 2M10 9l2 2M13 6l2 2" />
+        </svg>
+    );
+}
+
+export function LeafGlyph({ className = 'h-5 w-5' }) {
+    return (
+        <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15Z" />
+            <path d="M5 19 13 11" />
+        </svg>
+    );
+}
+
+export function HandGlyph({ className = 'h-5 w-5' }) {
+    return (
+        <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 10V4.5a1.5 1.5 0 0 1 3 0V11M14 10V6a1.5 1.5 0 0 1 3 0v7c0 4-2.5 7-6 7-2.6 0-4-1.3-5.2-3.2L4 13.6a1.5 1.5 0 0 1 2.5-1.7L8 14" />
+        </svg>
+    );
+}
+
+export function ImageGlyph({ className = 'h-5 w-5' }) {
+    return (
+        <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+            <circle cx="9" cy="10" r="1.6" />
+            <path d="m4 18 5-5 3.5 3.5L15 14l5 5" />
+        </svg>
+    );
+}
+
+export function ChevronGlyph({ className = 'h-4 w-4' }) {
+    return (
+        <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <path d="m9 6 6 6-6 6" />
+        </svg>
+    );
+}
+
 export function HistoryGlyph({ className = 'h-5 w-5' }) {
     return (
         <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">

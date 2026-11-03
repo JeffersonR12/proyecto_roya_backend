@@ -3,25 +3,29 @@ import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
 import Scanner from './components/Scanner.jsx';
 import History from './components/History.jsx';
-import CaptureGuide from './components/CaptureGuide.jsx';
 import Onboarding from './components/Onboarding.jsx';
 import AlertsPage from './pages/AlertsPage.jsx';
 import ProtocolPage from './pages/ProtocolPage.jsx';
 import HitlPage from './pages/HitlPage.jsx';
 import ParcelasPage from './pages/ParcelasPage.jsx';
+import CampoPage from './pages/CampoPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import { listDiagnosticos, updateDiagnostico } from './lib/diagnosticosDb.js';
 import { summarizeDiagnosticos, toViewModel } from './lib/inference.js';
-import { buildAlertas } from './lib/alertas.js';
+import { buildAlertas, contarAlertas } from './lib/alertas.js';
 import { canReviewHitl, roleName } from './lib/roles.js';
 import { registrarCorreccion } from './lib/agente.js';
-import { getLastLote, listParcelas, mergeParcelasFromAnalyses, setLastLote } from './lib/parcelasStore.js';
-import { MODE_LABELS } from './lib/nav.js';
+import { getLastLote, mergeParcelasFromAnalyses, setLastLote, upsertParcela } from './lib/parcelasStore.js';
+import { copyFor, getLang } from './lib/fieldFlow.js';
+import BottomNav from './components/BottomNav.jsx';
 
 const ONBOARDING_KEY = 'riwiscan-onboarding-v1';
 
 export default function RoyaGuard({ urls, user }) {
     const staff = canReviewHitl(user);
+    const [lang] = useState(getLang);
+    const copy = copyFor(lang);
+    const firstName = (user?.name || '').split(' ')[0];
     const [mode, setMode] = useState('campo');
     const [analyses, setAnalyses] = useState([]);
     const [query, setQuery] = useState('');
@@ -71,14 +75,15 @@ export default function RoyaGuard({ urls, user }) {
         });
     }, [analyses, query]);
 
-    const alertas = useMemo(() => buildAlertas(visibleAnalyses, { staff }), [visibleAnalyses, staff]);
-    const parcelaNombres = useMemo(() => {
-        const fromStore = listParcelas().map((row) => row.nombre);
-        const fromScan = mergeParcelasFromAnalyses(analyses)
-            .map((row) => row.nombre)
-            .filter((nombre) => nombre && nombre !== 'Sin parcela');
-        return Array.from(new Set([...fromStore, ...fromScan]));
-    }, [analyses, lote]);
+    const alertas = useMemo(() => buildAlertas(analyses, { staff, lang }), [analyses, staff, lang]);
+    const alertCount = contarAlertas(alertas);
+    const parcelasCampo = useMemo(
+        () =>
+            mergeParcelasFromAnalyses(analyses)
+                .filter((row) => row.nombre && row.nombre !== 'Sin parcela')
+                .map(({ nombre, ubicacion }) => ({ nombre, ubicacion })),
+        [analyses, lote],
+    );
 
     useEffect(() => {
         listDiagnosticos()
@@ -110,13 +115,41 @@ export default function RoyaGuard({ urls, user }) {
             setLote(analysis.location);
             setLastLote(analysis.location);
         }
-        setToast(`Guardado · ${analysis.sync_status || 'pending'}`);
-        setMode('campo');
+    };
+
+    const createLote = (nombre) => {
+        try {
+            upsertParcela({ nombre });
+        } catch {
+            /* el nombre vacío ya se filtra en el escáner */
+        }
     };
 
     const handleHitl = async (uuid, hitl_status) => {
         await updateDiagnostico(uuid, { hitl_status });
         setAnalyses((current) => current.map((row) => (row.uuid_local === uuid ? { ...row, hitl_status } : row)));
+    };
+
+    const handleAlertAction = async (alerta) => {
+        if (alerta.accion === 'protocolo') {
+            setMode('protocolo');
+            return;
+        }
+        if (alerta.accion === 'hitl' && staff) {
+            setMode('hitl');
+            return;
+        }
+        if (alerta.accion === 'reintentar') {
+            const uuids = new Set(alerta.uuids || []);
+            try {
+                await Promise.all([...uuids].map((uuid) => updateDiagnostico(uuid, { sync_status: 'pending' })));
+                setAnalyses((current) =>
+                    current.map((row) => (uuids.has(row.uuid_local) ? { ...row, sync_status: 'pending' } : row)),
+                );
+            } catch {
+                setToast('No se pudo reintentar. Intenta de nuevo.');
+            }
+        }
     };
 
     const handleCorreccion = async (uuid, etiqueta_humana) => {
@@ -148,12 +181,9 @@ export default function RoyaGuard({ urls, user }) {
             return;
         }
 
-        if (id === 'resample') {
-            handleHitl(diagnostico.uuid_local, 'resample');
-        } else if (id === 'validar') {
-            handleHitl(diagnostico.uuid_local, 'validated');
-        } else if (id === 'rechazar') {
-            handleHitl(diagnostico.uuid_local, 'rejected');
+        const hitlStatus = { resample: 'resample', validar: 'validated', rechazar: 'rejected' }[id];
+        if (hitlStatus) {
+            handleHitl(diagnostico.uuid_local, hitlStatus).catch(() => setToast('No se pudo actualizar la revisión.'));
         }
     };
 
@@ -207,15 +237,14 @@ export default function RoyaGuard({ urls, user }) {
                 mode={mode}
                 onModeChange={setMode}
                 logoutUrl={urls.logout}
-                onInspect={() => goCampo()}
                 open={menuOpen}
                 onClose={() => setMenuOpen(false)}
                 staff={staff}
-                alertCount={alertas.length}
+                alertCount={alertCount}
                 pendingCount={staff ? hitlPending : 0}
             />
 
-            <section ref={panelRef} className="app-panel">
+            <div className="app-main">
                 <Topbar
                     user={user}
                     query={query}
@@ -225,114 +254,94 @@ export default function RoyaGuard({ urls, user }) {
                     onOpenAlerts={() => setMode('alertas')}
                     onOpenAjustes={() => setMode('ajustes')}
                     logoutUrl={urls.logout}
-                    alertCount={alertas.length}
+                    alertCount={alertCount}
                     pendingCount={pendingCount}
                 />
 
-                {toast ? (
-                    <div className="app-toast" role="status">
-                        <span>{toast}</span>
-                        <button type="button" className="rounded-full bg-white px-3 py-1 text-xs font-extrabold" onClick={() => setMode('historial')}>
-                            Ver historial
-                        </button>
-                        <button type="button" className="rounded-full bg-gold px-3 py-1 text-xs font-extrabold text-navy" onClick={() => goCampo()}>
-                            Otra captura
-                        </button>
-                    </div>
-                ) : null}
-
-                {mode === 'campo' ? (
-                    <div className="grid gap-8 xl:grid-cols-[.92fr_1.08fr] xl:items-start">
-                        <div className="order-2 xl:order-1">
-                            <p className="app-crumb">
-                                <span>RiwiScan</span>
-                                <span aria-hidden="true">/</span>
-                                <span>{MODE_LABELS.campo}</span>
-                                <span aria-hidden="true">/</span>
-                                <span>Nueva inspección</span>
-                            </p>
-                            <p className="mb-2 text-sm font-semibold text-teal">Inspección de campo</p>
-                            <h1 className="max-w-xl text-4xl font-extrabold leading-tight text-navy">
-                                Mira la hoja.
-                                <br />
-                                <span className="text-teal">Actúa a tiempo.</span>
-                            </h1>
-                            <p className="mt-4 max-w-md text-sm leading-7 text-navy/60">
-                                La CNN corre en el navegador (ONNX). Sin red también diagnostica; el resultado queda en IndexedDB.
-                            </p>
-                            <div className="mt-8 grid max-w-md grid-cols-3 gap-3 border-y border-sky py-5 text-center">
-                                <button type="button" className="app-stat" onClick={() => openStat('all')}>
-                                    <p className="text-2xl font-extrabold text-navy">{stats.total}</p>
-                                    <p className="text-[10px] uppercase tracking-wider text-navy/40">Registros</p>
-                                </button>
-                                <button type="button" className="app-stat" onClick={() => openStat('roya_amarilla')}>
-                                    <p className="text-2xl font-extrabold text-navy">{stats.critical}</p>
-                                    <p className="text-[10px] uppercase tracking-wider text-navy/40">Roya afirmada</p>
-                                </button>
-                                <button type="button" className="app-stat" onClick={() => openStat('no_concluyente')}>
-                                    <p className="text-2xl font-extrabold text-teal">{stats.inconclusive}</p>
-                                    <p className="text-[10px] uppercase tracking-wider text-navy/40">No concluyente</p>
-                                </button>
-                            </div>
-                            <div className="mt-6">
-                                <CaptureGuide />
-                            </div>
+                <section ref={panelRef} className="app-panel">
+                    {toast ? (
+                        <div className="app-toast" role="status">
+                            <span>{toast}</span>
+                            <button type="button" className="app-toast-action" onClick={() => setMode('historial')}>
+                                Ver historial
+                            </button>
+                            <button type="button" className="app-toast-action" onClick={() => goCampo()}>
+                                Otra captura
+                            </button>
                         </div>
-                        <div className="order-1 xl:order-2">
-                            <Scanner
-                                onSaved={handleSaved}
-                                parcelas={parcelaNombres}
-                                lote={lote}
-                                onLoteChange={(value) => {
-                                    setLote(value);
-                                    setLastLote(value);
-                                }}
-                                onGoParcelas={() => setMode('parcelas')}
-                                onOpenHistory={() => setMode('historial')}
-                            />
-                        </div>
-                    </div>
-                ) : null}
+                    ) : null}
 
-                {mode === 'historial' ? (
-                    <History
-                        analyses={visibleAnalyses}
-                        filter={historyFilter}
-                        onFilterChange={setHistoryFilter}
-                        onRepeat={() => goCampo()}
-                        staff={staff}
-                        onHitl={handleHitl}
-                        query={query}
-                    />
-                ) : null}
-                {mode === 'alertas' ? (
-                    <AlertsPage
-                        alertas={alertas}
-                        staff={staff}
-                        onCapture={() => goCampo()}
-                        onOpen={() => {
-                            setHistoryFilter('all');
-                            setMode('historial');
-                        }}
-                    />
-                ) : null}
-                {mode === 'protocolo' ? (
-                    <ProtocolPage analyses={visibleAnalyses} staff={staff} user={user} onAgenteAccion={handleAgenteAccion} />
-                ) : null}
-                {mode === 'hitl' && staff ? (
-                    <HitlPage
-                        analyses={visibleAnalyses}
-                        onHitl={handleHitl}
-                        onCorreccion={handleCorreccion}
-                        onAgenteAccion={handleAgenteAccion}
-                        rol={roleName(user)}
-                    />
-                ) : null}
-                {mode === 'parcelas' ? <ParcelasPage analyses={visibleAnalyses} onInspect={goCampo} /> : null}
-                {mode === 'ajustes' ? (
-                    <SettingsPage user={user} pendingCount={pendingCount} onReplayOnboarding={replayOnboarding} />
-                ) : null}
-            </section>
+                    {mode === 'campo' ? (
+                        <CampoPage
+                            copy={copy}
+                            lang={lang}
+                            firstName={firstName}
+                            stats={stats}
+                            analyses={analyses}
+                            pendingCount={pendingCount}
+                            staff={staff}
+                            onOpenStat={openStat}
+                            onOpenHistory={() => setMode('historial')}
+                            onReview={() => setMode('hitl')}
+                            onProtocol={() => setMode('protocolo')}
+                            scanner={
+                                <Scanner
+                                    lang={lang}
+                                    onSaved={handleSaved}
+                                    parcelas={parcelasCampo}
+                                    lote={lote}
+                                    onLoteChange={(value) => {
+                                        setLote(value);
+                                        setLastLote(value);
+                                    }}
+                                    onCreateLote={createLote}
+                                    onOpenHistory={() => setMode('historial')}
+                                    onOpenProtocol={() => setMode('protocolo')}
+                                />
+                            }
+                        />
+                    ) : null}
+
+                    {mode === 'historial' ? (
+                        <History
+                            analyses={visibleAnalyses}
+                            filter={historyFilter}
+                            onFilterChange={setHistoryFilter}
+                            onRepeat={() => goCampo()}
+                            staff={staff}
+                            onHitl={handleHitl}
+                            query={query}
+                        />
+                    ) : null}
+                    {mode === 'alertas' ? (
+                        <AlertsPage alertas={alertas} lang={lang} onAction={handleAlertAction} onCapture={() => goCampo()} />
+                    ) : null}
+                    {mode === 'protocolo' ? (
+                        <ProtocolPage analyses={visibleAnalyses} staff={staff} user={user} onAgenteAccion={handleAgenteAccion} />
+                    ) : null}
+                    {mode === 'hitl' && staff ? (
+                        <HitlPage
+                            analyses={visibleAnalyses}
+                            onHitl={handleHitl}
+                            onCorreccion={handleCorreccion}
+                            onAgenteAccion={handleAgenteAccion}
+                            rol={roleName(user)}
+                        />
+                    ) : null}
+                    {mode === 'parcelas' ? <ParcelasPage analyses={visibleAnalyses} onInspect={goCampo} /> : null}
+                    {mode === 'ajustes' ? (
+                        <SettingsPage user={user} pendingCount={pendingCount} onReplayOnboarding={replayOnboarding} />
+                    ) : null}
+                </section>
+            </div>
+
+            <BottomNav
+                mode={mode}
+                onModeChange={setMode}
+                onMore={() => setMenuOpen(true)}
+                alertCount={alertCount}
+                labels={copy.nav}
+            />
         </div>
     );
 }

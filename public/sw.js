@@ -47,6 +47,7 @@ self.addEventListener('fetch', (event) => {
         url.pathname.startsWith('/models/') ||
         url.pathname.startsWith('/icons/') ||
         url.pathname.startsWith('/build/') ||
+        url.pathname.startsWith('/imagenes/') ||
         url.pathname === '/manifest.webmanifest';
 
     if (!cacheFirst) {

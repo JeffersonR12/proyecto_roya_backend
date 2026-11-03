@@ -55,20 +55,20 @@ describe('alertas de negocio', () => {
             { uuid_local: 'c', clase: 'roya_amarilla', confianza: 60, sync_status: 'confirmed', hitl_status: 'pending' },
         ]);
 
-        const brotes = alertas.filter((item) => item.tipo === 'brote');
+        const brotes = alertas.filter((item) => item.tipo === 'roya');
 
         expect(brotes).toHaveLength(1);
-        expect(brotes[0].uuid_local).toBe('a');
+        expect(brotes[0].count).toBe(1);
     });
 
-    it('incluye cola pending y HITL para el tecnico', () => {
+    it('incluye envios pendientes y revision para el tecnico', () => {
         const alertas = buildAlertas(
             [{ uuid_local: 'd', clase: 'sana', confianza: 90, sync_status: 'pending', hitl_status: 'pending', disease_detected: 'Sana' }],
             { staff: true },
         );
 
-        expect(alertas.some((item) => item.tipo === 'sync')).toBe(true);
-        expect(alertas.some((item) => item.tipo === 'hitl')).toBe(true);
-        expect(alertas.some((item) => item.tipo === 'brote')).toBe(false);
+        expect(alertas.some((item) => item.tipo === 'envio')).toBe(true);
+        expect(alertas.some((item) => item.tipo === 'revision')).toBe(true);
+        expect(alertas.some((item) => item.tipo === 'roya')).toBe(false);
     });
 });

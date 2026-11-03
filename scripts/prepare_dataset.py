@@ -105,7 +105,7 @@ def preparar(args: argparse.Namespace) -> int:
             archivos = sorted(p for p in carpeta.iterdir() if p.suffix.lower() in EXTENSIONES)
             for n, origen in enumerate(archivos):
                 datos = origen.read_bytes()
-                md5 = hashlib.md5(datos).hexdigest()
+                md5 = hashlib.md5(datos, usedforsecurity=False).hexdigest()  # solo deduplicación, no seguridad
                 if md5 in vistos_md5:
                     descartes["duplicado_exacto"] += 1
                     continue

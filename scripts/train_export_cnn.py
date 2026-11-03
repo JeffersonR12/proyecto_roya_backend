@@ -112,6 +112,7 @@ def split_estratificado(muestras: list[dict], seed: int) -> dict[str, list[dict]
     for m in muestras:
         grupos[(m["clase"], m["fuente"])].append(m)
 
+    # Semilla fija para que el split sea reproducible; no se usa con fines criptográficos.
     rng = random.Random(seed)
     split = {"train": [], "val": [], "test": []}
     for clave in sorted(grupos):

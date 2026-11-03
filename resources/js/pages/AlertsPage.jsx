@@ -1,39 +1,110 @@
-import PageHeader from '../components/PageHeader.jsx';
+import { motion, useReducedMotion } from 'framer-motion';
+import { copyFor } from '../lib/fieldFlow.js';
 
-export default function AlertsPage({ alertas, staff, onOpen, onCapture }) {
+const NIVELES = ['urgente', 'revisar', 'info'];
+
+const ICONOS = {
+    roya: '!',
+    revision: '🔍',
+    envio_error: '⚠️',
+    envio: '☁️',
+};
+
+const list = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.06 } },
+};
+
+const item = {
+    hidden: { opacity: 0, y: 14 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+};
+
+function AlertCard({ alerta, copy, onAction, reduceMotion }) {
     return (
-        <section>
-            <PageHeader mode="alertas" kicker="Alertas de brote y cola" title="Alertas">
-                <p className="mt-2 max-w-2xl text-sm text-navy/60">
-                    Solo Roya afirmada (confianza ≥ 75 %), cola offline e HITL. Nunca se alerta “hay Roya” si el modelo no afirma.
-                </p>
-            </PageHeader>
-            <div className="mt-2 divide-y divide-sky rounded-3xl bg-white">
-                {alertas.length === 0 ? (
-                    <div className="app-empty">
-                        <p>No hay brotes afirmados. El modelo no inventa Roya.</p>
-                        <button type="button" onClick={onCapture} className="mt-4 min-h-11 rounded-full bg-gold px-5 py-2 text-sm font-extrabold text-navy">
-                            Nueva captura
-                        </button>
-                    </div>
+        <motion.article variants={reduceMotion ? undefined : item} className={`alert-card is-${alerta.nivel}`}>
+            <div className="alert-card-media">
+                {alerta.thumb ? (
+                    <>
+                        <img src={alerta.thumb} alt="" className="alert-card-thumb" />
+                        <span className="alert-card-icon is-mini" aria-hidden="true">
+                            {ICONOS[alerta.tipo]}
+                        </span>
+                    </>
                 ) : (
-                    alertas.map((alerta) => (
-                        <button
-                            key={alerta.id}
-                            type="button"
-                            onClick={() => onOpen?.(alerta)}
-                            className="flex min-h-11 w-full flex-col items-start gap-1 px-5 py-4 text-left transition hover:bg-sky/50"
-                        >
-                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal">{alerta.tipo}</span>
-                            <span className="font-bold text-navy">{alerta.titulo}</span>
-                            <span className="text-sm text-navy/55">{alerta.detalle}</span>
-                            {staff && alerta.tipo === 'hitl' ? (
-                                <span className="text-xs font-bold text-gold">Cola HITL</span>
-                            ) : null}
-                        </button>
-                    ))
+                    <span className="alert-card-icon" aria-hidden="true">
+                        {ICONOS[alerta.tipo]}
+                    </span>
                 )}
             </div>
+
+            <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="alert-card-title">{alerta.titulo}</h3>
+                    {alerta.nuevo ? <span className="alert-new">{copy.newBadge}</span> : null}
+                </div>
+                {alerta.detalle ? <p className="mt-0.5 text-sm text-navy/65">{alerta.detalle}</p> : null}
+                {alerta.etiqueta ? <span className="alert-tag mt-2">{alerta.etiqueta}</span> : null}
+            </div>
+
+            {alerta.accion ? (
+                <button type="button" onClick={() => onAction?.(alerta)} className="alert-card-action">
+                    {alerta.accionLabel}
+                </button>
+            ) : null}
+        </motion.article>
+    );
+}
+
+export default function AlertsPage({ alertas, lang = 'es', onAction, onCapture }) {
+    const reduceMotion = useReducedMotion();
+    const copy = copyFor(lang).alerts;
+    const urgentes = alertas.filter((a) => a.nivel === 'urgente').length;
+    const resumen = urgentes ? copy.needAttention(urgentes) : alertas.length ? copy.onlyInfo : copy.allGood;
+
+    return (
+        <section className="mx-auto max-w-3xl">
+            <h1 className="text-3xl font-extrabold text-navy">{copy.title}</h1>
+            <p className={`mt-1 text-lg font-semibold ${urgentes ? 'text-rose-700' : 'text-teal-dark'}`}>{resumen}</p>
+
+            {alertas.length === 0 ? (
+                <div className="alert-empty">
+                    <span className="text-5xl" aria-hidden="true">🌾</span>
+                    <p className="mt-3 text-xl font-extrabold text-navy">{copy.emptyTitle}</p>
+                    <p className="text-navy/65">{copy.emptyText}</p>
+                    <button type="button" onClick={onCapture} className="field-btn-primary mt-5 !w-auto px-8">
+                        {copy.emptyAction}
+                    </button>
+                </div>
+            ) : (
+                NIVELES.map((nivel) => {
+                    const grupo = alertas.filter((a) => a.nivel === nivel);
+                    if (!grupo.length) {
+                        return null;
+                    }
+                    return (
+                        <div key={nivel} className="mt-7">
+                            <h2 className={`alert-section is-${nivel}`}>{copy.sections[nivel]}</h2>
+                            <motion.div
+                                className="mt-3 grid gap-3"
+                                variants={reduceMotion ? undefined : list}
+                                initial={reduceMotion ? false : 'hidden'}
+                                animate="show"
+                            >
+                                {grupo.map((alerta) => (
+                                    <AlertCard
+                                        key={alerta.id}
+                                        alerta={alerta}
+                                        copy={copy}
+                                        onAction={onAction}
+                                        reduceMotion={reduceMotion}
+                                    />
+                                ))}
+                            </motion.div>
+                        </div>
+                    );
+                })
+            )}
         </section>
     );
 }

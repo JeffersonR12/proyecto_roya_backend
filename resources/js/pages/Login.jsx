@@ -50,29 +50,28 @@ export default function Login({ urls }) {
 
         try {
             const response = await axios.post(urls.login, payload);
-            setAlert({ type: 'success', message: response.data.message || 'Sesion iniciada correctamente.' });
+            setAlert({ type: 'success', message: response.data.message || 'Sesión iniciada correctamente.' });
             window.location.href = response.data.redirect ?? urls.home;
         } catch (error) {
             const payloadErrors = error.response?.data?.errors;
-            setErrors(payloadErrors ?? { credentials: ['Las credenciales no son validas.'] });
-            setAlert(alertFromAxiosError(error, 'Las credenciales no son validas.'));
+            setErrors(payloadErrors ?? { credentials: ['Las credenciales no son válidas.'] });
+            setAlert(alertFromAxiosError(error, 'Las credenciales no son válidas.'));
             setSubmitting(false);
         }
     };
 
     return (
         <AuthShell>
-            <h1 className="intro-form-title">Bienvenido de nuevo</h1>
+            <h1 className="intro-form-title">Entra a tus parcelas</h1>
             <p className="intro-form-copy">
-                Ingresa tus credenciales autorizadas para gestionar parcelas, diagnosticos de campo y protocolos
-                fitosanitarios.
+                Usa tu cuenta Gmail autorizada para ver tus lotes, diagnósticos y alertas de campo.
             </p>
 
             <AuthAlert alert={alert} />
 
             <form onSubmit={submit} className="intro-form" noValidate>
                 <label className="intro-label" htmlFor="login-email">
-                    Correo electronico
+                    Correo electrónico
                     <span className="intro-field">
                         <UserGlyph className="h-4 w-4" />
                         <input
@@ -94,7 +93,7 @@ export default function Login({ urls }) {
                 <div className="intro-label">
                     <span className="intro-label-row">
                         <label htmlFor="login-password">Contraseña</label>
-                        <a href={urls.forgot}>Olvidaste tu contraseña?</a>
+                        <a href={urls.forgot}>¿Olvidaste tu contraseña?</a>
                     </span>
                     <span className="intro-field">
                         <LockGlyph className="h-4 w-4" />
@@ -129,25 +128,26 @@ export default function Login({ urls }) {
                         checked={form.remember_me}
                         onChange={(event) => update('remember_me', event.target.checked)}
                     />
-                    Mantener sesion activa en este dispositivo
+                    Mantener sesión activa en este dispositivo
                 </label>
 
-                <button type="submit" disabled={submitting} className="intro-submit">
+                <button type="submit" disabled={submitting} aria-busy={submitting} className="intro-submit">
                     {submitting ? 'Entrando...' : 'Acceder a mis parcelas'}
                 </button>
             </form>
 
-            <div className="intro-demo">
+            <fieldset className="intro-demo">
+                <legend className="intro-demo-label">Cuentas de prueba</legend>
                 <button type="button" onClick={() => { setForm(DEMO_ACCOUNTS.admin); setAlert(null); setErrors({}); }}>
                     Usar admin
                 </button>
                 <button type="button" onClick={() => { setForm(DEMO_ACCOUNTS.tecnico); setAlert(null); setErrors({}); }}>
-                    Usar tecnico
+                    Usar técnico
                 </button>
-            </div>
+            </fieldset>
 
             <p className="intro-switch">
-                Aun no proteges tus cultivos con <strong>RiwiScan</strong>?{' '}
+                ¿Aún no proteges tus cultivos con <strong>RiwiScan</strong>?{' '}
                 <a href={urls.register}>Solicita un acceso de campo</a>
             </p>
         </AuthShell>

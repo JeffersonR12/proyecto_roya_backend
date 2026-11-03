@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { BellGlyph, MenuGlyph, SearchGlyph } from './Icons.jsx';
 import { roleLabel } from '../lib/risk.js';
+import { BRAND_NAME, LOGO_URL } from '../lib/brand.js';
 
 export default function Topbar({
     user,
@@ -17,7 +18,9 @@ export default function Topbar({
 }) {
     const [online, setOnline] = useState(typeof navigator === 'undefined' ? true : navigator.onLine);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
     const menuRef = useRef(null);
+    const searchRef = useRef(null);
 
     const initials = (user?.name || 'RG')
         .split(' ')
@@ -47,82 +50,81 @@ export default function Topbar({
         return () => document.removeEventListener('mousedown', onDoc);
     }, []);
 
+    useEffect(() => {
+        if (searchOpen) {
+            searchRef.current?.focus();
+        }
+    }, [searchOpen]);
+
     const logout = async () => {
         await axios.post(logoutUrl);
         window.location.href = '/login';
     };
 
-    const queueLabel = pendingCount > 0 ? `Sin red · cola ${pendingCount}` : 'Sin red · cola 0';
+    const offlineStatus = pendingCount > 0 ? `Sin internet · ${pendingCount} por enviar` : 'Sin internet';
+    const status = online ? 'En línea' : offlineStatus;
+    const alertsLabel = alertCount ? `Alertas: ${alertCount}` : 'Alertas';
 
     return (
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
-                <button
-                    type="button"
-                    onClick={onMenu}
-                    className="grid h-11 w-11 place-items-center rounded-2xl bg-sky text-teal md:hidden"
-                    aria-label="Abrir menú"
-                    aria-controls="app-sidebar"
-                >
-                    <MenuGlyph />
-                </button>
-                <label className="relative min-w-0 flex-1 max-w-md">
-                    <span className="sr-only">Buscar lote, clase o UUID</span>
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-navy/35">
-                        <SearchGlyph />
-                    </span>
-                    <input
-                        type="search"
-                        value={query}
-                        onChange={(event) => onQueryChange(event.target.value)}
-                        placeholder="Buscar lote, clase o UUID"
-                        className="w-full rounded-full bg-sky/80 py-3 pl-11 pr-20 text-sm text-navy outline-none placeholder:text-navy/35 focus:ring-2 focus:ring-teal/30"
-                    />
-                    {query ? (
-                        <button
-                            type="button"
-                            onClick={onClearQuery}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full px-2 py-1 text-xs font-bold text-navy/50"
-                        >
-                            Limpiar
-                        </button>
-                    ) : null}
-                </label>
-            </div>
+        <header className={`app-topbar ${searchOpen || query ? 'is-searching' : ''}`}>
+            <button type="button" onClick={onMenu} className="app-icon-btn app-only-phone" aria-label="Abrir menú" aria-controls="app-sidebar">
+                <MenuGlyph />
+            </button>
+            <a href="/" className="app-topbar-brand app-only-phone">
+                <img src={LOGO_URL} alt="" />
+                {BRAND_NAME}
+            </a>
 
-            <div className="flex items-center gap-3">
-                <span
-                    className={`hidden rounded-full px-3 py-2 text-xs font-extrabold sm:inline ${
-                        online ? 'bg-sand text-teal' : 'bg-gold/25 text-navy'
-                    }`}
-                >
-                    {online ? 'En línea · inferencia local' : queueLabel}
+            <label className="app-search">
+                <span className="sr-only">Buscar lote o resultado</span>
+                <SearchGlyph />
+                <input
+                    ref={searchRef}
+                    type="search"
+                    value={query}
+                    onChange={(event) => onQueryChange(event.target.value)}
+                    onBlur={() => setSearchOpen(false)}
+                    placeholder="Buscar lote o resultado"
+                />
+                {query ? (
+                    <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={onClearQuery} className="app-search-clear">
+                        Limpiar
+                    </button>
+                ) : null}
+            </label>
+
+            <div className="app-topbar-end">
+                <span className={`app-online ${online ? '' : 'is-offline'}`}>
+                    <span aria-hidden="true" />
+                    {status}
                 </span>
+                <button type="button" className="app-icon-btn app-only-phone" aria-label="Buscar" onClick={() => setSearchOpen(true)}>
+                    <SearchGlyph className="h-5 w-5" />
+                </button>
+                <button type="button" onClick={() => onOpenAlerts?.()} className="app-icon-btn" aria-label={alertsLabel}>
+                    <BellGlyph />
+                    {alertCount > 0 ? <span className="app-icon-count">{alertCount}</span> : null}
+                </button>
                 <div className="relative" ref={menuRef}>
                     <button
                         type="button"
-                        onClick={() => setMenuOpen((open) => !open)}
-                        className="flex items-center gap-3 rounded-full py-1 pl-1 pr-2 text-left transition hover:bg-sky"
+                        onClick={() => setMenuOpen((value) => !value)}
+                        className="app-account"
                         aria-haspopup="menu"
                         aria-expanded={menuOpen}
+                        aria-label={`Cuenta de ${user?.name ?? 'usuario'}`}
                     >
-                        <div className="hidden text-right sm:block">
-                            <p className="text-sm font-bold text-navy">{user?.name}</p>
-                            <p className="text-xs text-navy/45">{roleLabel(user?.role)}</p>
-                        </div>
-                        <span className="grid h-11 w-11 place-items-center rounded-full bg-teal text-sm font-extrabold text-white">
-                            {initials}
+                        <span className="app-account-text">
+                            <strong>{user?.name}</strong>
+                            <small>{roleLabel(user?.role)}</small>
                         </span>
+                        <span className="app-avatar">{initials}</span>
                     </button>
                     {menuOpen ? (
-                        <div
-                            role="menu"
-                            className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-2xl bg-white p-1 shadow-lg ring-1 ring-sky"
-                        >
+                        <div role="menu" className="app-menu">
                             <button
                                 type="button"
                                 role="menuitem"
-                                className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold text-navy hover:bg-sky"
                                 onClick={() => {
                                     setMenuOpen(false);
                                     onOpenAjustes?.();
@@ -130,31 +132,13 @@ export default function Topbar({
                             >
                                 Ajustes
                             </button>
-                            <button
-                                type="button"
-                                role="menuitem"
-                                className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold text-navy hover:bg-sky"
-                                onClick={logout}
-                            >
+                            <button type="button" role="menuitem" onClick={logout}>
                                 Salir
                             </button>
                         </div>
                     ) : null}
                 </div>
-                <button
-                    type="button"
-                    onClick={() => onOpenAlerts?.()}
-                    className="relative grid h-11 w-11 place-items-center rounded-full bg-sky text-teal transition hover:scale-105"
-                    aria-label="Alertas"
-                >
-                    <BellGlyph />
-                    {alertCount > 0 ? (
-                        <span className="absolute right-1.5 top-1.5 min-w-4 rounded-full bg-gold px-1 text-[10px] font-extrabold text-navy">
-                            {alertCount}
-                        </span>
-                    ) : null}
-                </button>
             </div>
-        </div>
+        </header>
     );
 }

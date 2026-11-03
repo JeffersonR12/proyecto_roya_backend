@@ -20,6 +20,8 @@
 /public/onnx/*.mjs
 /public/models/*.onnx
 /storage/ml
+/coverage
+/.scannerwork
 /storage/*.key
 /storage/pail
 /vendor
@@ -28,3 +30,14 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Herramientas de IA locales (skills, guías de diseño, MCP)
+/.claude
+/.agents
+/.taste-skill
+/.cursor/awesome-design-md
+/.cursor/skills
+/.cursor/rules/design-md.mdc
+/.cursor/rules/ui-ux-pro-max.mdc
+/skills-lock.json
+/.mcp.json

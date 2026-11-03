@@ -1,40 +1,34 @@
-import { useState } from 'react';
+import { copyFor, TIP_IDS } from '../lib/fieldFlow.js';
+import { HandGlyph, LeafGlyph, RulerGlyph, SunGlyph } from './Icons.jsx';
 
-const STEPS = [
-    { id: 'luz', text: 'Luz natural, evita sombra fuerte y flash.' },
-    { id: 'distancia', text: 'Hoja entera a 20–30 cm, nítida, sin dedos tapando.' },
-    { id: 'una', text: 'Una hoja por foto. Fondo simple (suelo o cartón).' },
-    { id: 'umbral', text: 'Si sale no_concluyente, repite. No interpretes eso como Roya.' },
-];
+const TIP_GLYPHS = {
+    luz: SunGlyph,
+    distancia: RulerGlyph,
+    una: LeafGlyph,
+    dedos: HandGlyph,
+};
 
-export default function CaptureGuide() {
-    const [done, setDone] = useState({});
+export function TipIcon({ id, className = 'h-5 w-5' }) {
+    const Glyph = TIP_GLYPHS[id] || LeafGlyph;
+    return <Glyph className={className} />;
+}
 
-    const toggle = (id) => {
-        setDone((current) => ({ ...current, [id]: !current[id] }));
-    };
+export default function CaptureGuide({ lang = 'es', highlight = null }) {
+    const copy = copyFor(lang);
 
     return (
-        <aside className="rounded-[1.75rem] border border-teal/20 bg-white p-5">
-            <p className="text-xs font-extrabold uppercase tracking-[.18em] text-teal">Guía de captura</p>
-            <h2 className="mt-1 text-lg font-extrabold text-navy">Para bajar no_concluyente</h2>
-            <ul className="mt-4 grid gap-2">
-                {STEPS.map((step) => (
-                    <li key={step.id}>
-                        <label className="flex cursor-pointer items-start gap-3 rounded-2xl px-1 py-1.5 hover:bg-sky/70">
-                            <input
-                                type="checkbox"
-                                checked={Boolean(done[step.id])}
-                                onChange={() => toggle(step.id)}
-                                className="mt-1 h-4 w-4 accent-teal"
-                            />
-                            <span className={`text-sm leading-6 ${done[step.id] ? 'text-navy/40 line-through' : 'text-navy/70'}`}>
-                                {step.text}
-                            </span>
-                        </label>
+        <section className="campo-panel" aria-labelledby="campo-tips-title">
+            <h2 id="campo-tips-title" className="campo-panel-title">
+                {copy.tipsTitle}
+            </h2>
+            <ul className="campo-tips">
+                {TIP_IDS.map((id) => (
+                    <li key={id} className={highlight === id ? 'is-on' : ''}>
+                        <TipIcon id={id} />
+                        {copy.tips[id]}
                     </li>
                 ))}
             </ul>
-        </aside>
+        </section>
     );
 }
