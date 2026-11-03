@@ -1,12 +1,22 @@
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { saveDiagnostico } from '../lib/diagnosticosDb.js';
-import {
-    CLASE_LABELS,
-    createDiagnosticoLocal,
-    resultadoVista,
-    toViewModel,
-} from '../lib/inference.js';
-import { describeEngineError, inferDataUrl } from '../lib/onnxEngine.js';
+import { createDiagnosticoLocal, toViewModel } from '../lib/inference.js';
+import { inferDataUrl } from '../lib/onnxEngine.js';
+import { consejoPara, copyFor, resultTone, seguridad, stepFor, TONE_STYLE } from '../lib/fieldFlow.js';
+import { TipIcon } from './CaptureGuide.jsx';
+import { CameraGlyph, ImageGlyph, PinGlyph } from './Icons.jsx';
+
+const ANALYZE_MIN_MS = 1200;
+
+const TONE_CLASSES = {
+    sana: { card: 'is-sana', badge: 'is-sana', bar: 'is-sana' },
+    roya: { card: 'is-roya', badge: 'is-roya', bar: 'is-roya' },
+    otra: { card: 'is-otra', badge: 'is-otra', bar: 'is-otra' },
+    repetir: { card: 'is-repetir', badge: 'is-repetir', bar: 'is-repetir' },
+};
+
+const SURE_WIDTH = { alto: '100%', medio: '66%', bajo: '33%' };
 
 async function readGeo() {
     if (!navigator.geolocation) {
@@ -44,62 +54,107 @@ function compressThumb(dataUrl) {
     });
 }
 
-export default function Scanner({ onSaved }) {
+const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+function Stepper({ step, labels, onGoStep1 }) {
+    return (
+        <ol className="field-stepper" aria-label="Pasos">
+            {labels.map((label, index) => {
+                const n = index + 1;
+                const state = n < step ? 'is-done' : n === step ? 'is-current' : '';
+                const content = (
+                    <>
+                        <span className="field-step-bar" aria-hidden="true" />
+                        <span className="field-step-label">{label}</span>
+                    </>
+                );
+
+                return (
+                    <li key={label} className={`field-step ${state}`} aria-current={n === step ? 'step' : undefined}>
+                        {n === 1 && step > 1 ? (
+                            <button type="button" onClick={onGoStep1} className="field-step-btn">
+                                {content}
+                            </button>
+                        ) : (
+                            <span className="field-step-btn">{content}</span>
+                        )}
+                    </li>
+                );
+            })}
+        </ol>
+    );
+}
+
+export default function Scanner({
+    onSaved,
+    parcelas = [],
+    lote = '',
+    onLoteChange,
+    onCreateLote,
+    onOpenHistory,
+    onOpenProtocol,
+    lang = 'es',
+}) {
+    const copy = copyFor(lang);
+    const reduceMotion = useReducedMotion();
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
+    const fileRef = useRef(null);
     const streamRef = useRef(null);
+    const cancelledRef = useRef(false);
 
-    const [source, setSource] = useState('camera');
+    const [loteDecidido, setLoteDecidido] = useState(Boolean(lote));
+    const [choosingLote, setChoosingLote] = useState(false);
+    const [newLoteOpen, setNewLoteOpen] = useState(false);
+    const [newLoteName, setNewLoteName] = useState('');
     const [cameraActive, setCameraActive] = useState(false);
-    const [canCapture, setCanCapture] = useState(false);
+    const [cameraDenied, setCameraDenied] = useState(false);
     const [imageBase64, setImageBase64] = useState(null);
-    const [location, setLocation] = useState('');
-    const [feedback, setFeedback] = useState({ message: '', tone: 'muted' });
-    const [saving, setSaving] = useState(false);
+    const [analyzing, setAnalyzing] = useState(false);
+    const [result, setResult] = useState(null);
+    const [error, setError] = useState('');
+    const [failedTries, setFailedTries] = useState(0);
     const [dropActive, setDropActive] = useState(false);
-    const [riskResult, setRiskResult] = useState(null);
-    const [online, setOnline] = useState(typeof navigator === 'undefined' ? true : navigator.onLine);
+
+    const step = choosingLote ? 1 : stepFor({ loteDecidido, hasImage: Boolean(imageBase64), hasResult: Boolean(result) });
+
+    useEffect(() => () => stopCamera(), []);
 
     useEffect(() => {
-        const on = () => setOnline(true);
-        const off = () => setOnline(false);
-        window.addEventListener('online', on);
-        window.addEventListener('offline', off);
-
-        return () => {
-            window.removeEventListener('online', on);
-            window.removeEventListener('offline', off);
-            stopCamera();
-        };
-    }, []);
+        if (cameraActive && videoRef.current && streamRef.current) {
+            videoRef.current.srcObject = streamRef.current;
+        }
+    }, [cameraActive, step]);
 
     const stopCamera = () => {
         streamRef.current?.getTracks().forEach((track) => track.stop());
         streamRef.current = null;
         setCameraActive(false);
-        setCanCapture(false);
     };
 
-    const showFeedback = (message, tone = 'muted') => {
-        setFeedback({ message, tone });
+    const pickLote = (nombre) => {
+        onLoteChange?.(nombre);
+        setLoteDecidido(true);
+        setChoosingLote(false);
+        setNewLoteOpen(false);
     };
 
-    const showPreview = (dataUrl, message) => {
-        setImageBase64(dataUrl);
-        showFeedback(message, 'success');
-    };
-
-    const changeSource = (nextSource) => {
-        setSource(nextSource);
-
-        if (nextSource === 'upload') {
-            stopCamera();
+    const createLote = (event) => {
+        event.preventDefault();
+        const nombre = newLoteName.trim();
+        if (!nombre) {
+            return;
         }
+        onCreateLote?.(nombre);
+        setNewLoteName('');
+        pickLote(nombre);
     };
 
     const startCamera = async () => {
+        setError('');
         if (!navigator.mediaDevices?.getUserMedia) {
-            showFeedback('Este navegador no permite acceso a la camara. Usa la pestaña de subida.', 'error');
+            setCameraDenied(true);
+            fileRef.current?.click();
             return;
         }
 
@@ -108,20 +163,58 @@ export default function Scanner({ onSaved }) {
                 video: { facingMode: { ideal: 'environment' } },
                 audio: false,
             });
-
             streamRef.current = stream;
-            setImageBase64(null);
-            setRiskResult(null);
+            setCameraDenied(false);
             setCameraActive(true);
-            setCanCapture(true);
+        } catch {
+            setCameraDenied(true);
+        }
+    };
 
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
+    const analyze = async (dataUrl) => {
+        cancelledRef.current = false;
+        setImageBase64(dataUrl);
+        setAnalyzing(true);
+        setError('');
+
+        try {
+            const [prediccion] = await Promise.all([inferDataUrl(dataUrl), wait(reduceMotion ? 0 : ANALYZE_MIN_MS)]);
+            if (cancelledRef.current) {
+                return;
+            }
+            const [geo, thumb] = await Promise.all([readGeo(), compressThumb(dataUrl)]);
+            const diagnostico = createDiagnosticoLocal({
+                prediccion,
+                imagen_thumb: thumb,
+                parcela_nota: lote,
+                latitud: geo.latitud,
+                longitud: geo.longitud,
+                modelo_version: prediccion.modelo_version,
+            });
+
+            await saveDiagnostico(diagnostico);
+            if (cancelledRef.current) {
+                return;
             }
 
-            showFeedback('Apunta a una hoja y toma la fotografia.');
-        } catch {
-            showFeedback('No se pudo activar la camara. Revisa permisos o usa la pestaña de subida.', 'error');
+            const tone = resultTone(prediccion);
+            if (tone === 'repetir') {
+                setFailedTries((n) => n + 1);
+            }
+            setResult({
+                tone,
+                sure: seguridad(prediccion.confianza),
+                unavailable: prediccion.runtime === 'placeholder-uniform',
+            });
+            onSaved?.(toViewModel(diagnostico));
+        } catch (err) {
+            if (!cancelledRef.current) {
+                console.warn('[RiwiScan] análisis falló', err);
+                setError(copy.analysisFailed);
+                setImageBase64(null);
+            }
+        } finally {
+            setAnalyzing(false);
         }
     };
 
@@ -136,214 +229,289 @@ export default function Scanner({ onSaved }) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0);
-        showPreview(canvas.toDataURL('image/jpeg', 0.82), 'Fotografia capturada. Lista para escanear.');
+        navigator.vibrate?.(40);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        stopCamera();
+        void analyze(dataUrl);
     };
 
     const readImage = (file) => {
         if (!file || !file.type.startsWith('image/')) {
-            showFeedback('Selecciona un archivo de imagen valido (JPG, PNG o WEBP).', 'error');
+            setError(copy.badFile);
             return;
         }
 
         const reader = new FileReader();
         reader.onload = (event) => {
-            setRiskResult(null);
-            showPreview(event.target.result, 'Imagen cargada. Lista para escanear.');
+            stopCamera();
+            void analyze(event.target.result);
         };
         reader.readAsDataURL(file);
     };
 
-    const scanLocal = async () => {
-        if (!imageBase64 || saving) {
-            return;
-        }
-
-        setSaving(true);
-        showFeedback('Inferencia ONNX local (sin FastAPI ni Laravel)...');
-
-        try {
-            const prediccion = await inferDataUrl(imageBase64);
-            const geo = await readGeo();
-            const thumb = await compressThumb(imageBase64);
-            const diagnostico = createDiagnosticoLocal({
-                prediccion,
-                imagen_thumb: thumb,
-                parcela_nota: location,
-                latitud: geo.latitud,
-                longitud: geo.longitud,
-                modelo_version: prediccion.modelo_version,
-            });
-
-            await saveDiagnostico(diagnostico);
-
-            const vista = resultadoVista(prediccion);
-            setRiskResult({
-                ...vista,
-                confianza: prediccion.confianza,
-                severidad: prediccion.severidad,
-                clase: prediccion.clase,
-                latency_ms: prediccion.latency_ms,
-                modelo_version: prediccion.modelo_version,
-            });
-
-            if (prediccion.runtime === 'placeholder-uniform') {
-                showFeedback(
-                    `Sin pesos ONNX: no se afirma clase (no_concluyente, ${prediccion.confianza}%). Coloca public/models/modelo_roya.onnx. Guardado local ${diagnostico.sync_status}.`,
-                    'success',
-                );
-            } else {
-                showFeedback(
-                    `${CLASE_LABELS[prediccion.clase]} · confianza ${prediccion.confianza}% · ${prediccion.latency_ms} ms · local ${diagnostico.sync_status}`,
-                    'success',
-                );
-            }
-            onSaved?.(toViewModel(diagnostico));
-        } catch (error) {
-            showFeedback(describeEngineError(error), 'error');
-        } finally {
-            setSaving(false);
-        }
+    const cancelAnalysis = () => {
+        cancelledRef.current = true;
+        setAnalyzing(false);
+        setImageBase64(null);
     };
 
-    const feedbackClass =
-        feedback.tone === 'error' ? 'text-rose-500' : feedback.tone === 'success' ? 'text-teal' : 'text-navy/50';
+    const scanAgain = () => {
+        setResult(null);
+        setImageBase64(null);
+        setError('');
+        void startCamera();
+    };
+
+    const motionProps = reduceMotion
+        ? {}
+        : {
+              initial: { opacity: 0, x: 24 },
+              animate: { opacity: 1, x: 0 },
+              exit: { opacity: 0, x: -24 },
+              transition: { duration: 0.25, ease: 'easeOut' },
+          };
+
+    const tone = result ? TONE_CLASSES[result.tone] : null;
+    const tipId = consejoPara(Math.max(0, failedTries - 1));
 
     return (
-        <section className="rounded-[1.75rem] bg-sky/60 p-4 sm:p-6" aria-labelledby="scanner-title">
-            <div className="mb-5 flex items-center justify-between gap-4">
-                <div>
-                    <p className="text-xs font-semibold uppercase tracking-[.18em] text-teal">Unidad de campo · Edge</p>
-                    <h2 id="scanner-title" className="mt-1 text-xl font-extrabold text-navy">Nueva inspeccion</h2>
-                </div>
-                <span className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${online ? 'bg-teal/15 text-teal' : 'bg-gold/30 text-navy'}`}>
-                    {online ? 'En linea (inferencia local)' : 'Sin red · offline'}
-                </span>
-            </div>
+        <section className="field-scanner" aria-label={copy.photoTitle}>
+            <Stepper step={step} labels={copy.steps} onGoStep1={() => setChoosingLote(true)} />
 
-            <div className="mb-4 flex rounded-2xl bg-white p-1" role="tablist" aria-label="Fuente de imagen">
-                <button
-                    type="button"
-                    onClick={() => changeSource('camera')}
-                    className={`flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition ${source === 'camera' ? 'bg-teal text-white' : 'text-navy/45 hover:text-navy'}`}
-                >
-                    Camara
-                </button>
-                <button
-                    type="button"
-                    onClick={() => changeSource('upload')}
-                    className={`flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition ${source === 'upload' ? 'bg-teal text-white' : 'text-navy/45 hover:text-navy'}`}
-                >
-                    Subir archivo
-                </button>
-            </div>
+            <input
+                ref={fileRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(event) => {
+                    readImage(event.target.files[0]);
+                    event.target.value = '';
+                }}
+            />
+            <canvas ref={canvasRef} className="hidden"></canvas>
 
-            <div className="relative aspect-video overflow-hidden rounded-2xl bg-navy">
-                <video ref={videoRef} className={`absolute inset-0 h-full w-full object-cover ${cameraActive && !imageBase64 ? '' : 'hidden'}`} autoPlay playsInline></video>
-                {imageBase64 ? (
-                    <img src={imageBase64} className="absolute inset-0 h-full w-full object-contain bg-navy" alt="Vista previa de la imagen seleccionada" />
-                ) : null}
-                <canvas ref={canvasRef} className="hidden"></canvas>
-                {!cameraActive && !imageBase64 ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center text-white/70">
-                        <span className="text-4xl text-gold">+</span>
-                        <span className="text-sm">Activa la camara o sube una hoja</span>
-                    </div>
-                ) : null}
-                {imageBase64 ? (
-                    <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-teal">Captura lista</div>
-                ) : null}
-                {riskResult ? (
-                    <div className="absolute inset-3 z-10 flex items-end sm:items-center sm:justify-center">
-                        <div className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl ${riskResult.classes}`}>
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <p className="text-xs uppercase tracking-[.2em] opacity-70">Clase (CNN)</p>
-                                    <h3 className="mt-1 font-display text-xl font-bold">{riskResult.label}</h3>
-                                </div>
-                                <button type="button" onClick={() => setRiskResult(null)} className="rounded-lg border border-current/20 px-2 py-1 text-xs opacity-70 hover:opacity-100" aria-label="Cerrar resultado">
-                                    Cerrar
+            <AnimatePresence mode="wait" initial={false}>
+                {step === 1 ? (
+                    <motion.div key="lote" {...motionProps}>
+                        <h2 className="field-title">{copy.whereTitle}</h2>
+                        {parcelas.length === 0 && !newLoteOpen ? (
+                            <p className="mb-3 text-sm text-navy/60">{copy.whereEmpty}</p>
+                        ) : null}
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            {parcelas.map((parcela) => (
+                                <button
+                                    key={parcela.nombre}
+                                    type="button"
+                                    onClick={() => pickLote(parcela.nombre)}
+                                    className={`field-lote ${parcela.nombre === lote ? 'is-on' : ''}`}
+                                >
+                                    <span className="field-lote-icon" aria-hidden="true">
+                                        <PinGlyph />
+                                    </span>
+                                    <span className="min-w-0">
+                                        <span className="block truncate font-extrabold text-navy">{parcela.nombre}</span>
+                                        {parcela.ubicacion ? (
+                                            <span className="block truncate text-xs text-navy/55">{parcela.ubicacion}</span>
+                                        ) : null}
+                                    </span>
                                 </button>
-                            </div>
-                            <div className="mt-5 flex items-end gap-2">
-                                <span className="font-display text-5xl font-bold">{riskResult.confianza}%</span>
-                                <span className="pb-2 text-sm opacity-70">confianza</span>
-                            </div>
-                            <p className="mt-2 text-xs opacity-70">
-                                Severidad foliar: {riskResult.severidad == null ? 'no calculada (distinta de la confianza)' : `${riskResult.severidad}%`}
-                            </p>
-                            <p className="mt-4 border-t border-current/20 pt-4 text-sm leading-6">{riskResult.recommendation}</p>
-                            <p className="mt-2 text-[11px] opacity-50">
-                                {riskResult.modelo_version}
-                                {riskResult.latency_ms != null ? ` · ${riskResult.latency_ms} ms` : ''}
-                            </p>
+                            ))}
+                            {newLoteOpen ? (
+                                <form onSubmit={createLote} className="field-lote is-new sm:col-span-2">
+                                    <input
+                                        autoFocus
+                                        value={newLoteName}
+                                        onChange={(event) => setNewLoteName(event.target.value)}
+                                        placeholder={copy.newLotePlaceholder}
+                                        aria-label={copy.newLotePlaceholder}
+                                        className="min-h-12 min-w-0 flex-1 rounded-full bg-white px-4 text-base text-navy outline-none ring-1 ring-teal/20 focus:ring-2 focus:ring-teal"
+                                    />
+                                    <button type="submit" className="field-btn-primary !w-auto px-6">
+                                        {copy.createLote}
+                                    </button>
+                                </form>
+                            ) : (
+                                <button type="button" onClick={() => setNewLoteOpen(true)} className="field-lote is-add">
+                                    <span className="field-lote-icon" aria-hidden="true">
+                                        +
+                                    </span>
+                                    <span className="font-extrabold">{copy.newLote}</span>
+                                </button>
+                            )}
                         </div>
-                    </div>
+                        <button type="button" onClick={() => pickLote('')} className="field-link mt-4">
+                            {copy.skipLote}
+                        </button>
+                    </motion.div>
                 ) : null}
-            </div>
 
-            {source === 'camera' ? (
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <button type="button" onClick={startCamera} className="rounded-full bg-teal px-4 py-3 font-semibold text-white transition hover:bg-teal-dark">
-                        Activar camara
-                    </button>
-                    <button
-                        type="button"
-                        disabled={!canCapture}
-                        onClick={takePhoto}
-                        className="rounded-full border border-teal/20 px-4 py-3 font-semibold text-navy transition hover:border-teal hover:text-teal disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                        Tomar fotografia
-                    </button>
-                </div>
-            ) : (
-                <div className="mt-4">
-                    <label
-                        className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-teal/25 bg-white px-4 py-5 text-center transition hover:border-teal ${dropActive ? 'drop-active' : ''}`}
-                        onDragEnter={(event) => {
-                            event.preventDefault();
-                            setDropActive(true);
-                        }}
-                        onDragOver={(event) => {
-                            event.preventDefault();
-                            setDropActive(true);
-                        }}
-                        onDragLeave={(event) => {
-                            event.preventDefault();
-                            setDropActive(false);
-                        }}
-                        onDrop={(event) => {
-                            event.preventDefault();
-                            setDropActive(false);
-                            readImage(event.dataTransfer.files[0]);
-                        }}
-                    >
-                        <span className="text-sm font-semibold text-navy">Arrastra una imagen aqui</span>
-                        <span className="mt-1 text-xs text-navy/45">JPG, PNG o WEBP</span>
-                        <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => readImage(event.target.files[0])} />
-                    </label>
-                </div>
-            )}
+                {step === 2 ? (
+                    <motion.div key="foto" {...motionProps}>
+                        <div className="field-photo-head">
+                            <h2 className="field-title !mb-0">{copy.photoTitle}</h2>
+                            <button type="button" onClick={() => setChoosingLote(true)} className="field-lote-chip">
+                                <PinGlyph className="h-4 w-4 shrink-0" />
+                                <span className="truncate">{lote || copy.noLote}</span>
+                                <span className="field-lote-chip-action">{copy.changeLote}</span>
+                            </button>
+                        </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
-                <input
-                    type="text"
-                    value={location}
-                    onChange={(event) => setLocation(event.target.value)}
-                    placeholder="Lote, vereda o finca"
-                    className="rounded-full border-0 bg-white px-4 py-3 text-sm text-navy outline-none placeholder:text-navy/35 focus:ring-2 focus:ring-teal/30"
-                />
-                <button
-                    type="button"
-                    disabled={!imageBase64 || saving}
-                    onClick={scanLocal}
-                    className="rounded-full bg-gold px-5 py-3 font-extrabold text-navy transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                    {saving ? 'Inferiendo…' : 'Escanear en el dispositivo'}
-                </button>
-            </div>
-            <p className={`mt-4 min-h-5 text-sm ${feedbackClass}`} role="status">
-                {feedback.message}
-            </p>
+                        <div
+                            className={`field-viewer ${dropActive ? 'drop-active' : ''}`}
+                            onDragOver={(event) => {
+                                event.preventDefault();
+                                setDropActive(true);
+                            }}
+                            onDragLeave={() => setDropActive(false)}
+                            onDrop={(event) => {
+                                event.preventDefault();
+                                setDropActive(false);
+                                readImage(event.dataTransfer.files[0]);
+                            }}
+                        >
+                            {cameraActive ? (
+                                <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" autoPlay playsInline muted></video>
+                            ) : null}
+                            {imageBase64 ? (
+                                <img src={imageBase64} className="absolute inset-0 h-full w-full object-cover" alt="" />
+                            ) : null}
+
+                            {cameraActive || analyzing ? (
+                                <div className="field-frame" aria-hidden="true">
+                                    <svg viewBox="0 0 100 160" className="h-[78%]">
+                                        <path
+                                            d="M50 4 C82 40 84 112 50 156 C16 112 18 40 50 4 Z"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeDasharray="6 5"
+                                        />
+                                    </svg>
+                                </div>
+                            ) : null}
+
+                            {cameraActive && !analyzing ? (
+                                <>
+                                    <p className="field-viewer-hint">{copy.frameHint}</p>
+                                    <button type="button" onClick={takePhoto} className="field-shutter" aria-label={copy.shutter}>
+                                        <span />
+                                    </button>
+                                </>
+                            ) : null}
+
+                            {!cameraActive && !imageBase64 ? (
+                                <div className="field-viewer-open">
+                                    <svg className="field-viewer-guide" viewBox="0 0 100 160" aria-hidden="true">
+                                        <path d="M50 4 C82 40 84 112 50 156 C16 112 18 40 50 4 Z" />
+                                        <path d="M50 14 V148" />
+                                    </svg>
+                                    {cameraDenied ? <p className="field-viewer-note">{copy.cameraBlocked}</p> : null}
+                                    <button
+                                        type="button"
+                                        onClick={cameraDenied ? () => fileRef.current?.click() : startCamera}
+                                        className="field-viewer-cta"
+                                    >
+                                        {cameraDenied ? <ImageGlyph /> : <CameraGlyph />}
+                                        {cameraDenied ? copy.upload : copy.openCamera}
+                                    </button>
+                                    <p className="field-viewer-drop">{copy.dropHint}</p>
+                                </div>
+                            ) : null}
+
+                            {analyzing ? (
+                                <div className="field-analyzing" role="status">
+                                    <span className="field-scanline" aria-hidden="true" />
+                                    <p className="field-analyzing-text">{copy.analyzing}</p>
+                                    <button type="button" onClick={cancelAnalysis} className="field-analyzing-cancel">
+                                        {copy.cancel}
+                                    </button>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        {error ? (
+                            <p className="mt-3 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700" role="alert">
+                                {error}
+                            </p>
+                        ) : null}
+
+                        {!analyzing ? (
+                            <button type="button" onClick={() => fileRef.current?.click()} className="field-link mt-3">
+                                <ImageGlyph /> {copy.upload}
+                            </button>
+                        ) : null}
+                    </motion.div>
+                ) : null}
+
+                {step === 3 && result ? (
+                    <motion.div key="resultado" {...motionProps}>
+                        <div className={`field-result ${tone.card}`} role="status" aria-live="polite">
+                            <div className="flex items-start gap-4">
+                                {imageBase64 ? (
+                                    <img src={imageBase64} alt="" className="h-20 w-20 shrink-0 rounded-2xl object-cover sm:h-24 sm:w-24" />
+                                ) : null}
+                                <div className="min-w-0 flex-1">
+                                    <span className={`field-result-badge ${tone.badge}`} aria-hidden="true">
+                                        {TONE_STYLE[result.tone].icon}
+                                    </span>
+                                    <h2 className="field-result-title">{copy.results[result.tone].title}</h2>
+                                    <p className="field-result-text">
+                                        {result.unavailable ? copy.unavailable : copy.results[result.tone].text}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {result.tone !== 'repetir' ? (
+                                <div className="mt-5">
+                                    <p className="field-sure-label">{copy.sure[result.sure]}</p>
+                                    <div className="field-sure-track">
+                                        <motion.div
+                                            className={`field-sure-fill ${tone.bar}`}
+                                            style={{ width: SURE_WIDTH[result.sure], transformOrigin: 'left center' }}
+                                            initial={reduceMotion ? false : { scaleX: 0 }}
+                                            animate={{ scaleX: 1 }}
+                                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="field-result-tip">
+                                    <TipIcon id={tipId} className="h-6 w-6 shrink-0" />
+                                    <p>
+                                        <strong>{copy.tryTip}</strong> {copy.tips[tipId]}
+                                    </p>
+                                </div>
+                            )}
+
+                            <motion.p
+                                className="field-saved"
+                                initial={reduceMotion ? false : { scale: 0.6, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: 'spring', stiffness: 420, damping: 18, delay: 0.25 }}
+                            >
+                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+                                    <path d="M5 12.5 9.5 17 19 7" />
+                                </svg>
+                                {copy.saved}
+                            </motion.p>
+                        </div>
+
+                        <div className="mt-4 grid gap-3">
+                            {result.tone === 'roya' ? (
+                                <button type="button" onClick={onOpenProtocol} className="field-btn-danger">
+                                    {copy.whatToDo}
+                                </button>
+                            ) : null}
+                            <button type="button" onClick={scanAgain} className={result.tone === 'roya' ? 'field-btn-secondary' : 'field-btn-primary'}>
+                                {result.tone === 'repetir' ? copy.retake : copy.scanAgain}
+                            </button>
+                            <button type="button" onClick={onOpenHistory} className="field-link justify-center">
+                                {copy.history}
+                            </button>
+                        </div>
+                    </motion.div>
+                ) : null}
+            </AnimatePresence>
         </section>
     );
 }

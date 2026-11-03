@@ -1,19 +1,19 @@
 {
-    "name": "Roya — detección de Roya Amarilla",
-    "short_name": "Roya",
+    "name": "RiwiScan — detección de Roya Amarilla",
+    "short_name": "RiwiScan",
     "description": "Diagnóstico Edge offline-first de Roya Amarilla en trigo (Valle del Mantaro).",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
-    "background_color": "#e7f7fb",
-    "theme_color": "#1aa8aa",
+    "background_color": "#ffffff",
+    "theme_color": "#14532D",
     "lang": "es",
     "icons": [
         {
-            "src": "/icons/roya.svg",
+            "src": "/imagenes/riwiscan-logo.png",
             "sizes": "any",
-            "type": "image/svg+xml",
-            "purpose": "any maskable"
+            "type": "image/png",
+            "purpose": "any"
         }
     ]
 }

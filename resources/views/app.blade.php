@@ -2,14 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>RiwiScan</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="theme-color" content="#1aa8aa">
+    <meta name="theme-color" content="#0f3d24">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="icon" href="/icons/roya.svg" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="/imagenes/riwiscan-logo.png" type="image/png">
     <script>
         window.RoyaGuard = {
             page: @json($page),
@@ -28,7 +27,7 @@
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/main.jsx'])
 </head>
-<body class="min-h-screen bg-sky font-body text-navy antialiased">
+<body class="min-h-screen bg-paper font-body text-neutral antialiased">
     <div id="app"></div>
 </body>
 </html>

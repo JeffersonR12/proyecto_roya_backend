@@ -2,18 +2,54 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
 import Scanner from './components/Scanner.jsx';
-import Dashboard from './components/Dashboard.jsx';
 import History from './components/History.jsx';
-import { listDiagnosticos } from './lib/diagnosticosDb.js';
+import Onboarding from './components/Onboarding.jsx';
+import AlertsPage from './pages/AlertsPage.jsx';
+import ProtocolPage from './pages/ProtocolPage.jsx';
+import HitlPage from './pages/HitlPage.jsx';
+import ParcelasPage from './pages/ParcelasPage.jsx';
+import CampoPage from './pages/CampoPage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
+import { listDiagnosticos, updateDiagnostico } from './lib/diagnosticosDb.js';
 import { summarizeDiagnosticos, toViewModel } from './lib/inference.js';
+import { buildAlertas, contarAlertas } from './lib/alertas.js';
+import { canReviewHitl, roleName } from './lib/roles.js';
+import { registrarCorreccion } from './lib/agente.js';
+import { getLastLote, mergeParcelasFromAnalyses, setLastLote, upsertParcela } from './lib/parcelasStore.js';
+import { copyFor, getLang } from './lib/fieldFlow.js';
+import BottomNav from './components/BottomNav.jsx';
+
+const ONBOARDING_KEY = 'riwiscan-onboarding-v1';
 
 export default function RoyaGuard({ urls, user }) {
-    const [mode, setMode] = useState(user?.role === 'administrador' ? 'desktop' : 'mobile');
+    const staff = canReviewHitl(user);
+    const [lang] = useState(getLang);
+    const copy = copyFor(lang);
+    const firstName = (user?.name || '').split(' ')[0];
+    const [mode, setMode] = useState('campo');
     const [analyses, setAnalyses] = useState([]);
     const [query, setQuery] = useState('');
+    const [historyFilter, setHistoryFilter] = useState('all');
+    const [lote, setLote] = useState(() => getLastLote());
+    const [toast, setToast] = useState('');
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showOnboarding, setShowOnboarding] = useState(() => {
+        try {
+            return localStorage.getItem(ONBOARDING_KEY) !== 'done';
+        } catch {
+            return true;
+        }
+    });
     const panelRef = useRef(null);
     const stats = useMemo(() => summarizeDiagnosticos(analyses), [analyses]);
+    const pendingCount = useMemo(
+        () => analyses.filter((row) => ['pending', 'sending', 'error'].includes(row.sync_status)).length,
+        [analyses],
+    );
+    const hitlPending = useMemo(
+        () => analyses.filter((row) => row.hitl_status === 'pending' || row.hitl_status === 'resample').length,
+        [analyses],
+    );
 
     const visibleAnalyses = useMemo(() => {
         const term = query.trim().toLowerCase();
@@ -29,6 +65,7 @@ export default function RoyaGuard({ urls, user }) {
                 analysis.location,
                 analysis.uuid_local,
                 analysis.sync_status,
+                analysis.hitl_status,
             ]
                 .filter(Boolean)
                 .join(' ')
@@ -38,7 +75,15 @@ export default function RoyaGuard({ urls, user }) {
         });
     }, [analyses, query]);
 
-    const visibleStats = useMemo(() => summarizeDiagnosticos(visibleAnalyses), [visibleAnalyses]);
+    const alertas = useMemo(() => buildAlertas(analyses, { staff, lang }), [analyses, staff, lang]);
+    const alertCount = contarAlertas(alertas);
+    const parcelasCampo = useMemo(
+        () =>
+            mergeParcelasFromAnalyses(analyses)
+                .filter((row) => row.nombre && row.nombre !== 'Sin parcela')
+                .map(({ nombre, ubicacion }) => ({ nombre, ubicacion })),
+        [analyses, lote],
+    );
 
     useEffect(() => {
         listDiagnosticos()
@@ -46,71 +91,257 @@ export default function RoyaGuard({ urls, user }) {
             .catch(() => setAnalyses([]));
     }, []);
 
-    const handleSaved = (analysis) => {
-        setAnalyses((current) => [analysis, ...current.filter((row) => row.uuid_local !== analysis.uuid_local)]);
+    useEffect(() => {
+        const onKey = (event) => {
+            if (event.key === 'Escape') {
+                setMenuOpen(false);
+            }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
+    const goCampo = (nextLote) => {
+        if (nextLote) {
+            setLote(nextLote);
+            setLastLote(nextLote);
+        }
+        setMode('campo');
     };
 
-    const goToField = () => setMode('mobile');
+    const handleSaved = (analysis) => {
+        setAnalyses((current) => [analysis, ...current.filter((row) => row.uuid_local !== analysis.uuid_local)]);
+        if (analysis.location) {
+            setLote(analysis.location);
+            setLastLote(analysis.location);
+        }
+    };
+
+    const createLote = (nombre) => {
+        try {
+            upsertParcela({ nombre });
+        } catch {
+            /* el nombre vacío ya se filtra en el escáner */
+        }
+    };
+
+    const handleHitl = async (uuid, hitl_status) => {
+        await updateDiagnostico(uuid, { hitl_status });
+        setAnalyses((current) => current.map((row) => (row.uuid_local === uuid ? { ...row, hitl_status } : row)));
+    };
+
+    const handleAlertAction = async (alerta) => {
+        if (alerta.accion === 'protocolo') {
+            setMode('protocolo');
+            return;
+        }
+        if (alerta.accion === 'hitl' && staff) {
+            setMode('hitl');
+            return;
+        }
+        if (alerta.accion === 'reintentar') {
+            const uuids = new Set(alerta.uuids || []);
+            try {
+                await Promise.all([...uuids].map((uuid) => updateDiagnostico(uuid, { sync_status: 'pending' })));
+                setAnalyses((current) =>
+                    current.map((row) => (uuids.has(row.uuid_local) ? { ...row, sync_status: 'pending' } : row)),
+                );
+            } catch {
+                setToast('No se pudo reintentar. Intenta de nuevo.');
+            }
+        }
+    };
+
+    const handleCorreccion = async (uuid, etiqueta_humana) => {
+        const row = analyses.find((item) => item.uuid_local === uuid);
+        const patch = registrarCorreccion({ diagnostico: row, etiqueta_humana });
+        await updateDiagnostico(uuid, { etiqueta_humana: patch.etiqueta_humana });
+        setAnalyses((current) =>
+            current.map((item) => (item.uuid_local === uuid ? { ...item, etiqueta_humana: patch.etiqueta_humana } : item)),
+        );
+    };
+
+    const handleAgenteAccion = (id, diagnostico) => {
+        if (id === 'campo' || id === 'guia') {
+            setMode('campo');
+            return;
+        }
+
+        if (id === 'protocolo') {
+            setMode('protocolo');
+            return;
+        }
+
+        if (id === 'hitl' && staff) {
+            setMode('hitl');
+            return;
+        }
+
+        if (!diagnostico?.uuid_local || !staff) {
+            return;
+        }
+
+        const hitlStatus = { resample: 'resample', validar: 'validated', rechazar: 'rejected' }[id];
+        if (hitlStatus) {
+            handleHitl(diagnostico.uuid_local, hitlStatus).catch(() => setToast('No se pudo actualizar la revisión.'));
+        }
+    };
+
+    const finishOnboarding = () => {
+        try {
+            localStorage.setItem(ONBOARDING_KEY, 'done');
+        } catch {
+            /* ignore */
+        }
+        setShowOnboarding(false);
+        setMode('campo');
+    };
+
+    const replayOnboarding = () => {
+        try {
+            localStorage.removeItem(ONBOARDING_KEY);
+        } catch {
+            /* ignore */
+        }
+        setShowOnboarding(true);
+    };
+
+    const openStat = (nextFilter) => {
+        setHistoryFilter(nextFilter);
+        setMode('historial');
+    };
 
     useEffect(() => {
         panelRef.current?.scrollTo({ top: 0 });
     }, [mode]);
 
+    useEffect(() => {
+        if (mode === 'hitl' && !staff) {
+            setMode('campo');
+            setToast('La revisión técnica es solo para técnico o administrador.');
+        }
+    }, [mode, staff]);
+
+    useEffect(() => {
+        if (!toast) {
+            return undefined;
+        }
+        const timer = window.setTimeout(() => setToast(''), 4200);
+        return () => window.clearTimeout(timer);
+    }, [toast]);
+
     return (
         <div className="app-frame">
+            {showOnboarding ? <Onboarding onDone={finishOnboarding} /> : null}
             <Sidebar
                 mode={mode}
                 onModeChange={setMode}
                 logoutUrl={urls.logout}
-                onInspect={goToField}
                 open={menuOpen}
                 onClose={() => setMenuOpen(false)}
+                staff={staff}
+                alertCount={alertCount}
+                pendingCount={staff ? hitlPending : 0}
             />
 
-            <section ref={panelRef} className="app-panel">
+            <div className="app-main">
                 <Topbar
                     user={user}
                     query={query}
                     onQueryChange={setQuery}
+                    onClearQuery={() => setQuery('')}
                     onMenu={() => setMenuOpen(true)}
+                    onOpenAlerts={() => setMode('alertas')}
+                    onOpenAjustes={() => setMode('ajustes')}
+                    logoutUrl={urls.logout}
+                    alertCount={alertCount}
+                    pendingCount={pendingCount}
                 />
 
-                {mode === 'mobile' ? (
-                    <div className="grid gap-8 xl:grid-cols-[.92fr_1.08fr] xl:items-start">
-                        <div>
-                            <p className="mb-2 text-sm font-semibold text-teal">Inspeccion de campo</p>
-                            <h1 className="max-w-xl text-4xl font-extrabold leading-tight text-navy">
-                                Mira la hoja.
-                                <br />
-                                <span className="text-teal">Actua a tiempo.</span>
-                            </h1>
-                            <p className="mt-4 max-w-md text-sm leading-7 text-navy/60">
-                                La CNN corre en el navegador (ONNX). Sin red también diagnostica; el resultado queda en IndexedDB.
-                            </p>
-                            <div className="mt-8 grid max-w-md grid-cols-3 gap-3 border-y border-sky py-5 text-center">
-                                <div>
-                                    <p className="text-2xl font-extrabold text-navy">{stats.total}</p>
-                                    <p className="text-[10px] uppercase tracking-wider text-navy/40">Registros</p>
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-extrabold text-navy">{stats.critical}</p>
-                                    <p className="text-[10px] uppercase tracking-wider text-navy/40">Criticos</p>
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-extrabold text-teal">{stats.healthy}</p>
-                                    <p className="text-[10px] uppercase tracking-wider text-navy/40">Sanos</p>
-                                </div>
-                            </div>
+                <section ref={panelRef} className="app-panel">
+                    {toast ? (
+                        <div className="app-toast" role="status">
+                            <span>{toast}</span>
+                            <button type="button" className="app-toast-action" onClick={() => setMode('historial')}>
+                                Ver historial
+                            </button>
+                            <button type="button" className="app-toast-action" onClick={() => goCampo()}>
+                                Otra captura
+                            </button>
                         </div>
-                        <Scanner onSaved={handleSaved} />
-                    </div>
-                ) : (
-                    <>
-                        <Dashboard analyses={visibleAnalyses} stats={visibleStats} onInspect={goToField} />
-                        <History analyses={visibleAnalyses} />
-                    </>
-                )}
-            </section>
+                    ) : null}
+
+                    {mode === 'campo' ? (
+                        <CampoPage
+                            copy={copy}
+                            lang={lang}
+                            firstName={firstName}
+                            stats={stats}
+                            analyses={analyses}
+                            pendingCount={pendingCount}
+                            staff={staff}
+                            onOpenStat={openStat}
+                            onOpenHistory={() => setMode('historial')}
+                            onReview={() => setMode('hitl')}
+                            onProtocol={() => setMode('protocolo')}
+                            scanner={
+                                <Scanner
+                                    lang={lang}
+                                    onSaved={handleSaved}
+                                    parcelas={parcelasCampo}
+                                    lote={lote}
+                                    onLoteChange={(value) => {
+                                        setLote(value);
+                                        setLastLote(value);
+                                    }}
+                                    onCreateLote={createLote}
+                                    onOpenHistory={() => setMode('historial')}
+                                    onOpenProtocol={() => setMode('protocolo')}
+                                />
+                            }
+                        />
+                    ) : null}
+
+                    {mode === 'historial' ? (
+                        <History
+                            analyses={visibleAnalyses}
+                            filter={historyFilter}
+                            onFilterChange={setHistoryFilter}
+                            onRepeat={() => goCampo()}
+                            staff={staff}
+                            onHitl={handleHitl}
+                            query={query}
+                        />
+                    ) : null}
+                    {mode === 'alertas' ? (
+                        <AlertsPage alertas={alertas} lang={lang} onAction={handleAlertAction} onCapture={() => goCampo()} />
+                    ) : null}
+                    {mode === 'protocolo' ? (
+                        <ProtocolPage analyses={visibleAnalyses} staff={staff} user={user} onAgenteAccion={handleAgenteAccion} />
+                    ) : null}
+                    {mode === 'hitl' && staff ? (
+                        <HitlPage
+                            analyses={visibleAnalyses}
+                            onHitl={handleHitl}
+                            onCorreccion={handleCorreccion}
+                            onAgenteAccion={handleAgenteAccion}
+                            rol={roleName(user)}
+                        />
+                    ) : null}
+                    {mode === 'parcelas' ? <ParcelasPage analyses={visibleAnalyses} onInspect={goCampo} /> : null}
+                    {mode === 'ajustes' ? (
+                        <SettingsPage user={user} pendingCount={pendingCount} onReplayOnboarding={replayOnboarding} />
+                    ) : null}
+                </section>
+            </div>
+
+            <BottomNav
+                mode={mode}
+                onModeChange={setMode}
+                onMore={() => setMenuOpen(true)}
+                alertCount={alertCount}
+                labels={copy.nav}
+            />
         </div>
     );
 }

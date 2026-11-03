@@ -1,4 +1,5 @@
 import './bootstrap';
+import '@fontsource-variable/plus-jakarta-sans/wght.css';
 import '../css/app.css';
 import { createRoot } from 'react-dom/client';
 import RoyaGuard from './RoyaGuard.jsx';
@@ -7,7 +8,7 @@ import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import { registerEdgeWorker } from './lib/pwa.js';
 
-registerEdgeWorker();
+void registerEdgeWorker();
 
 const root = document.getElementById('app');
 const config = window.RoyaGuard ?? { page: 'login', analyses: [], urls: {}, authUser: null };

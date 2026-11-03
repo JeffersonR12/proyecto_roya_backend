@@ -123,7 +123,7 @@ export default function Dashboard({ analyses, stats, onInspect }) {
                             <p className="py-10 text-center text-sm text-navy/40">No hay alertas recientes.</p>
                         ) : (
                             recent.map((analysis) => {
-                                const meta = getRiskMeta(getRiskLevel(analysis.confidence));
+                                const meta = getRiskMeta(getRiskLevel(analysis.severidad));
 
                                 return (
                                     <article key={analysis.id} className="flex items-center gap-4 py-4">

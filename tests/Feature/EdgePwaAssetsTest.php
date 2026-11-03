@@ -11,6 +11,8 @@ class EdgePwaAssetsTest extends TestCase
         $this->assertFileExists(public_path('manifest.webmanifest'));
         $this->assertFileExists(public_path('sw.js'));
         $this->assertFileExists(public_path('icons/roya.svg'));
+        $this->assertFileExists(public_path('imagenes/riwiscan-logo.png'));
+        $this->assertFileExists(public_path('imagenes/logo f.png'));
         $this->assertStringContainsString('roya-edge', (string) file_get_contents(public_path('sw.js')));
         $this->assertStringContainsString('standalone', (string) file_get_contents(public_path('manifest.webmanifest')));
     }
