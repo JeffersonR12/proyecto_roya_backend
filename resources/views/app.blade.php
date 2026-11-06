@@ -14,13 +14,20 @@
             page: @json($page),
             analyses: @json($analyses),
             authUser: @json($authUser),
+            reset: {
+                token: @json($resetToken ?? null),
+                email: @json($resetEmail ?? null),
+            },
             urls: {
                 home: '/',
                 login: '/login',
                 register: '/register',
                 forgot: '/forgot-password',
+                reset: '/reset-password',
                 logout: '/logout',
                 store: '/analysis',
+                sync: '/api/sync/diagnosticos',
+                diagnosticos: '/api/diagnosticos',
             },
         };
     </script>

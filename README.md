@@ -7,19 +7,37 @@ El agricultor captura o sube una hoja en campo. La clasificación corre **en el 
 ## Qué hace hoy
 
 - Login / registro con email Gmail, roles `agricultor`, `tecnico` y `administrador`, aislamiento por tenant.
+- Recuperación de contraseña con enlace por correo (token de un solo uso, 60 min, respuesta genérica).
 - Escáner con cámara o archivo: preproceso 224×224, inferencia local, umbral de confianza.
 - Persistencia Edge en IndexedDB (`pending`) con `uuid_local` y `modelo_version`.
-- Dashboard e historial de inspecciones locales.
-- Esquema cloud: tenants, roles, parcelas, catálogo fitosanitario, diagnósticos, alertas, sync_events.
+- Sincronización Edge → Cloud automática (al abrir, al volver la red, cada 60 s y tras cada captura) con backoff exponencial.
+- API REST `/api` (Sanctum): sync por lote idempotente, diagnósticos, HITL, catálogo, parcelas, alertas, health.
+- Alertas tempranas en servidor (`roya_detectada` / `roya_critica` según umbral del catálogo).
+- Técnico/administrador ven y validan (HITL) los diagnósticos de todo su tenant.
 
-**Aún no está en el código:** API REST de sync masivo, Sanctum/JWT, FastAPI, MQTT/WebSockets, PostgreSQL de producción ni pesos CNN entrenados. Sin `public/models/modelo_roya.onnx` el motor no afirma clase: marca `no_concluyente`.
+**Aún no está en el código:** FastAPI, MQTT/WebSockets y PostgreSQL de producción. Los pesos CNN no se versionan en Git (`.gitignore`): sin `public/models/modelo_roya.onnx` el motor no afirma clase y marca `no_concluyente`. Para generarlo: `scripts/train_export_cnn.py` (ver Docs/10 §11).
+
+## API REST (Docs/09)
+
+| Método | Ruta | Rol |
+|---|---|---|
+| POST | `/api/sync/diagnosticos` | autenticado — lote ≤ 50, idempotente por `uuid_local` |
+| GET | `/api/sync/status` | autenticado |
+| GET/POST | `/api/diagnosticos` | agricultor: propios · técnico/admin: tenant |
+| GET | `/api/diagnosticos/{uuid}` · `/imagen` | mismo control de acceso |
+| PATCH | `/api/diagnosticos/{uuid}` | técnico, administrador (HITL, etiqueta, severidad) |
+| DELETE | `/api/diagnosticos/{uuid}` | administrador (baja lógica) |
+| GET | `/api/catalogo` · `/api/parcelas` · `/api/alertas` | autenticado |
+| GET | `/api/health` | público |
+
+Respuesta por ítem del sync: `confirmed` (creado), `already_exists` (reintento sin duplicar), `conflict` (mismo UUID con otro contenido: se registra incidente) o `rejected` (parcela ajena, imagen inválida).
 
 ## Arquitectura
 
 ```
 Captura PWA → ONNX local → clase + confianza + severidad
      → UUID + IndexedDB (pending)
-     → (si hay red) REST/HTTPS → Laravel   [pendiente]
+     → (si hay red) REST/HTTPS → Laravel   POST /api/sync/diagnosticos
      → MySQL local / PostgreSQL cloud
      → FastAPI solo auxiliar               [pendiente]
 ```

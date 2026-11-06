@@ -1,9 +1,41 @@
+import { useState } from 'react';
 import { MODELO_VERSION } from '../lib/inference.js';
 import { BRAND_NAME } from '../lib/brand.js';
 import { roleName } from '../lib/roles.js';
 import PageHeader from '../components/PageHeader.jsx';
 
-export default function SettingsPage({ user, pendingCount = 0, onReplayOnboarding }) {
+function describeSync(summary) {
+    if (!summary) {
+        return 'Sin conexión: se enviará automáticamente al volver la red.';
+    }
+    if (summary.authRequired) {
+        return 'La sesión expiró. Inicia sesión de nuevo para sincronizar.';
+    }
+    if (summary.offline) {
+        return 'No se pudo contactar al servidor. Se reintentará automáticamente.';
+    }
+    if (!summary.sent) {
+        return 'Todo está sincronizado.';
+    }
+
+    const errores = summary.failed ? ', ' + summary.failed + ' con error' : '';
+
+    return `Enviados ${summary.sent}: ${summary.confirmed} confirmados${errores}.`;
+}
+
+export default function SettingsPage({ user, pendingCount = 0, onReplayOnboarding, onSync }) {
+    const [syncing, setSyncing] = useState(false);
+    const [syncMessage, setSyncMessage] = useState('');
+
+    const syncNow = async () => {
+        setSyncing(true);
+        try {
+            setSyncMessage(describeSync(await onSync?.()));
+        } finally {
+            setSyncing(false);
+        }
+    };
+
     return (
         <section>
             <PageHeader mode="ajustes" kicker="Cuenta y PWA" title="Ajustes">
@@ -32,10 +64,25 @@ export default function SettingsPage({ user, pendingCount = 0, onReplayOnboardin
                 <div>
                     <dt className="text-navy/40">Cola IndexedDB</dt>
                     <dd className="font-extrabold text-navy">{pendingCount} pending / sending / error</dd>
+                    {onSync ? (
+                        <dd className="mt-2 flex flex-wrap items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={syncNow}
+                                disabled={syncing}
+                                className="min-h-11 rounded-full bg-teal px-5 py-2 text-xs font-extrabold text-white disabled:opacity-60"
+                            >
+                                {syncing ? 'Sincronizando…' : 'Sincronizar ahora'}
+                            </button>
+                            {syncMessage ? (
+                                <output className="text-xs text-navy/60">{syncMessage}</output>
+                            ) : null}
+                        </dd>
+                    ) : null}
                 </div>
                 <div>
                     <dt className="text-navy/40">PWA</dt>
-                    <dd className="font-extrabold text-navy">Instalable · inferencia local ONNX · cola IndexedDB</dd>
+                    <dd className="font-extrabold text-navy">Instalable · inferencia local ONNX · cola IndexedDB con sincronización a la nube</dd>
                 </div>
                 <div>
                     <dt className="text-navy/40">Idioma</dt>

@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ResetPasswordNotification;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'tenant_id',
@@ -75,5 +77,16 @@ class User extends Authenticatable
     public function roleName(): string
     {
         return $this->rol?->nombre ?? $this->role ?? 'tecnico';
+    }
+
+    /** Tecnico o administrador: revisa HITL y ve los diagnosticos de su tenant. */
+    public function isStaff(): bool
+    {
+        return in_array($this->roleName(), ['tecnico', 'administrador'], true);
+    }
+
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

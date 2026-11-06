@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\Role;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Support\AuthRules;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Throwable;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -58,10 +64,65 @@ class AuthController extends Controller
             'email.regex' => 'El correo debe tener el formato usuario@gmail.com.',
         ]);
 
+        // El resultado del broker (enviado, usuario inexistente, throttled) no se
+        // revela: la respuesta es identica en todos los casos (ISO 27001).
+        try {
+            Password::sendResetLink($request->only('email'));
+        } catch (Throwable $exception) {
+            Log::error('No se pudo enviar el correo de restablecimiento.', [
+                'exception' => $exception->getMessage(),
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Si el correo existe, te enviaremos instrucciones para restablecer la contraseña.',
         ]);
+    }
+
+    public function showReset(Request $request, string $token): View
+    {
+        return view('app', [
+            'page' => 'reset',
+            'analyses' => [],
+            'authUser' => null,
+            'resetToken' => $token,
+            'resetEmail' => strtolower(trim((string) $request->query('email'))),
+        ]);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse|RedirectResponse
+    {
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password): void {
+                $user->forceFill([
+                    'password' => $password,
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                // Cualquier token de API emitido antes del cambio deja de servir.
+                $user->tokens()->delete();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status !== Password::PASSWORD_RESET) {
+            throw ValidationException::withMessages([
+                'token' => 'El enlace no es valido o ya expiro. Solicita uno nuevo.',
+            ]);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Contraseña actualizada. Ya puedes iniciar sesion.',
+                'redirect' => route('login'),
+            ]);
+        }
+
+        return redirect()->route('login');
     }
 
     public function login(LoginRequest $request): JsonResponse|RedirectResponse

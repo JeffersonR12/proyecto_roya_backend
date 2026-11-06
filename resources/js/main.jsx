@@ -6,6 +6,7 @@ import RoyaGuard from './RoyaGuard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 import { registerEdgeWorker } from './lib/pwa.js';
 
 void registerEdgeWorker();
@@ -24,6 +25,10 @@ function Root() {
 
     if (config.page === 'forgot') {
         return <ForgotPassword urls={config.urls} />;
+    }
+
+    if (config.page === 'reset') {
+        return <ResetPassword urls={config.urls} reset={config.reset} />;
     }
 
     return (
