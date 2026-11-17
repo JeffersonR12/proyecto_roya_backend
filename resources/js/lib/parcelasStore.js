@@ -1,5 +1,11 @@
-const PARCELAS_KEY = 'riwiscan-parcelas-v1';
-const LOTE_KEY = 'riwiscan-lote-v1';
+import { storageKey } from './session.js';
+
+// Claves separadas por cuenta: 'riwiscan-parcelas-v1:t29:u30'.
+const PARCELAS_BASE = 'riwiscan-parcelas-v1';
+const LOTE_BASE = 'riwiscan-lote-v1';
+
+const parcelasKey = () => storageKey(PARCELAS_BASE);
+const loteKey = () => storageKey(LOTE_BASE);
 
 function readJson(key, fallback) {
     try {
@@ -11,12 +17,12 @@ function readJson(key, fallback) {
 }
 
 export function listParcelas() {
-    const rows = readJson(PARCELAS_KEY, []);
+    const rows = readJson(parcelasKey(), []);
     return Array.isArray(rows) ? rows : [];
 }
 
 export function saveParcelas(rows) {
-    localStorage.setItem(PARCELAS_KEY, JSON.stringify(rows));
+    localStorage.setItem(parcelasKey(), JSON.stringify(rows));
     return rows;
 }
 
@@ -53,7 +59,7 @@ export function removeParcela(id) {
 
 export function getLastLote() {
     try {
-        return localStorage.getItem(LOTE_KEY) || '';
+        return localStorage.getItem(loteKey()) || '';
     } catch {
         return '';
     }
@@ -61,7 +67,7 @@ export function getLastLote() {
 
 export function setLastLote(nombre) {
     try {
-        localStorage.setItem(LOTE_KEY, nombre || '');
+        localStorage.setItem(loteKey(), nombre || '');
     } catch {
         /* ignore */
     }

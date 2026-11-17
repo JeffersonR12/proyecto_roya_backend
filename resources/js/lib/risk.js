@@ -94,6 +94,16 @@ export function percent(value, digits = 1) {
     return `${(Number(value) * 100).toFixed(digits)}%`;
 }
 
+const ROLE_LABELS = {
+    administrador: 'Administrador',
+    tecnico: 'Técnico de campo',
+    agricultor: 'Agricultor',
+};
+
+/**
+ * Etiqueta visible del rol. Un rol desconocido se muestra como Agricultor
+ * (el de menor privilegio), igual que en el backend.
+ */
 export function roleLabel(role) {
-    return role === 'administrador' ? 'Administrador' : 'Tecnico de campo';
+    return ROLE_LABELS[role] || ROLE_LABELS.agricultor;
 }

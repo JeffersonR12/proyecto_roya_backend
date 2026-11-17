@@ -14,10 +14,15 @@ class AnalysisController extends Controller
         return view('app', [
             'page' => 'app',
             'analyses' => $this->visibleAnalyses($request)->get(),
-            'authUser' => $request->user(),
+            'authUser' => $request->user()->loadMissing(['rol', 'tenant'])->toClientArray(),
         ]);
     }
 
+    /**
+     * @deprecated Fase 1: la PWA sincroniza con POST /api/diagnosticos/sync
+     *             (tabla diagnosticos). Este endpoint y la tabla analyses
+     *             se eliminan en la fase 6.
+     */
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([

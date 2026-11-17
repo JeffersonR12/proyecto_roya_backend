@@ -1,3 +1,7 @@
+/**
+ * Rol real del usuario. El servidor envia rol.nombre calculado desde la tabla
+ * roles (User::rolEfectivo); la columna legacy users.role es solo respaldo.
+ */
 export function roleName(user) {
     return user?.rol?.nombre || user?.role || 'agricultor';
 }

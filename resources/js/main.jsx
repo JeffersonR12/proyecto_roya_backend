@@ -7,11 +7,19 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import { registerEdgeWorker } from './lib/pwa.js';
+import { clearSession, setSession } from './lib/session.js';
 
 void registerEdgeWorker();
 
 const root = document.getElementById('app');
 const config = window.RoyaGuard ?? { page: 'login', analyses: [], urls: {}, authUser: null };
+
+// Los datos locales (IndexedDB, localStorage) se abren solo para la cuenta autenticada.
+if (config.page === 'app' && config.authUser) {
+    setSession(config.authUser);
+} else {
+    clearSession();
+}
 
 function Root() {
     if (config.page === 'login') {

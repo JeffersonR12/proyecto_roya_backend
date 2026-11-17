@@ -59,4 +59,19 @@ class UserFactory extends Factory
             ];
         });
     }
+
+    public function agricultor(): static
+    {
+        return $this->state(function (array $attributes) {
+            $role = Role::query()->firstOrCreate(
+                ['nombre' => 'agricultor'],
+                ['descripcion' => 'Agricultor']
+            );
+
+            return [
+                'rol_id' => $role->id,
+                'role' => 'agricultor',
+            ];
+        });
+    }
 }

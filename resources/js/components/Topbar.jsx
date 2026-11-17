@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import { logoutSafely } from '../lib/sync.js';
 import { BellGlyph, MenuGlyph, SearchGlyph } from './Icons.jsx';
 import { roleLabel } from '../lib/risk.js';
+import { roleName } from '../lib/roles.js';
 import { BRAND_NAME, LOGO_URL } from '../lib/brand.js';
 
 export default function Topbar({
@@ -56,10 +57,7 @@ export default function Topbar({
         }
     }, [searchOpen]);
 
-    const logout = async () => {
-        await axios.post(logoutUrl);
-        window.location.href = '/login';
-    };
+    const logout = () => logoutSafely({ logoutUrl });
 
     const offlineStatus = pendingCount > 0 ? `Sin internet · ${pendingCount} por enviar` : 'Sin internet';
     const status = online ? 'En línea' : offlineStatus;
@@ -116,7 +114,7 @@ export default function Topbar({
                     >
                         <span className="app-account-text">
                             <strong>{user?.name}</strong>
-                            <small>{roleLabel(user?.role)}</small>
+                            <small>{roleLabel(roleName(user))}</small>
                         </span>
                         <span className="app-avatar">{initials}</span>
                     </button>

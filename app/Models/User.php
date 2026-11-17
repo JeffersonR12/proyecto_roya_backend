@@ -72,6 +72,41 @@ class User extends Authenticatable
         return $this->rol?->nombre === 'administrador' || $this->role === 'administrador';
     }
 
+    /**
+     * Rol efectivo para autorizacion. Sin rol asignado se trata como
+     * agricultor (el menor privilegio), nunca como tecnico.
+     */
+    public function rolEfectivo(): string
+    {
+        return $this->rol?->nombre ?? $this->role ?? 'agricultor';
+    }
+
+    /**
+     * Datos minimos del usuario que necesita la PWA. El rol sale de la tabla
+     * roles (rolEfectivo), nunca de la columna legacy users.role.
+     *
+     * @return array{id: int, name: string, email: string, tenant_id: int|null, organization: string|null, role: string, rol: array{nombre: string}}
+     */
+    public function toClientArray(): array
+    {
+        $rol = $this->rolEfectivo();
+
+        return [
+            'id' => (int) $this->id,
+            'name' => (string) $this->name,
+            'email' => (string) $this->email,
+            'tenant_id' => $this->tenant_id === null ? null : (int) $this->tenant_id,
+            'organization' => $this->tenant?->nombre ?? $this->organization,
+            'role' => $rol,
+            'rol' => ['nombre' => $rol],
+        ];
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array($this->rolEfectivo(), ['tecnico', 'administrador'], true);
+    }
+
     public function roleName(): string
     {
         return $this->rol?->nombre ?? $this->role ?? 'tecnico';
