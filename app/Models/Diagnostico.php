@@ -21,7 +21,19 @@ class Diagnostico extends Model
 
     public const UMBRAL_CONFIANZA = 75;
 
+    public const HITL_ESTADOS = [
+        'pending',
+        'not_required',
+        'validated',
+        'rejected',
+        'resample',
+    ];
+
     protected $fillable = [
+        'hitl_status',
+        'etiqueta_humana',
+        'ubicacion',
+        'last_error',
         'uuid_local',
         'tenant_id',
         'usuario_id',
@@ -61,6 +73,10 @@ class Diagnostico extends Model
 
             if ((float) $diagnostico->confianza < self::UMBRAL_CONFIANZA) {
                 $diagnostico->clase = 'no_concluyente';
+            }
+
+            if (! $diagnostico->hitl_status) {
+                $diagnostico->hitl_status = $diagnostico->clase === 'sana' ? 'not_required' : 'pending';
             }
         });
     }

@@ -15,6 +15,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [AnalysisController::class, 'index'])->name('home');
+    // @deprecated: reemplazada por POST /api/diagnosticos/sync; se elimina en la fase 6.
     Route::post('/analysis', [AnalysisController::class, 'store'])->name('analysis.store');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

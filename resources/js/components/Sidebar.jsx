@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { LOGO_URL, BRAND_NAME } from '../lib/brand.js';
+import { logoutSafely } from '../lib/sync.js';
 import {
     AlertGlyph,
     BookGlyph,
@@ -12,10 +12,7 @@ import {
 } from './Icons.jsx';
 
 export default function Sidebar({ mode, onModeChange, logoutUrl, open, onClose, staff, alertCount, pendingCount = 0 }) {
-    const logout = async () => {
-        await axios.post(logoutUrl);
-        window.location.href = '/login';
-    };
+    const logout = () => logoutSafely({ logoutUrl });
 
     const groups = [
         [

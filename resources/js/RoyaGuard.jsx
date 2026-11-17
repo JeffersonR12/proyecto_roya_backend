@@ -10,7 +10,9 @@ import HitlPage from './pages/HitlPage.jsx';
 import ParcelasPage from './pages/ParcelasPage.jsx';
 import CampoPage from './pages/CampoPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
-import { listDiagnosticos, updateDiagnostico } from './lib/diagnosticosDb.js';
+import { listDiagnosticos, saveDiagnostico, updateDiagnostico } from './lib/diagnosticosDb.js';
+import { adoptLegacy, discardLegacy, inspectLegacy } from './lib/legacyDb.js';
+import { storageKey } from './lib/session.js';
 import { summarizeDiagnosticos, toViewModel } from './lib/inference.js';
 import { buildAlertas, contarAlertas } from './lib/alertas.js';
 import { canReviewHitl, roleName } from './lib/roles.js';
@@ -18,10 +20,13 @@ import { registrarCorreccion } from './lib/agente.js';
 import { getLastLote, mergeParcelasFromAnalyses, setLastLote, upsertParcela } from './lib/parcelasStore.js';
 import { copyFor, getLang } from './lib/fieldFlow.js';
 import BottomNav from './components/BottomNav.jsx';
+import { syncAll, syncQueue } from './lib/sync.js';
 
-const ONBOARDING_KEY = 'riwiscan-onboarding-v1';
+// El onboarding se recuerda por cuenta, no por navegador.
+const onboardingKey = () => storageKey('riwiscan-onboarding-v1');
 
 export default function RoyaGuard({ urls, user }) {
+    const [legacyPendientes, setLegacyPendientes] = useState([]);
     const staff = canReviewHitl(user);
     const [lang] = useState(getLang);
     const copy = copyFor(lang);
@@ -35,7 +40,7 @@ export default function RoyaGuard({ urls, user }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => {
         try {
-            return localStorage.getItem(ONBOARDING_KEY) !== 'done';
+            return localStorage.getItem(onboardingKey()) !== 'done';
         } catch {
             return true;
         }
@@ -85,10 +90,33 @@ export default function RoyaGuard({ urls, user }) {
         [analyses, lote],
     );
 
-    useEffect(() => {
+    const reloadLocal = () =>
         listDiagnosticos()
             .then((rows) => setAnalyses(rows.map(toViewModel)))
             .catch(() => setAnalyses([]));
+
+    // Envia la cola Outbox y trae el historial del servidor; luego refresca la vista.
+    const sync = () => syncAll().then(reloadLocal);
+
+    useEffect(() => {
+        reloadLocal().then(sync);
+        // Base antigua compartida por todas las cuentas: sus pendientes no se suben solos.
+        inspectLegacy()
+            .then(({ pendientes }) => setLegacyPendientes(pendientes))
+            .catch(() => setLegacyPendientes([]));
+
+        const onOnline = () => {
+            syncQueue.reset();
+            void sync();
+        };
+        window.addEventListener('online', onOnline);
+        // Los reintentos con backoff ocurren fuera de React: refresca al terminar.
+        const unsubscribe = syncQueue.subscribe(() => void reloadLocal());
+
+        return () => {
+            window.removeEventListener('online', onOnline);
+            unsubscribe();
+        };
     }, []);
 
     useEffect(() => {
@@ -109,12 +137,31 @@ export default function RoyaGuard({ urls, user }) {
         setMode('campo');
     };
 
+    const adoptarLegacy = async () => {
+        try {
+            const n = await adoptLegacy(legacyPendientes, { saveDiagnostico });
+            setLegacyPendientes([]);
+            setToast(n === 1 ? '1 diagnóstico recuperado; se enviará con tu cuenta.' : `${n} diagnósticos recuperados; se enviarán con tu cuenta.`);
+            await reloadLocal();
+            void sync();
+        } catch {
+            setToast('No se pudieron recuperar los diagnósticos anteriores.');
+        }
+    };
+
+    const descartarLegacy = async () => {
+        await discardLegacy();
+        setLegacyPendientes([]);
+    };
+
     const handleSaved = (analysis) => {
         setAnalyses((current) => [analysis, ...current.filter((row) => row.uuid_local !== analysis.uuid_local)]);
         if (analysis.location) {
             setLote(analysis.location);
             setLastLote(analysis.location);
         }
+        // Scanner ya lo guardo en IndexedDB: intenta enviarlo de inmediato.
+        void sync();
     };
 
     const createLote = (nombre) => {
@@ -125,9 +172,11 @@ export default function RoyaGuard({ urls, user }) {
         }
     };
 
+    // Revision HITL: primero se guarda local (funciona sin red), luego se envia.
     const handleHitl = async (uuid, hitl_status) => {
-        await updateDiagnostico(uuid, { hitl_status });
+        await updateDiagnostico(uuid, { hitl_status, hitl_dirty: true });
         setAnalyses((current) => current.map((row) => (row.uuid_local === uuid ? { ...row, hitl_status } : row)));
+        void sync();
     };
 
     const handleAlertAction = async (alerta) => {
@@ -142,10 +191,16 @@ export default function RoyaGuard({ urls, user }) {
         if (alerta.accion === 'reintentar') {
             const uuids = new Set(alerta.uuids || []);
             try {
-                await Promise.all([...uuids].map((uuid) => updateDiagnostico(uuid, { sync_status: 'pending' })));
+                await Promise.all(
+                    [...uuids].map((uuid) =>
+                        updateDiagnostico(uuid, { sync_status: 'pending', sync_rejected: false, last_error: null }),
+                    ),
+                );
                 setAnalyses((current) =>
                     current.map((row) => (uuids.has(row.uuid_local) ? { ...row, sync_status: 'pending' } : row)),
                 );
+                syncQueue.reset();
+                void sync();
             } catch {
                 setToast('No se pudo reintentar. Intenta de nuevo.');
             }
@@ -155,10 +210,11 @@ export default function RoyaGuard({ urls, user }) {
     const handleCorreccion = async (uuid, etiqueta_humana) => {
         const row = analyses.find((item) => item.uuid_local === uuid);
         const patch = registrarCorreccion({ diagnostico: row, etiqueta_humana });
-        await updateDiagnostico(uuid, { etiqueta_humana: patch.etiqueta_humana });
+        await updateDiagnostico(uuid, { etiqueta_humana: patch.etiqueta_humana, hitl_dirty: true });
         setAnalyses((current) =>
             current.map((item) => (item.uuid_local === uuid ? { ...item, etiqueta_humana: patch.etiqueta_humana } : item)),
         );
+        void sync();
     };
 
     const handleAgenteAccion = (id, diagnostico) => {
@@ -189,7 +245,7 @@ export default function RoyaGuard({ urls, user }) {
 
     const finishOnboarding = () => {
         try {
-            localStorage.setItem(ONBOARDING_KEY, 'done');
+            localStorage.setItem(onboardingKey(), 'done');
         } catch {
             /* ignore */
         }
@@ -199,7 +255,7 @@ export default function RoyaGuard({ urls, user }) {
 
     const replayOnboarding = () => {
         try {
-            localStorage.removeItem(ONBOARDING_KEY);
+            localStorage.removeItem(onboardingKey());
         } catch {
             /* ignore */
         }
@@ -259,6 +315,21 @@ export default function RoyaGuard({ urls, user }) {
                 />
 
                 <section ref={panelRef} className="app-panel">
+                    {legacyPendientes.length > 0 ? (
+                        <div className="app-toast" role="alert">
+                            <span>
+                                {legacyPendientes.length === 1
+                                    ? 'Hay 1 diagnóstico sin enviar de una sesión anterior en este dispositivo.'
+                                    : `Hay ${legacyPendientes.length} diagnósticos sin enviar de una sesión anterior en este dispositivo.`}
+                            </span>
+                            <button type="button" className="app-toast-action" onClick={adoptarLegacy}>
+                                Son míos, enviarlos
+                            </button>
+                            <button type="button" className="app-toast-action" onClick={descartarLegacy}>
+                                Descartar
+                            </button>
+                        </div>
+                    ) : null}
                     {toast ? (
                         <div className="app-toast" role="status">
                             <span>{toast}</span>
