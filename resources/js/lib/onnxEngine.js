@@ -12,11 +12,18 @@ const MODEL_URL = '/models/modelo_roya.onnx';
 let sessionPromise = null;
 let ortModule = null;
 
+// DEF-01: ONNX Runtime resuelve wasmPaths contra la URL de su propio módulo. Con `npm run dev`
+// ese módulo lo sirve Vite (:5173), donde no existe /onnx/; la ruta debe ser absoluta al
+// origen de la página (Laravel), que es quien publica public/onnx/.
+export function wasmBaseUrl(origin = globalThis.location?.origin) {
+    return origin ? new URL('/onnx/', origin).href : '/onnx/';
+}
+
 async function getOrt() {
     if (!ortModule) {
         const loaded = await import('onnxruntime-web/wasm');
         ortModule = loaded.env ? loaded : loaded.default;
-        ortModule.env.wasm.wasmPaths = '/onnx/';
+        ortModule.env.wasm.wasmPaths = wasmBaseUrl();
         ortModule.env.wasm.numThreads = 1;
         ortModule.env.wasm.simd = true;
     }
@@ -90,6 +97,8 @@ export async function inferImage(imageEl) {
             throw error;
         }
 
+        console.warn('[RiwiScan] modelo ONNX no disponible; se usa el respaldo uniforme.', error);
+
         return {
             ...fromLogits([0, 0, 0]),
             modelo_version: `${MODELO_VERSION}+sin-pesos`,
@@ -99,8 +108,16 @@ export async function inferImage(imageEl) {
     }
 }
 
-function isModelMissing(error) {
+// DEF-02: un fallo al cargar el runtime (backend WASM o su módulo .mjs) no es "falta el modelo".
+// Antes se confundían ("failed to fetch") y la app guardaba un resultado uniforme como válido.
+const RUNTIME_FAILURE_MARKERS = ['no available backend', 'dynamically imported module', 'webassembly'];
+
+export function isModelMissing(error) {
     const message = String(error?.message || error).toLowerCase();
+
+    if (RUNTIME_FAILURE_MARKERS.some((marker) => message.includes(marker))) {
+        return false;
+    }
 
     return (
         message.includes('404') ||

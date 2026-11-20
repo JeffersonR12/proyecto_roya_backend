@@ -100,6 +100,7 @@ export default function Scanner({
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const fileRef = useRef(null);
+    const newLoteInputRef = useRef(null);
     const streamRef = useRef(null);
     const cancelledRef = useRef(false);
 
@@ -119,6 +120,14 @@ export default function Scanner({
     const step = choosingLote ? 1 : stepFor({ loteDecidido, hasImage: Boolean(imageBase64), hasResult: Boolean(result) });
 
     useEffect(() => () => stopCamera(), []);
+
+    // Foco solo como respuesta a la acción del usuario ("Nuevo lote"), no al cargar la vista
+    // (reemplaza autoFocus, que Sonar S9379 marca como problema de accesibilidad).
+    useEffect(() => {
+        if (newLoteOpen) {
+            newLoteInputRef.current?.focus();
+        }
+    }, [newLoteOpen]);
 
     useEffect(() => {
         if (cameraActive && videoRef.current && streamRef.current) {
@@ -319,7 +328,7 @@ export default function Scanner({
                             {newLoteOpen ? (
                                 <form onSubmit={createLote} className="field-lote is-new sm:col-span-2">
                                     <input
-                                        autoFocus
+                                        ref={newLoteInputRef}
                                         value={newLoteName}
                                         onChange={(event) => setNewLoteName(event.target.value)}
                                         placeholder={copy.newLotePlaceholder}

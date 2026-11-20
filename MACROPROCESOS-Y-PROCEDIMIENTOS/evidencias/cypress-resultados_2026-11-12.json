@@ -1,0 +1,108 @@
+{
+  "fuente": "cypress/reports/index.html (mochawesome), corrida completa del 2026-11-12, inicio 23:30:21Z, fin 23:32:06Z. El HTML se perdió el 2026-11-16 al re-ejecutar E2E-04 (el plugin limpia la carpeta de reportes); estos datos se extrajeron del HTML antes de su pérdida.",
+  "resumen": {
+    "suites": 8,
+    "tests": 14,
+    "passes": 13,
+    "failures": 1
+  },
+  "error_E2E-04": "CypressError: Timed out retrying after 30000ms: cy.wait() timed out waiting 30000ms for the 1st response to the route: forgot. No response ever occurred.",
+  "specs": {
+    "E2E-01": {
+      "archivo": "E2E-01_login_valido.cy.js",
+      "casos": [
+        {
+          "titulo": "autentica al técnico sembrado, redirige a Campo y habilita la API",
+          "estado": "passed"
+        }
+      ]
+    },
+    "E2E-02": {
+      "archivo": "E2E-02_login_invalido.cy.js",
+      "casos": [
+        {
+          "titulo": "rechaza una contraseña incorrecta con el mensaje del servidor",
+          "estado": "passed"
+        },
+        {
+          "titulo": "bloquea en el cliente un correo que no es Gmail",
+          "estado": "passed"
+        }
+      ]
+    },
+    "E2E-03": {
+      "archivo": "E2E-03_registro_validacion.cy.js",
+      "casos": [
+        {
+          "titulo": "rechaza un correo que no es Gmail antes de enviar",
+          "estado": "passed"
+        },
+        {
+          "titulo": "rechaza una contraseña débil",
+          "estado": "passed"
+        },
+        {
+          "titulo": "el servidor rechaza un correo ya registrado",
+          "estado": "passed"
+        }
+      ]
+    },
+    "E2E-04": {
+      "archivo": "E2E-04_recuperar_password.cy.js",
+      "casos": [
+        {
+          "titulo": "solicita el enlace para un usuario existente",
+          "estado": "failed"
+        },
+        {
+          "titulo": "valida el formato del correo en el cliente",
+          "estado": "passed"
+        }
+      ]
+    },
+    "E2E-05": {
+      "archivo": "E2E-05_navegacion_modulos.cy.js",
+      "casos": [
+        {
+          "titulo": "recorre Campo → Historial → Alertas → Protocolo → Campo",
+          "estado": "passed"
+        }
+      ]
+    },
+    "E2E-06": {
+      "archivo": "E2E-06_escaneo_onnx.cy.js",
+      "casos": [
+        {
+          "titulo": "analiza hoja_trigo.jpg en el navegador y la guarda en IndexedDB",
+          "estado": "passed"
+        }
+      ]
+    },
+    "E2E-07": {
+      "archivo": "E2E-07_control_acceso_rol.cy.js",
+      "casos": [
+        {
+          "titulo": "el agricultor no ve Revisión técnica y la API responde 403",
+          "estado": "passed"
+        },
+        {
+          "titulo": "el técnico sí ve Revisión técnica",
+          "estado": "passed"
+        }
+      ]
+    },
+    "E2E-08": {
+      "archivo": "E2E-08_reportes.cy.js",
+      "casos": [
+        {
+          "titulo": "muestra los indicadores de la API y grafica",
+          "estado": "passed"
+        },
+        {
+          "titulo": "valida el rango y exporta el CSV",
+          "estado": "passed"
+        }
+      ]
+    }
+  }
+}

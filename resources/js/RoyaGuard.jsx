@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
@@ -24,6 +24,15 @@ import BottomNav from './components/BottomNav.jsx';
 
 const ONBOARDING_KEY = 'riwiscan-onboarding-v1';
 const SYNC_INTERVAL_MS = 60_000;
+const REPORTS_PATH = '/reports';
+
+// Carga diferida: recharts solo se descarga al abrir Reportes (el escáner de campo no lo necesita).
+const ReportsPage = lazy(() => import('./pages/ReportsPage.jsx'));
+
+// La ruta web /reports abre la SPA directamente en el módulo de reportes.
+function initialMode() {
+    return typeof window !== 'undefined' && window.location.pathname === REPORTS_PATH ? 'reportes' : 'campo';
+}
 
 function isOnline() {
     return typeof navigator === 'undefined' || navigator.onLine !== false;
@@ -34,7 +43,7 @@ export default function RoyaGuard({ urls, user }) {
     const [lang] = useState(getLang);
     const copy = copyFor(lang);
     const firstName = (user?.name || '').split(' ')[0];
-    const [mode, setMode] = useState('campo');
+    const [mode, setMode] = useState(initialMode);
     // localRows: IndexedDB del dispositivo. cloudRows: diagnosticos visibles en la nube
     // (propios de otros dispositivos o, para tecnico/admin, los del tenant).
     const [localRows, setAnalyses] = useState([]);
@@ -327,6 +336,11 @@ export default function RoyaGuard({ urls, user }) {
 
     useEffect(() => {
         panelRef.current?.scrollTo({ top: 0 });
+        // Mantiene /reports como URL compartible del módulo sin recargar la SPA.
+        const destino = mode === 'reportes' ? REPORTS_PATH : '/';
+        if (window.location.pathname !== destino && [REPORTS_PATH, '/'].includes(window.location.pathname)) {
+            window.history.replaceState(null, '', destino);
+        }
     }, [mode]);
 
     useEffect(() => {
@@ -443,6 +457,11 @@ export default function RoyaGuard({ urls, user }) {
                         />
                     ) : null}
                     {mode === 'parcelas' ? <ParcelasPage analyses={visibleAnalyses} onInspect={goCampo} /> : null}
+                    {mode === 'reportes' ? (
+                        <Suspense fallback={<p className="text-navy/60">Cargando reportes…</p>}>
+                            <ReportsPage />
+                        </Suspense>
+                    ) : null}
                     {mode === 'ajustes' ? (
                         <SettingsPage
                             user={user}

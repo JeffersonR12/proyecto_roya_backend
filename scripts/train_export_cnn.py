@@ -112,8 +112,10 @@ def split_estratificado(muestras: list[dict], seed: int) -> dict[str, list[dict]
     for m in muestras:
         grupos[(m["clase"], m["fuente"])].append(m)
 
-    # Semilla fija para que el split sea reproducible; no se usa con fines criptográficos.
-    rng = random.Random(seed)
+    # Semilla fija para que el split train/val/test sea reproducible entre entrenamientos.
+    # Revisado (Sonar python:S2245): no protege ningún secreto; un CSPRNG (secrets) no admite
+    # semilla y rompería la reproducibilidad del experimento.
+    rng = random.Random(seed)  # NOSONAR
     split = {"train": [], "val": [], "test": []}
     for clave in sorted(grupos):
         items = sorted(grupos[clave], key=lambda m: str(m["path"]))

@@ -19,6 +19,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [AnalysisController::class, 'index'])->name('home');
+    // Acceso directo al modulo de reportes: la SPA abre en el modo "reportes".
+    Route::get('/reports', [AnalysisController::class, 'index'])->name('reports');
     Route::post('/analysis', [AnalysisController::class, 'store'])->name('analysis.store');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

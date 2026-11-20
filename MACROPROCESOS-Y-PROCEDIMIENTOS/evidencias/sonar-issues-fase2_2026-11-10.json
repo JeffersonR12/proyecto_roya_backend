@@ -1,0 +1,87 @@
+﻿{
+    "total":  1,
+    "p":  1,
+    "ps":  100,
+    "paging":  {
+                   "pageIndex":  1,
+                   "pageSize":  100,
+                   "total":  1
+               },
+    "effortTotal":  10,
+    "issues":  [
+                   {
+                       "key":  "a1476f80-14a0-4816-8aa6-61831ba5a5ec",
+                       "rule":  "python:S2245",
+                       "severity":  "MAJOR",
+                       "component":  "proyecto-roya-backend:scripts/train_export_cnn.py",
+                       "project":  "proyecto-roya-backend",
+                       "line":  122,
+                       "hash":  "61c981a69837311fa692c28d11f2d7d7",
+                       "textRange":  {
+                                         "startLine":  122,
+                                         "endLine":  122,
+                                         "startOffset":  8,
+                                         "endOffset":  26
+                                     },
+                       "flows":  [
+
+                                 ],
+                       "status":  "OPEN",
+                       "message":  "Make sure that using this pseudorandom number generator is safe here.",
+                       "effort":  "10min",
+                       "debt":  "10min",
+                       "author":  "77812516@continental.edu.pe",
+                       "tags":  [
+                                    "cwe",
+                                    "cryptography",
+                                    "former-hotspot"
+                                ],
+                       "creationDate":  "2026-10-26T04:06:50+0000",
+                       "updateDate":  "2026-11-10T17:18:01+0000",
+                       "type":  "VULNERABILITY",
+                       "scope":  "MAIN",
+                       "quickFixAvailable":  false,
+                       "messageFormattings":  [
+
+                                              ],
+                       "codeVariants":  [
+
+                                        ],
+                       "cleanCodeAttribute":  "TRUSTWORTHY",
+                       "cleanCodeAttributeCategory":  "RESPONSIBLE",
+                       "impacts":  [
+                                       {
+                                           "softwareQuality":  "SECURITY",
+                                           "severity":  "MEDIUM"
+                                       }
+                                   ],
+                       "issueStatus":  "OPEN",
+                       "prioritizedRule":  false,
+                       "fromSonarQubeUpdate":  false,
+                       "internalTags":  [
+
+                                        ],
+                       "linkedTicketStatus":  "NOT_LINKED"
+                   }
+               ],
+    "components":  [
+                       {
+                           "key":  "proyecto-roya-backend:scripts/train_export_cnn.py",
+                           "enabled":  true,
+                           "qualifier":  "FIL",
+                           "name":  "train_export_cnn.py",
+                           "longName":  "scripts/train_export_cnn.py",
+                           "path":  "scripts/train_export_cnn.py"
+                       },
+                       {
+                           "key":  "proyecto-roya-backend",
+                           "enabled":  true,
+                           "qualifier":  "TRK",
+                           "name":  "RiwiScan - Proyecto Roya Backend",
+                           "longName":  "RiwiScan - Proyecto Roya Backend"
+                       }
+                   ],
+    "facets":  [
+
+               ]
+}

@@ -5,6 +5,7 @@ export const MODE_LABELS = {
     protocolo: 'Protocolo',
     hitl: 'Revisión técnica',
     parcelas: 'Parcelas',
+    reportes: 'Reportes',
     ajustes: 'Ajustes',
 };
 

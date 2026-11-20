@@ -4,6 +4,7 @@ import {
     AlertGlyph,
     BookGlyph,
     CameraGlyph,
+    ChartGlyph,
     GearGlyph,
     HistoryGlyph,
     LogoutGlyph,
@@ -27,6 +28,7 @@ export default function Sidebar({ mode, onModeChange, logoutUrl, open, onClose, 
         [
             staff ? { id: 'hitl', label: 'Revisión técnica', icon: ShieldGlyph, badge: pendingCount } : null,
             { id: 'protocolo', label: 'Protocolo', icon: BookGlyph },
+            { id: 'reportes', label: 'Reportes', icon: ChartGlyph },
         ].filter(Boolean),
     ];
 

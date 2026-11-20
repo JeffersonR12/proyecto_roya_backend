@@ -1,0 +1,6 @@
+{
+    "_fuente": "database/seeders/DatabaseSeeder.php (tenant el-roble). Contraseña sembrada: 'password'.",
+    "admin": { "email": "admin@gmail.com", "password": "password", "nombre": "Ana" },
+    "tecnico": { "email": "tecnico@gmail.com", "password": "password", "nombre": "Luis" },
+    "agricultor": { "email": "agricultor@gmail.com", "password": "password", "nombre": "Maria" }
+}

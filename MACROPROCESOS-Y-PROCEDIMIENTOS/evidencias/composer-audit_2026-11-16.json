@@ -1,0 +1,220 @@
+{
+    "advisories": {
+        "laravel/framework": [
+            {
+                "advisoryId": "PKSA-yxbx-3c9s-cjt9",
+                "packageName": "laravel/framework",
+                "affectedVersions": ">=13.0.0,<13.40.0|<12.71.0",
+                "title": "Laravel: Task Output Injection - Concurrency Process",
+                "cve": "CVE-2026-128083",
+                "link": "https://github.com/advisories/GHSA-63hm-g96r-2m2q",
+                "reportedAt": "2026-11-13T18:54:31+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-63hm-g96r-2m2q"
+                    }
+                ],
+                "severity": "low"
+            }
+        ],
+        "league/commonmark": [
+            {
+                "advisoryId": "PKSA-m2dq-1fhr-29b1",
+                "packageName": "league/commonmark",
+                "affectedVersions": ">=1.3.0,<=2.10.1",
+                "title": "league/commonmark: DisallowedRawHtml bypassed when a disallowed tag name ends the raw-HTML literal",
+                "cve": null,
+                "link": "https://github.com/advisories/GHSA-97jj-33gv-5xf9",
+                "reportedAt": "2026-09-30T15:36:33+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-97jj-33gv-5xf9"
+                    }
+                ],
+                "severity": "medium"
+            },
+            {
+                "advisoryId": "PKSA-m4t9-vsgq-8khn",
+                "packageName": "league/commonmark",
+                "affectedVersions": ">=2.0.0,<=2.10.1",
+                "title": "league/commonmark: Quadratic-time denial of service in the GitHub Flavored Markdown Table extension block-start scan",
+                "cve": null,
+                "link": "https://github.com/advisories/GHSA-3q6v-r5mr-hxv8",
+                "reportedAt": "2026-09-30T15:36:13+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-3q6v-r5mr-hxv8"
+                    }
+                ],
+                "severity": "high"
+            }
+        ],
+        "symfony/http-foundation": [
+            {
+                "advisoryId": "PKSA-nxjs-s6hn-vb6m",
+                "packageName": "symfony/http-foundation",
+                "affectedVersions": ">=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "The \"private_ranges\" Trusted Proxies Shortcut Trusts Clients Presenting an IPv4-Mapped, 6to4, Teredo or NAT64 Address as Reverse Proxies",
+                "cve": "CVE-2026-121619",
+                "link": "https://github.com/symfony/symfony/security/advisories/GHSA-xg2q-4rrq-657q",
+                "reportedAt": "2026-11-04T11:26:51+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/http-foundation/CVE-2026-121619.yaml"
+                    }
+                ],
+                "severity": null
+            },
+            {
+                "advisoryId": "PKSA-24ph-xkrh-y79j",
+                "packageName": "symfony/http-foundation",
+                "affectedVersions": ">=2.0.0,<3.0.0|>=3.0.0,<4.0.0|>=4.0.0,<5.0.0|>=5.0.0,<5.1.0|>=5.1.0,<5.2.0|>=5.2.0,<5.3.0|>=5.3.0,<5.4.0|>=5.4.0,<5.4.56|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.50|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "CVE-2026-118514: HEAD Requests Bypass the methods Option of security.access_control Rules and Firewalls: Incomplete Fix for CVE-2026-45075",
+                "cve": "CVE-2026-118514",
+                "link": "https://symfony.com/cve-2026-118514",
+                "reportedAt": "2026-11-04T10:45:07+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/http-foundation/CVE-2026-118514.yaml"
+                    }
+                ],
+                "severity": null
+            },
+            {
+                "advisoryId": "PKSA-pr6q-2w5s-kzzf",
+                "packageName": "symfony/http-foundation",
+                "affectedVersions": ">=5.4.50,<5.4.56|>=6.4.29,<6.4.50|>=7.3.7,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "Path Rules Enforced in Front of PHP Can Be Bypassed by Appending the Path to the Script Name",
+                "cve": null,
+                "link": "https://github.com/symfony/symfony/security/advisories/GHSA-3h27-hjv7-fqjx",
+                "reportedAt": "2026-11-04T00:00:00+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/http-foundation/2026-11-04-21.yaml"
+                    }
+                ],
+                "severity": null
+            },
+            {
+                "advisoryId": "PKSA-b2gg-vk1g-6d5q",
+                "packageName": "symfony/http-foundation",
+                "affectedVersions": ">=2.0.0,<2.1.0|>=2.1.0,<2.2.0|>=2.2.0,<2.3.0|>=2.3.0,<2.4.0|>=2.4.0,<2.5.0|>=2.5.0,<2.6.0|>=2.6.0,<2.7.0|>=2.7.0,<2.8.0|>=2.8.0,<3.0.0|>=3.0.0,<3.1.0|>=3.1.0,<3.2.0|>=3.2.0,<3.3.0|>=3.3.0,<3.4.0|>=3.4.0,<4.0.0|>=4.0.0,<4.1.0|>=4.1.0,<4.2.0|>=4.2.0,<4.3.0|>=4.3.0,<4.4.0|>=4.4.0,<5.0.0|>=5.0.0,<5.1.0|>=5.1.0,<5.2.0|>=5.2.0,<5.3.0|>=5.3.0,<5.4.0|>=5.4.0,<5.4.56|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.50|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "Generated URLs Can Point to a Host Chosen by the Client",
+                "cve": null,
+                "link": "https://github.com/symfony/symfony/security/advisories/GHSA-5mx8-mwrp-5693",
+                "reportedAt": "2026-11-04T00:00:00+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/http-foundation/2026-11-04-22.yaml"
+                    }
+                ],
+                "severity": null
+            },
+            {
+                "advisoryId": "PKSA-xmwy-rmx5-m7h4",
+                "packageName": "symfony/http-foundation",
+                "affectedVersions": ">=5.4.1,<5.4.54|>=6.0.1,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.46|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.19|>=8.0.0,<8.1.0|>=8.1.0,<8.1.7",
+                "title": "CVE-2026-108082: ReDoS in HeaderUtils::split() Reachable Through the Cache-Control Request Header",
+                "cve": "CVE-2026-108082",
+                "link": "https://symfony.com/cve-2026-108082",
+                "reportedAt": "2026-09-15T08:00:00+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-r925-mgvr-h9cc"
+                    },
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/http-foundation/CVE-2026-108082.yaml"
+                    }
+                ],
+                "severity": "high"
+            }
+        ],
+        "symfony/http-kernel": [
+            {
+                "advisoryId": "PKSA-3gxv-7xhq-mgmz",
+                "packageName": "symfony/http-kernel",
+                "affectedVersions": ">=2.8.44,<3.0.0|>=3.4.14,<4.0.0|>=4.0.14,<5.0.0|>=5.0.0,<5.1.0|>=5.1.0,<5.2.0|>=5.2.0,<5.3.0|>=5.3.0,<5.4.0|>=5.4.0,<5.4.56|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.50|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "Inline Fragments Let Untrusted Forwarded Headers Set the Host, Scheme and Port of the URLs Generated for the Main Request",
+                "cve": "CVE-2026-123339",
+                "link": "https://github.com/symfony/symfony/security/advisories/GHSA-wg5q-m2ww-f3c9",
+                "reportedAt": "2026-11-04T10:45:07+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/http-kernel/CVE-2026-123339.yaml"
+                    }
+                ],
+                "severity": null
+            }
+        ],
+        "symfony/mime": [
+            {
+                "advisoryId": "PKSA-wtxr-p26d-nn42",
+                "packageName": "symfony/mime",
+                "affectedVersions": ">=2.0.0,<3.0.0|>=3.0.0,<4.0.0|>=4.0.0,<5.0.0|>=5.0.0,<5.1.0|>=5.1.0,<5.2.0|>=5.2.0,<5.3.0|>=5.3.0,<5.4.0|>=5.4.0,<5.4.55|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.49|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.22|>=8.0.0,<8.1.0|>=8.1.0,<8.1.10",
+                "title": "CVE-2026-45070: Email Header Injection via Non-Token Characters in Mime Parameter Names",
+                "cve": "CVE-2026-45070",
+                "link": "https://symfony.com/cve-2026-45070",
+                "reportedAt": "2026-10-28T18:08:54+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-vqc8-7275-q272"
+                    },
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/mime/CVE-2026-45070.yaml"
+                    }
+                ],
+                "severity": "medium"
+            }
+        ],
+        "symfony/routing": [
+            {
+                "advisoryId": "PKSA-y8c5-1b7f-r1gj",
+                "packageName": "symfony/routing",
+                "affectedVersions": ">=4.1.0,<4.2.0|>=4.2.0,<4.3.0|>=4.3.0,<4.4.0|>=4.4.0,<5.0.0|>=5.0.0,<5.1.0|>=5.1.0,<5.2.0|>=5.2.0,<5.3.0|>=5.3.0,<5.4.0|>=5.4.0,<5.4.56|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.50|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "CVE-2026-118516: Host Placeholders Can Match the Start of the Path in Compiled URL Matchers, Bypassing Path-Based Access Control",
+                "cve": "CVE-2026-118516",
+                "link": "https://symfony.com/cve-2026-118516",
+                "reportedAt": "2026-11-04T10:45:07+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/routing/CVE-2026-118516.yaml"
+                    }
+                ],
+                "severity": null
+            }
+        ],
+        "symfony/yaml": [
+            {
+                "advisoryId": "PKSA-nktx-f1n1-b4yd",
+                "packageName": "symfony/yaml",
+                "affectedVersions": ">=2.0.0,<3.0.0|>=3.0.0,<4.0.0|>=4.0.0,<5.0.0|>=5.0.0,<5.1.0|>=5.1.0,<5.2.0|>=5.2.0,<5.3.0|>=5.3.0,<5.4.0|>=5.4.0,<5.4.56|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.50|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "Exponential and Quadratic Parse Times in the YAML Parser Let a Single Document Hold a Process",
+                "cve": "CVE-2026-123792",
+                "link": "https://github.com/symfony/symfony/security/advisories/GHSA-hwfg-qwvh-2wfx",
+                "reportedAt": "2026-11-04T10:45:07+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/yaml/CVE-2026-123792.yaml"
+                    }
+                ],
+                "severity": null
+            }
+        ]
+    },
+    "abandoned": [],
+    "filter": []
+}

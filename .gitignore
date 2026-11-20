@@ -21,6 +21,10 @@
 /public/models/*.onnx
 /storage/ml
 /coverage
+/cypress/videos
+/cypress/screenshots
+/cypress/reports
+/cypress/downloads
 /.scannerwork
 /storage/*.key
 /storage/pail

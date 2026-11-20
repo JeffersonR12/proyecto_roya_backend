@@ -1,0 +1,3 @@
+Re-ejecución aislada: npx cypress run --spec cypress/e2e/E2E-04_recuperar_password.cy.js --reporter spec
+Servidor: php artisan serve --port=8090 (build de producción). Fecha: 2026-11-16.
+Resultado: Tests 2, Passing 2, Failing 0 ("2 passing (4s)").

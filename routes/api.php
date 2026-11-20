@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\DiagnosticoController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SyncController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,4 +39,8 @@ Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function ()
     Route::patch('/alertas/{id}/leida', [ConsultaController::class, 'marcarAlertaLeida'])
         ->whereNumber('id')
         ->name('api.alertas.leida');
+
+    // Modulo de reportes (Actividad 5): indicadores y exportacion CSV.
+    Route::get('/reports/summary', [ReportController::class, 'summary'])->name('api.reports.summary');
+    Route::get('/reports/export', [ReportController::class, 'export'])->name('api.reports.export');
 });
