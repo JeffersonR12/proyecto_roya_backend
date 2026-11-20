@@ -2,7 +2,11 @@
 
 Esta carpeta contiene la trazabilidad de los **12 macroprocesos (INT-001 a INT-012)** y los **62 procedimientos (TRZ-XXX-XXX)** de RiwiScan. Cada procedimiento está vinculado con su archivo real en el código, sus pruebas, sus commits y la evidencia de calidad (MRP).
 
-La matriz sigue la estructura de `Matriz de registro_ProyectoRoya.xlsx`: bloques 1 a 5, columnas "Registro / Evidencia" y "Resultado", y las mismas fórmulas. Se agregó una extensión propia de RiwiScan con las columnas BZ a CH.
+> **Matriz vigente (2026-11-20):** `Docs/Matriz_TrazabilidadRoya/Mat_Traza_RiwiScan_16_11.xlsx`. Aplica la metodología **ISAET** (Ingeniería de Software Agéntica Estructurada y Trazable), descrita en `Docs/Software_Agentes/ISAET_Metodologia_Combinada_RiwiScan.docx`. Su unidad de trabajo es la **Misión** (equivalente al *Bolt* de AI-DLC). Cada TRZ es una Misión: BriefingScript → LoopScript → MRP → VCR. Los registros solo admiten Sí / No / No aplica, y el estado de la Misión es Implementado / Redundante / No implementado.
+>
+> La matriz `Matriz_Trazabilidad_RiwiScan_v2` (xlsx, csv y md) de esta carpeta queda como **registro histórico del 2026-11-16**. Fue la fuente de evidencia, pero todavía usa "Pendiente" y el formato AI-DLC de 78 columnas.
+
+La matriz v2 sigue la estructura de `Matriz de registro_ProyectoRoya.xlsx`: bloques 1 a 5, columnas "Registro / Evidencia" y "Resultado", y las mismas fórmulas. Se agregó una extensión propia de RiwiScan con las columnas BZ a CH.
 
 ## Estructura
 
@@ -206,4 +210,4 @@ git push origin trazabilidad/base
 git push origin 'refs/heads/INT-0*:refs/heads/INT-0*'
 ```
 
-Después del push, en la matriz cambia a "Sí" el criterio "¿Implementación registrada en commit?" de los 17 TRZ que hoy dicen "Pendiente" por el commit base.
+En la matriz vigente, el criterio "¿Implementación registrada en commit?" ya figura como "Sí" en las 62 Misiones, porque el código está confirmado en el commit base `22a0ebe`. Los enlaces de commit y de rama empiezan a funcionar en GitHub cuando se hace el push.
