@@ -14,6 +14,9 @@ class AuthRules
 
     public const LOGIN_DECAY_SECONDS = 60;
 
+    /** Intentos por minuto y por IP en /register, /forgot-password y /reset-password. */
+    public const PUBLIC_FORM_ATTEMPTS = 5;
+
     public const PERU_PHONE_PATTERN = '/^\+519[0-9]{8}$/';
 
     public const PERU_PHONE_REGEX = 'regex:/^\+519[0-9]{8}$/';

@@ -1,5 +1,51 @@
 import { describe, expect, it } from 'vitest';
-import { alertFromAxiosError, firstAuthMessage, validateLogin, validateRegister } from './authAlerts.js';
+import {
+    alertFromAxiosError,
+    firstAuthMessage,
+    normalizeInviteCode,
+    validateLogin,
+    validateRegister,
+    validateResetPassword,
+} from './authAlerts.js';
+
+describe('codigo de cooperativa y restablecimiento', () => {
+    const registro = {
+        name: 'Ana',
+        email: 'ana@gmail.com',
+        phone: '987654321',
+        password: 'password1',
+        password_confirmation: 'password1',
+        terms: true,
+    };
+
+    it('normaliza el codigo como el servidor', () => {
+        expect(normalizeInviteCode(' k7m2q - x9pra ')).toBe('K7M2QX9PRA');
+    });
+
+    it('exige el codigo de cooperativa en el registro', () => {
+        const alert = validateRegister({ ...registro, codigo_invitacion: '  ' });
+
+        expect(alert.type).toBe('warning');
+        expect(alert.message).toContain('código de tu cooperativa');
+    });
+
+    it('acepta el registro con codigo', () => {
+        expect(validateRegister({ ...registro, codigo_invitacion: 'K7M2QX9PRA' })).toBeNull();
+    });
+
+    it('prioriza el error del codigo sobre los demas', () => {
+        expect(firstAuthMessage({ email: ['x'], codigo_invitacion: ['Código no válido'] })).toBe('Código no válido');
+    });
+
+    it('valida el formulario de nueva contraseña', () => {
+        const base = { token: 't', email: 'ana@gmail.com', password: 'password1', password_confirmation: 'password1' };
+
+        expect(validateResetPassword(base)).toBeNull();
+        expect(validateResetPassword({ ...base, token: '' }).message).toContain('enlace');
+        expect(validateResetPassword({ ...base, password: 'corta', password_confirmation: 'corta' }).message).toContain('8 caracteres');
+        expect(validateResetPassword({ ...base, password_confirmation: 'otra' }).message).toBe('Las contraseñas no coinciden.');
+    });
+});
 
 describe('alertas de autenticacion', () => {
     it('prioriza el error generico de credenciales', () => {

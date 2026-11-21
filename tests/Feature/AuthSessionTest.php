@@ -2,13 +2,25 @@
 
 namespace Tests\Feature;
 
+use App\Models\Tenant;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AuthSessionTest extends TestCase
 {
     use RefreshDatabase;
+
+    private Tenant $tenant;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(RoleSeeder::class);
+        $this->tenant = Tenant::factory()->create(['nombre' => 'Cooperativa El Roble']);
+    }
 
     public function test_register_page_is_reachable(): void
     {
@@ -26,8 +38,15 @@ class AuthSessionTest extends TestCase
         $this->assertDatabaseMissing('users', ['email' => 'usuario@hotmail.com']);
     }
 
-    public function test_register_creates_agricultor_with_tenant(): void
+    /**
+     * Antes esta prueba esperaba que el registro creara el tenant a partir del
+     * nombre de la organizacion. Eso permitia entrar a cualquier cooperativa
+     * (T-04/T-05): ahora el tenant sale del codigo de invitacion y no se crea.
+     */
+    public function test_register_creates_agricultor_in_invited_tenant(): void
     {
+        $tenantsAntes = Tenant::query()->count();
+
         $response = $this->postJson('/register', $this->validRegisterPayload());
 
         $response->assertCreated()
@@ -38,13 +57,10 @@ class AuthSessionTest extends TestCase
             'email' => 'ana.campo@gmail.com',
             'role' => 'agricultor',
             'phone' => '+51987654321',
+            'tenant_id' => $this->tenant->id,
+            'organization' => 'Cooperativa El Roble',
         ]);
-        $this->assertDatabaseHas('tenants', [
-            'codigo' => 'cooperativa-el-roble',
-        ]);
-        $this->assertDatabaseHas('roles', [
-            'nombre' => 'agricultor',
-        ]);
+        $this->assertSame($tenantsAntes, Tenant::query()->count());
     }
 
     public function test_register_rejects_duplicate_email(): void
@@ -135,8 +151,7 @@ class AuthSessionTest extends TestCase
             'email' => 'ana.campo@gmail.com',
             'password' => 'password1',
             'password_confirmation' => 'password1',
-            'role' => 'agricultor',
-            'organization' => 'Cooperativa El Roble',
+            'codigo_invitacion' => $this->tenant->codigo_invitacion,
             'phone' => '+51987654321',
             'terms' => '1',
         ], $overrides);

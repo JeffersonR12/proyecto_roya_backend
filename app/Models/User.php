@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\RestablecerContrasena;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -65,6 +66,11 @@ class User extends Authenticatable
     public function analyses(): HasMany
     {
         return $this->hasMany(Analysis::class);
+    }
+
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $this->notify(new RestablecerContrasena($token));
     }
 
     public function isAdmin(): bool

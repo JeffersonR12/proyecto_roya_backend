@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\DiagnosticoController;
 use App\Http\Controllers\Api\DiagnosticoSyncController;
+use App\Http\Controllers\Api\TenantInvitacionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,4 +21,11 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/diagnosticos/{uuid}/imagen', [DiagnosticoController::class, 'imagen'])
         ->whereUuid('uuid')
         ->name('api.diagnosticos.imagen');
+
+    // Solo administrador (se valida en el controlador contra su propio tenant).
+    Route::get('/tenant/invitacion', [TenantInvitacionController::class, 'show'])
+        ->name('api.tenant.invitacion');
+    Route::post('/tenant/invitacion/regenerar', [TenantInvitacionController::class, 'regenerar'])
+        ->middleware('throttle:10,1')
+        ->name('api.tenant.invitacion.regenerar');
 });
