@@ -64,3 +64,19 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-004 Análisis Fitosanitario y Diagnóstico
+- **Procedimiento:** TRZ-004-002 — Trazabilidad del diagnóstico: UUID único, versión de modelo, coordenadas y scores.
+- **Rama:** [`INT-004/TRZ-004-002-trazabilidad-diagnostico`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-004/TRZ-004-002-trazabilidad-diagnostico)
+- **Ficha en la rama:** [TRZ-004-002_trazabilidad_diagnostico.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-002-trazabilidad-diagnostico/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-004_Analisis_Fitosanitario/TRZ-004-002_trazabilidad_diagnostico.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/Diagnostico.php` | protected $fillable | 40–60 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-002-trazabilidad-diagnostico/app/Models/Diagnostico.php#L40-L60) |
+| `app/Models/Diagnostico.php` | function casts | 62–73 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-002-trazabilidad-diagnostico/app/Models/Diagnostico.php#L62-L73) |
+| `database/migrations/2026_10_04_180006_create_diagnosticos_table.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-002-trazabilidad-diagnostico/database/migrations/2026_10_04_180006_create_diagnosticos_table.php) |
+| `database/migrations/2026_11_06_000001_add_sync_and_hitl_fields_to_diagnosticos_table.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-002-trazabilidad-diagnostico/database/migrations/2026_11_06_000001_add_sync_and_hitl_fields_to_diagnosticos_table.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
