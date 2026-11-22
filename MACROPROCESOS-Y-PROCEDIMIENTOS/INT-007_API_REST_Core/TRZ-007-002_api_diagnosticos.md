@@ -64,3 +64,24 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-007 API REST del Core
+- **Procedimiento:** TRZ-007-002 — CRUD de diagnósticos con permisos por rol (técnico/admin) y endpoint de imagen.
+- **Rama:** [`INT-007/TRZ-007-002-api-diagnosticos`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-007/TRZ-007-002-api-diagnosticos)
+- **Ficha en la rama:** [TRZ-007-002_api_diagnosticos.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-007_API_REST_Core/TRZ-007-002_api_diagnosticos.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/Api/DiagnosticoController.php` | index | 24–56 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Controllers/Api/DiagnosticoController.php#L24-L56) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | store | 59–77 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Controllers/Api/DiagnosticoController.php#L59-L77) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | show | 79–85 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Controllers/Api/DiagnosticoController.php#L79-L85) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | update | 88–99 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Controllers/Api/DiagnosticoController.php#L88-L99) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | destroy | 102–107 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Controllers/Api/DiagnosticoController.php#L102-L107) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | imagen | 110–123 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Controllers/Api/DiagnosticoController.php#L110-L123) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | visible | 125–131 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Controllers/Api/DiagnosticoController.php#L125-L131) |
+| `app/Http/Resources/DiagnosticoResource.php` | toArray | 11–45 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Resources/DiagnosticoResource.php#L11-L45) |
+| `app/Http/Requests/UpdateDiagnosticoRequest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-002-api-diagnosticos/app/Http/Requests/UpdateDiagnosticoRequest.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
