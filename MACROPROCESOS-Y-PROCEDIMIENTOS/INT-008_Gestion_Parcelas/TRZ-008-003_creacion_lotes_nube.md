@@ -62,3 +62,16 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-008 Gestión de Parcelas (Lotes)
+- **Procedimiento:** TRZ-008-003 — Alta automática de parcela en la nube al sincronizar (firstOrCreate por tenant).
+- **Rama:** [`INT-008/TRZ-008-003-creacion-lotes-nube`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-008/TRZ-008-003-creacion-lotes-nube)
+- **Ficha en la rama:** [TRZ-008-003_creacion_lotes_nube.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-003-creacion-lotes-nube/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-008_Gestion_Parcelas/TRZ-008-003_creacion_lotes_nube.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Services/DiagnosticoSyncService.php` | resolverParcela | 182–204 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-003-creacion-lotes-nube/app/Services/DiagnosticoSyncService.php#L182-L204) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
