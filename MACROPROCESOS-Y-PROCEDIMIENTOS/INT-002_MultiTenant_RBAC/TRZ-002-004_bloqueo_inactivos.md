@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-002 Multi-Tenant y Control de Acceso por Roles (RBAC)
+- **Procedimiento:** TRZ-002-004 — Bloqueo de usuarios/tenants inactivos en cada petición a la API (error 403).
+- **Rama:** [`INT-002/TRZ-002-004-bloqueo-inactivos`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-002/TRZ-002-004-bloqueo-inactivos)
+- **Ficha en la rama:** [TRZ-002-004_bloqueo_inactivos.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-004-bloqueo-inactivos/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-002_MultiTenant_RBAC/TRZ-002-004_bloqueo_inactivos.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Middleware/EnsureTenantIsActive.php` | handle | 16–25 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-004-bloqueo-inactivos/app/Http/Middleware/EnsureTenantIsActive.php#L16-L25) |
+| `bootstrap/app.php` | 'tenant's*=> | 34 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-004-bloqueo-inactivos/bootstrap/app.php#L34) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
