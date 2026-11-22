@@ -62,3 +62,19 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-003 Captura e Inferencia IA en el Borde (Edge AI)
+- **Procedimiento:** TRZ-003-004 — Postprocesamiento con umbral de confianza del 75%; si no se alcanza, resultado "no concluyente".
+- **Rama:** [`INT-003/TRZ-003-004-umbral-confianza`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-003/TRZ-003-004-umbral-confianza)
+- **Ficha en la rama:** [TRZ-003-004_umbral_confianza.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-004-umbral-confianza/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-003_Captura_Inferencia_Edge_AI/TRZ-003-004_umbral_confianza.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/inference.js` | UMBRAL_CONFIANZA | 3 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-004-umbral-confianza/resources/js/lib/inference.js#L3) |
+| `resources/js/lib/inference.js` | softmax | 20–27 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-004-umbral-confianza/resources/js/lib/inference.js#L20-L27) |
+| `resources/js/lib/inference.js` | applyUmbral | 33–49 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-004-umbral-confianza/resources/js/lib/inference.js#L33-L49) |
+| `resources/js/lib/inference.js` | fromLogits | 51–72 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-004-umbral-confianza/resources/js/lib/inference.js#L51-L72) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
