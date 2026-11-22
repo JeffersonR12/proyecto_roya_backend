@@ -64,3 +64,22 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-006 Persistencia Offline-First y Sincronización
+- **Procedimiento:** TRZ-006-005 — Sincronización idempotente en servidor (lote transaccional, respuesta por ítem).
+- **Rama:** [`INT-006/TRZ-006-005-recepcion-lotes-idempotente`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-006/TRZ-006-005-recepcion-lotes-idempotente)
+- **Ficha en la rama:** [TRZ-006-005_recepcion_lotes_idempotente.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-006_Persistencia_Offline_Sincronizacion/TRZ-006-005_recepcion_lotes_idempotente.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Services/DiagnosticoSyncService.php` | sincronizar | 40–55 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/app/Services/DiagnosticoSyncService.php#L40-L55) |
+| `app/Services/DiagnosticoSyncService.php` | procesar | 61–117 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/app/Services/DiagnosticoSyncService.php#L61-L117) |
+| `app/Services/DiagnosticoSyncService.php` | resolverExistente | 123–155 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/app/Services/DiagnosticoSyncService.php#L123-L155) |
+| `app/Services/DiagnosticoSyncService.php` | mismoContenido | 158–167 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/app/Services/DiagnosticoSyncService.php#L158-L167) |
+| `app/Services/DiagnosticoSyncService.php` | resultado | 230–247 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/app/Services/DiagnosticoSyncService.php#L230-L247) |
+| `app/Models/SyncEvent.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/app/Models/SyncEvent.php) |
+| `database/migrations/2026_10_04_180007_create_alertas_and_sync_events_tables.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-005-recepcion-lotes-idempotente/database/migrations/2026_10_04_180007_create_alertas_and_sync_events_tables.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
