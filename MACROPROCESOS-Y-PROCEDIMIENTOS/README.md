@@ -74,6 +74,32 @@ Antes de ejecutarlos, ten en cuenta lo siguiente:
 - Comprueba con `git status` que solo se agregó `MACROPROCESOS-Y-PROCEDIMIENTOS/` antes de hacer el commit.
 - Al subir la rama, abre un **pull request con revisión**. Así cierras el criterio 5.2 "¿Revisión de código aprobada?", que hoy está en "Pendiente" en las 62 filas.
 
+
+## Ramas por macroproceso
+
+Cada macroproceso tiene una rama `macroproceso/INT-XXX-<nombre>` que agrega el índice `MACROPROCESOS-Y-PROCEDIMIENTOS/INT-XXX_<Nombre>/README.md`. El índice lista sus Misiones (procedimientos TRZ) con su estado, sus criterios en "No", su rama, su ficha, su commit y los enlaces al código. La columna INTENT de la matriz enlaza a estas ramas.
+
+| Macroproceso | Misiones | Rama |
+|---|---|---|
+| INT-001 Seguridad y Accesos | 6 | [`macroproceso/INT-001-seguridad-accesos`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-001-seguridad-accesos) |
+| INT-002 Multi-Tenant y RBAC | 5 | [`macroproceso/INT-002-multitenant-rbac`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-002-multitenant-rbac) |
+| INT-003 Captura e Inferencia IA | 5 | [`macroproceso/INT-003-captura-inferencia-edge-ai`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-003-captura-inferencia-edge-ai) |
+| INT-004 Análisis Fitosanitario | 5 | [`macroproceso/INT-004-analisis-fitosanitario`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-004-analisis-fitosanitario) |
+| INT-005 Catálogo Fitosanitario | 5 | [`macroproceso/INT-005-catalogo-protocolos`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-005-catalogo-protocolos) |
+| INT-006 Persistencia Offline | 6 | [`macroproceso/INT-006-persistencia-offline-sincronizacion`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-006-persistencia-offline-sincronizacion) |
+| INT-007 API REST del Core | 5 | [`macroproceso/INT-007-api-rest-core`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-007-api-rest-core) |
+| INT-008 Gestión de Parcelas | 5 | [`macroproceso/INT-008-gestion-parcelas`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-008-gestion-parcelas) |
+| INT-009 Alertas Tempranas | 5 | [`macroproceso/INT-009-alertas-tempranas`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-009-alertas-tempranas) |
+| INT-010 Validación Humana (HITL) | 5 | [`macroproceso/INT-010-validacion-hitl-agente`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-010-validacion-hitl-agente) |
+| INT-011 Pipeline de ML | 5 | [`macroproceso/INT-011-pipeline-ml`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-011-pipeline-ml) |
+| INT-012 Aseguramiento de Calidad | 5 | [`macroproceso/INT-012-aseguramiento-calidad`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/macroproceso/INT-012-aseguramiento-calidad) |
+
+Para publicarlas (no se ejecutó):
+
+```bash
+git push origin 'refs/heads/macroproceso/*:refs/heads/macroproceso/*'
+```
+
 ## Ramas por procedimiento en GitHub
 
 Cada procedimiento tiene su rama `INT-XXX/TRZ-XXX-XXX-<nombre>`. Todas parten del commit base `22a0ebe` (rama `trazabilidad/base`), que integra los cambios locales. En cada rama, la ficha TRZ agrega la sección **"Código del procedimiento en GitHub"**, con enlaces al archivo y a las líneas exactas. La matriz `Docs/Matriz_TrazabilidadRoya/Mat_Traza_RiwiScan_16_11.xlsx` enlaza esas ramas en las columnas G, W, AK y AO.
