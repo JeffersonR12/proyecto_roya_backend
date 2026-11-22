@@ -66,3 +66,19 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-003 Captura e Inferencia IA en el Borde (Edge AI)
+- **Procedimiento:** TRZ-003-001 — Captura de hoja con cámara/archivo, con guía visual de luz y distancia.
+- **Rama:** [`INT-003/TRZ-003-001-captura-guiada`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-003/TRZ-003-001-captura-guiada)
+- **Ficha en la rama:** [TRZ-003-001_captura_guiada.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-001-captura-guiada/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-003_Captura_Inferencia_Edge_AI/TRZ-003-001_captura_guiada.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/components/Scanner.jsx` | Scanner | 88–526 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-001-captura-guiada/resources/js/components/Scanner.jsx#L88-L526) |
+| `resources/js/components/CaptureGuide.jsx` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-001-captura-guiada/resources/js/components/CaptureGuide.jsx) |
+| `resources/js/lib/fieldFlow.js` | TIP_IDS | 214 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-001-captura-guiada/resources/js/lib/fieldFlow.js#L214) |
+| `resources/js/lib/fieldFlow.js` | stepFor | 218–226 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-001-captura-guiada/resources/js/lib/fieldFlow.js#L218-L226) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
