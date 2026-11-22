@@ -62,3 +62,19 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-006 Persistencia Offline-First y Sincronización
+- **Procedimiento:** TRZ-006-004 — Tolerancia a fallos en sincronización (reintentos con espera creciente, aviso de sesión).
+- **Rama:** [`INT-006/TRZ-006-004-recuperacion-fallos-red`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-006/TRZ-006-004-recuperacion-fallos-red)
+- **Ficha en la rama:** [TRZ-006-004_recuperacion_fallos_red.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-004-recuperacion-fallos-red/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-006_Persistencia_Offline_Sincronizacion/TRZ-006-004_recuperacion_fallos_red.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/syncQueue.js` | STALE_SENDING_MS | 8 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-004-recuperacion-fallos-red/resources/js/lib/syncQueue.js#L8) |
+| `resources/js/lib/syncQueue.js` | nextRetryDelay | 13–17 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-004-recuperacion-fallos-red/resources/js/lib/syncQueue.js#L13-L17) |
+| `resources/js/lib/syncQueue.js` | isDue | 20–45 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-004-recuperacion-fallos-red/resources/js/lib/syncQueue.js#L20-L45) |
+| `resources/js/lib/syncQueue.js` | requeuePatch | 125–134 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-004-recuperacion-fallos-red/resources/js/lib/syncQueue.js#L125-L134) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

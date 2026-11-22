@@ -65,3 +65,17 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-006 Persistencia Offline-First y Sincronización
+- **Procedimiento:** TRZ-006-003 — Disparo automático de sincronización (al abrir app, al volver conexión, cada 60s).
+- **Rama:** [`INT-006/TRZ-006-003-sincronizacion-automatica`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-006/TRZ-006-003-sincronizacion-automatica)
+- **Ficha en la rama:** [TRZ-006-003_sincronizacion_automatica.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-003-sincronizacion-automatica/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-006_Persistencia_Offline_Sincronizacion/TRZ-006-003_sincronizacion_automatica.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/RoyaGuard.jsx` | runSync | 132–165 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-003-sincronizacion-automatica/resources/js/RoyaGuard.jsx#L132-L165) |
+| `resources/js/pages/SettingsPage.jsx` | syncNow | 30–37 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-003-sincronizacion-automatica/resources/js/pages/SettingsPage.jsx#L30-L37) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
