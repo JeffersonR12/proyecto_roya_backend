@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-010 Validación Humana (HITL) y Agente Asistente
+- **Procedimiento:** TRZ-010-003 — Registro de etiqueta humana corregida para reentrenar el modelo.
+- **Rama:** [`INT-010/TRZ-010-003-correcciones-humanas`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-010/TRZ-010-003-correcciones-humanas)
+- **Ficha en la rama:** [TRZ-010-003_correcciones_humanas.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-003-correcciones-humanas/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-010_Validacion_HITL_Agente/TRZ-010-003_correcciones_humanas.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/agente.js` | registrarCorreccion | 198–215 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-003-correcciones-humanas/resources/js/lib/agente.js#L198-L215) |
+| `app/Models/Diagnostico.php` | etiqueta_humana | 59 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-003-correcciones-humanas/app/Models/Diagnostico.php#L59) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
