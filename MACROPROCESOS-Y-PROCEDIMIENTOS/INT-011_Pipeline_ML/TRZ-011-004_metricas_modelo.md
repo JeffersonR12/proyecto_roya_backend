@@ -64,3 +64,18 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-011 Pipeline de Machine Learning
+- **Procedimiento:** TRZ-011-004 — Evaluación del modelo por clase y fuente (precision, recall, F1, matriz de confusión).
+- **Rama:** [`INT-011/TRZ-011-004-metricas-modelo`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-011/TRZ-011-004-metricas-modelo)
+- **Ficha en la rama:** [TRZ-011-004_metricas_modelo.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-004-metricas-modelo/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-011_Pipeline_ML/TRZ-011-004_metricas_modelo.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `scripts/train_export_cnn.py` | predecir | 176–183 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-004-metricas-modelo/scripts/train_export_cnn.py#L176-L183) |
+| `scripts/train_export_cnn.py` | metricas | 186–210 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-004-metricas-modelo/scripts/train_export_cnn.py#L186-L210) |
+| `scripts/train_export_cnn.py` | main | 296–376 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-004-metricas-modelo/scripts/train_export_cnn.py#L296-L376) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

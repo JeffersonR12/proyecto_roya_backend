@@ -64,3 +64,17 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-011 Pipeline de Machine Learning
+- **Procedimiento:** TRZ-011-005 — Exportación a ONNX con verificación de equivalencia y reporte SHA-256.
+- **Rama:** [`INT-011/TRZ-011-005-exportacion-onnx`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-011/TRZ-011-005-exportacion-onnx)
+- **Ficha en la rama:** [TRZ-011-005_exportacion_onnx.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-005-exportacion-onnx/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-011_Pipeline_ML/TRZ-011-005_exportacion_onnx.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `scripts/train_export_cnn.py` | export_onnx | 258–272 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-005-exportacion-onnx/scripts/train_export_cnn.py#L258-L272) |
+| `scripts/train_export_cnn.py` | verificar_onnx | 275–293 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-005-exportacion-onnx/scripts/train_export_cnn.py#L275-L293) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

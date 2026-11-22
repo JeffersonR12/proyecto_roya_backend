@@ -64,3 +64,17 @@
 | 5. Estabilidad (promedio) | 50 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-011 Pipeline de Machine Learning
+- **Procedimiento:** TRZ-011-002 — División estratificada 70/15/15 con semilla fija para entrenamiento.
+- **Rama:** [`INT-011/TRZ-011-002-split-estratificado`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-011/TRZ-011-002-split-estratificado)
+- **Ficha en la rama:** [TRZ-011-002_split_estratificado.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-002-split-estratificado/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-011_Pipeline_ML/TRZ-011-002_split_estratificado.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `scripts/train_export_cnn.py` | set_seed | 67–69 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-002-split-estratificado/scripts/train_export_cnn.py#L67-L69) |
+| `scripts/train_export_cnn.py` | split_estratificado | 109–128 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-002-split-estratificado/scripts/train_export_cnn.py#L109-L128) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

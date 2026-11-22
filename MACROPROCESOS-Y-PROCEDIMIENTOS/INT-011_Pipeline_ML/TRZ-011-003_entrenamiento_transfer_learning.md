@@ -63,3 +63,18 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-011 Pipeline de Machine Learning
+- **Procedimiento:** TRZ-011-003 — Entrenamiento de MobileNetV3-Small con pesos de clase, aumento de datos y parada anticipada.
+- **Rama:** [`INT-011/TRZ-011-003-entrenamiento-transfer-learning`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-011/TRZ-011-003-entrenamiento-transfer-learning)
+- **Ficha en la rama:** [TRZ-011-003_entrenamiento_transfer_learning.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-003-entrenamiento-transfer-learning/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-011_Pipeline_ML/TRZ-011-003_entrenamiento_transfer_learning.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `scripts/train_export_cnn.py` | build_model | 72–77 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-003-entrenamiento-transfer-learning/scripts/train_export_cnn.py#L72-L77) |
+| `scripts/train_export_cnn.py` | pesos_de_clase | 169–172 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-003-entrenamiento-transfer-learning/scripts/train_export_cnn.py#L169-L172) |
+| `scripts/train_export_cnn.py` | train | 213–255 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-003-entrenamiento-transfer-learning/scripts/train_export_cnn.py#L213-L255) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
