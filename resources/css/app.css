@@ -1155,6 +1155,11 @@ body {
     color: var(--danger);
 }
 
+.intro-label small.intro-field-help {
+    font-weight: 500;
+    color: var(--muted);
+}
+
 .intro-check-row {
     display: flex;
     align-items: center;
@@ -1182,6 +1187,7 @@ body {
     min-height: 3.25rem;
     margin-top: 0.25rem;
     border: 0;
+    text-decoration: none;
     border-radius: 999px;
     background: var(--primary);
     color: var(--on-primary);

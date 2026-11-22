@@ -4,15 +4,14 @@ import AuthAlert from '../components/AuthAlert.jsx';
 import AuthShell from '../components/AuthShell.jsx';
 import { EyeGlyph, EyeOffGlyph, LockGlyph, UserGlyph } from '../components/Icons.jsx';
 import { firstError } from '../components/Field.jsx';
-import { alertFromAxiosError, validateRegister } from '../lib/authAlerts.js';
+import { alertFromAxiosError, normalizeInviteCode, validateRegister } from '../lib/authAlerts.js';
 import { formatPeruvianPhoneInput, toE164Peru } from '../lib/auth.js';
 
 const emptyForm = {
     name: '',
     email: '',
     phone: '',
-    organization: '',
-    role: 'tecnico',
+    codigo_invitacion: '',
     password: '',
     password_confirmation: '',
     terms: false,
@@ -40,6 +39,7 @@ export default function Register({ urls }) {
             ...form,
             email: form.email.trim().toLowerCase(),
             phone: toE164Peru(form.phone),
+            codigo_invitacion: normalizeInviteCode(form.codigo_invitacion),
         };
 
         const clientAlert = validateRegister(payload);
@@ -66,7 +66,7 @@ export default function Register({ urls }) {
         <AuthShell>
             <h1 className="intro-form-title">Crear acceso de campo</h1>
             <p className="intro-form-copy">
-                Registra tu cuenta Gmail, celular peruano +51 y rol operativo para inspeccionar lotes de trigo.
+                Registra tu cuenta Gmail y tu celular peruano +51. Necesitas el código que te dio el administrador de tu cooperativa.
             </p>
             <AuthAlert alert={alert} />
             <form onSubmit={submit} className="intro-form" noValidate>
@@ -108,23 +108,29 @@ export default function Register({ urls }) {
                     {firstError(errors, 'phone') ? <small id="register-phone-error">{firstError(errors, 'phone')}</small> : null}
                 </label>
 
-                <label className="intro-label" htmlFor="register-org">
-                    Finca o cooperativa
+                <label className="intro-label" htmlFor="register-invite">
+                    Código de cooperativa
                     <span className="intro-field">
-                        <input id="register-org" className="is-plain" autoComplete="organization" placeholder="Cooperativa El Roble" value={form.organization} onChange={(event) => update('organization', event.target.value)} />
+                        <input
+                            id="register-invite"
+                            className="is-plain"
+                            autoComplete="off"
+                            autoCapitalize="characters"
+                            spellCheck={false}
+                            maxLength={14}
+                            placeholder="Ej. K7M2QX9PRA"
+                            value={form.codigo_invitacion}
+                            onChange={(event) => update('codigo_invitacion', event.target.value.toUpperCase())}
+                            required
+                            aria-invalid={Boolean(firstError(errors, 'codigo_invitacion'))}
+                            aria-describedby={firstError(errors, 'codigo_invitacion') ? 'register-invite-error' : 'register-invite-help'}
+                        />
                     </span>
-                </label>
-
-                <label className="intro-label" htmlFor="register-role">
-                    Rol operativo
-                    <span className="intro-field">
-                        <select id="register-role" value={form.role} onChange={(event) => update('role', event.target.value)} aria-invalid={Boolean(firstError(errors, 'role'))}>
-                            <option value="agricultor">Agricultor</option>
-                            <option value="tecnico">Tecnico de campo</option>
-                            <option value="administrador">Administrador</option>
-                        </select>
-                    </span>
-                    {firstError(errors, 'role') ? <small>{firstError(errors, 'role')}</small> : null}
+                    {firstError(errors, 'codigo_invitacion') ? (
+                        <small id="register-invite-error">{firstError(errors, 'codigo_invitacion')}</small>
+                    ) : (
+                        <small id="register-invite-help" className="intro-field-help">Te lo entrega el administrador de tu cooperativa.</small>
+                    )}
                 </label>
 
                 <label className="intro-label" htmlFor="register-password">

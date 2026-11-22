@@ -8,16 +8,23 @@ use App\Models\Role;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Support\AuthRules;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Throwable;
 
 class AuthController extends Controller
 {
+    public const MENSAJE_RESET_GENERICO = 'Si el correo existe, te enviaremos instrucciones para restablecer la contraseña.';
+
     public function showLogin(): View
     {
         return view('app', [
@@ -45,6 +52,10 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * La respuesta es identica exista o no el correo (y tambien si el broker
+     * limita el reenvio), para no permitir enumerar cuentas.
+     */
     public function sendResetLink(Request $request): JsonResponse
     {
         $request->merge([
@@ -58,9 +69,76 @@ class AuthController extends Controller
             'email.regex' => 'El correo debe tener el formato usuario@gmail.com.',
         ]);
 
+        try {
+            Password::sendResetLink($request->only('email'));
+        } catch (Throwable $exception) {
+            // Un fallo del SMTP solo ocurre si el correo existe: devolver 500 permitiria
+            // enumerar cuentas. Se registra para el equipo y se responde igual.
+            report($exception);
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Si el correo existe, te enviaremos instrucciones para restablecer la contraseña.',
+            'message' => self::MENSAJE_RESET_GENERICO,
+        ]);
+    }
+
+    public function showReset(Request $request, string $token): View
+    {
+        return view('app', [
+            'page' => 'reset',
+            'analyses' => [],
+            'authUser' => null,
+            'reset' => [
+                'token' => $token,
+                'email' => strtolower(trim((string) $request->query('email'))),
+            ],
+        ]);
+    }
+
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->merge([
+            'email' => strtolower(trim((string) $request->input('email'))),
+        ]);
+
+        $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'string', AuthRules::GMAIL_REGEX],
+            'password' => ['required', 'confirmed', PasswordRule::min(8)],
+        ], [
+            'token.required' => 'El enlace de restablecimiento no es válido.',
+            'email.required' => 'El correo es obligatorio.',
+            'email.regex' => 'El correo debe tener el formato usuario@gmail.com.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password): void {
+                // remember_token nuevo: cierra las sesiones "recordarme" de otros dispositivos.
+                $user->forceFill([
+                    'password' => $password,
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status !== Password::PASSWORD_RESET) {
+            // Mismo mensaje para token invalido, vencido o correo inexistente.
+            throw ValidationException::withMessages([
+                'email' => 'El enlace no es válido o ya venció. Solicita uno nuevo.',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tu contraseña se actualizó. Ya puedes iniciar sesión.',
+            'redirect' => route('login'),
         ]);
     }
 
@@ -100,28 +178,28 @@ class AuthController extends Controller
         return redirect()->intended(route('home'));
     }
 
+    /**
+     * El registro publico siempre crea un agricultor dentro de la cooperativa
+     * del codigo de invitacion. Nunca crea tenants ni roles: los
+     * administradores se crean con `php artisan roya:crear-admin`.
+     */
     public function register(RegisterRequest $request): JsonResponse|RedirectResponse
     {
-        $tenant = Tenant::query()->firstOrCreate(
-            ['codigo' => str()->slug($request->input('organization') ?: 'cooperativa-el-roble')],
-            [
-                'nombre' => $request->input('organization') ?: 'Cooperativa El Roble',
-                'activo' => true,
-            ]
-        );
+        $tenant = Tenant::query()
+            ->where('codigo_invitacion', $request->validated('codigo_invitacion'))
+            ->where('activo', true)
+            ->firstOrFail();
 
-        $rolNombre = $request->input('role') === 'administrador' ? 'administrador' : $request->input('role');
-        $rol = Role::query()->firstOrCreate(
-            ['nombre' => $rolNombre],
-            ['descripcion' => 'Rol '.$rolNombre]
-        );
+        $rol = Role::query()->where('nombre', 'agricultor')->firstOrFail();
 
-        $user = User::create([
-            ...$request->safe()->except('terms'),
+        $user = new User($request->safe()->only(['name', 'email', 'phone', 'password']));
+        $user->forceFill([
             'tenant_id' => $tenant->id,
             'rol_id' => $rol->id,
+            'role' => 'agricultor',
+            'organization' => $tenant->nombre,
             'activo' => true,
-        ]);
+        ])->save();
 
         Auth::login($user);
         $request->session()->regenerate();

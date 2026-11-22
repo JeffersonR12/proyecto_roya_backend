@@ -6,6 +6,7 @@ import RoyaGuard from './RoyaGuard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 import UpdateToast from './components/UpdateToast.jsx';
 import { forgetAppShell, registerEdgeWorker } from './lib/pwa.js';
 import { clearSession, setSession } from './lib/session.js';
@@ -44,6 +45,10 @@ function Page() {
 
     if (config.page === 'forgot') {
         return <ForgotPassword urls={config.urls} />;
+    }
+
+    if (config.page === 'reset') {
+        return <ResetPassword urls={config.urls} token={config.reset?.token ?? ''} initialEmail={config.reset?.email ?? ''} />;
     }
 
     return (

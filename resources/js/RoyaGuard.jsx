@@ -401,7 +401,7 @@ export default function RoyaGuard({ urls, user }) {
                     ) : null}
                     {mode === 'parcelas' ? <ParcelasPage analyses={visibleAnalyses} onInspect={goCampo} /> : null}
                     {mode === 'ajustes' ? (
-                        <SettingsPage user={user} pendingCount={pendingCount} onReplayOnboarding={replayOnboarding} />
+                        <SettingsPage user={user} urls={urls} pendingCount={pendingCount} onReplayOnboarding={replayOnboarding} />
                     ) : null}
                 </section>
             </div>

@@ -5,7 +5,7 @@ export function firstAuthMessage(errors) {
         return '';
     }
 
-    const order = ['credentials', 'email', 'phone', 'password', 'name', 'password_confirmation', 'terms', 'role'];
+    const order = ['credentials', 'codigo_invitacion', 'email', 'phone', 'password', 'name', 'password_confirmation', 'terms'];
 
     for (const key of order) {
         const value = errors[key];
@@ -57,6 +57,31 @@ export function validateLogin({ email, password }) {
     return null;
 }
 
+/** Igual que Tenant::normalizarCodigoInvitacion: sin espacios ni guiones, en mayusculas. */
+export function normalizeInviteCode(value) {
+    return String(value || '').replace(/[\s-]+/g, '').toUpperCase();
+}
+
+export function validateResetPassword({ email, password, password_confirmation: confirmation, token }) {
+    if (!token) {
+        return { type: 'error', message: 'El enlace no es válido. Solicita uno nuevo.' };
+    }
+
+    if (!isGmailEmail(email)) {
+        return { type: 'error', message: 'El correo debe tener el formato usuario@gmail.com.' };
+    }
+
+    if (String(password || '').length < 8) {
+        return { type: 'error', message: 'La contraseña debe tener al menos 8 caracteres.' };
+    }
+
+    if (password !== confirmation) {
+        return { type: 'error', message: 'Las contraseñas no coinciden.' };
+    }
+
+    return null;
+}
+
 export function validateRegister(form) {
     if (!String(form?.name || '').trim() || !String(form?.email || '').trim() || !String(form?.password || '')) {
         return { type: 'warning', message: 'Completa nombre, correo y contraseña.' };
@@ -68,6 +93,11 @@ export function validateRegister(form) {
 
     if (!isPeruvianMobile(form.phone)) {
         return { type: 'error', message: 'Ingresa un celular peruano: +51 9 seguido de 8 digitos.' };
+    }
+
+    // Solo en formularios que lo piden: el codigo ya no es opcional en el registro.
+    if ('codigo_invitacion' in (form ?? {}) && !normalizeInviteCode(form.codigo_invitacion)) {
+        return { type: 'warning', message: 'Ingresa el código de tu cooperativa. Pídeselo a tu administrador.' };
     }
 
     if (String(form.password).length < 8) {
