@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-003 Captura e Inferencia IA en el Borde (Edge AI)
+- **Procedimiento:** TRZ-003-005 — Georreferenciación de la captura y generación de miniatura como evidencia.
+- **Rama:** [`INT-003/TRZ-003-005-georreferenciacion-miniatura`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-003/TRZ-003-005-georreferenciacion-miniatura)
+- **Ficha en la rama:** [TRZ-003-005_georreferenciacion_miniatura.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-005-georreferenciacion-miniatura/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-003_Captura_Inferencia_Edge_AI/TRZ-003-005_georreferenciacion_miniatura.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/components/Scanner.jsx` | readGeo | 21–37 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-005-georreferenciacion-miniatura/resources/js/components/Scanner.jsx#L21-L37) |
+| `resources/js/components/Scanner.jsx` | compressThumb | 39–55 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-005-georreferenciacion-miniatura/resources/js/components/Scanner.jsx#L39-L55) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
