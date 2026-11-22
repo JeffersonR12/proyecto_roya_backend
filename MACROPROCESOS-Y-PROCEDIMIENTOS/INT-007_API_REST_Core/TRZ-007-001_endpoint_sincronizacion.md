@@ -65,3 +65,23 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-007 API REST del Core
+- **Procedimiento:** TRZ-007-001 — Endpoints de sincronización (POST hasta 50 ítems, GET status) con validación.
+- **Rama:** [`INT-007/TRZ-007-001-endpoint-sincronizacion`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-007/TRZ-007-001-endpoint-sincronizacion)
+- **Ficha en la rama:** [TRZ-007-001_endpoint_sincronizacion.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-007_API_REST_Core/TRZ-007-001_endpoint_sincronizacion.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/Api/SyncController.php` | store | 18–27 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/app/Http/Controllers/Api/SyncController.php#L18-L27) |
+| `app/Http/Controllers/Api/SyncController.php` | status | 30–51 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/app/Http/Controllers/Api/SyncController.php#L30-L51) |
+| `app/Http/Requests/SyncDiagnosticosRequest.php` | rules | 24–44 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/app/Http/Requests/SyncDiagnosticosRequest.php#L24-L44) |
+| `routes/api.php` | sync | 18–20 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/routes/api.php#L18-L20) |
+| `routes/api.php` | sync | 19–20 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/routes/api.php#L19-L20) |
+| `routes/api.php` | sync | 20 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/routes/api.php#L20) |
+| `routes/api.php` | sync | 21 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/routes/api.php#L21) |
+| `routes/api.php` | sync | 25–26 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-001-endpoint-sincronizacion/routes/api.php#L25-L26) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
