@@ -65,3 +65,20 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-002 Multi-Tenant y Control de Acceso por Roles (RBAC)
+- **Procedimiento:** TRZ-002-002 — Catálogo de roles (agricultor, técnico, administrador) con métodos de verificación.
+- **Rama:** [`INT-002/TRZ-002-002-catalogo-roles`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-002/TRZ-002-002-catalogo-roles)
+- **Ficha en la rama:** [TRZ-002-002_catalogo_roles.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-002-catalogo-roles/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-002_MultiTenant_RBAC/TRZ-002-002_catalogo_roles.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/Role.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-002-catalogo-roles/app/Models/Role.php) |
+| `database/seeders/RoleSeeder.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-002-catalogo-roles/database/seeders/RoleSeeder.php) |
+| `app/Models/User.php` | isAdmin | 72–75 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-002-catalogo-roles/app/Models/User.php#L72-L75) |
+| `app/Models/User.php` | roleName | 77–80 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-002-catalogo-roles/app/Models/User.php#L77-L80) |
+| `app/Models/User.php` | isStaff | 83–86 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-002-catalogo-roles/app/Models/User.php#L83-L86) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

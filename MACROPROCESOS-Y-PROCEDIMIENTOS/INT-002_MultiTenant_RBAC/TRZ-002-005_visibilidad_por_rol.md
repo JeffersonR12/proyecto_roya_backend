@@ -65,3 +65,19 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-002 Multi-Tenant y Control de Acceso por Roles (RBAC)
+- **Procedimiento:** TRZ-002-005 — Visibilidad de datos según rol: agricultor ve solo lo suyo; técnicos ven todo el tenant.
+- **Rama:** [`INT-002/TRZ-002-005-visibilidad-por-rol`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-002/TRZ-002-005-visibilidad-por-rol)
+- **Ficha en la rama:** [TRZ-002-005_visibilidad_por_rol.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-005-visibilidad-por-rol/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-002_MultiTenant_RBAC/TRZ-002-005_visibilidad_por_rol.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Middleware/EnsureRole.php` | handle | 15–24 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-005-visibilidad-por-rol/app/Http/Middleware/EnsureRole.php#L15-L24) |
+| `app/Models/Diagnostico.php` | scopeVisiblePara | 100–109 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-005-visibilidad-por-rol/app/Models/Diagnostico.php#L100-L109) |
+| `routes/api.php` | role: | 30–31 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-005-visibilidad-por-rol/routes/api.php#L30-L31) |
+| `routes/api.php` | role: | 33–34 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-005-visibilidad-por-rol/routes/api.php#L33-L34) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
