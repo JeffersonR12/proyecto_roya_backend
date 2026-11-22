@@ -62,3 +62,19 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-007 API REST del Core
+- **Procedimiento:** TRZ-007-003 — Consultas de solo lectura (parcelas, alertas, catálogo) autorizadas por rol.
+- **Rama:** [`INT-007/TRZ-007-003-api-consultas`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-007/TRZ-007-003-api-consultas)
+- **Ficha en la rama:** [TRZ-007-003_api_consultas.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-003-api-consultas/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-007_API_REST_Core/TRZ-007-003_api_consultas.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/Api/ConsultaController.php` | catalogo | 17–26 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-003-api-consultas/app/Http/Controllers/Api/ConsultaController.php#L17-L26) |
+| `app/Http/Controllers/Api/ConsultaController.php` | parcelas | 28–41 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-003-api-consultas/app/Http/Controllers/Api/ConsultaController.php#L28-L41) |
+| `app/Http/Controllers/Api/ConsultaController.php` | alertas | 43–59 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-003-api-consultas/app/Http/Controllers/Api/ConsultaController.php#L43-L59) |
+| `app/Http/Controllers/Api/ConsultaController.php` | marcarAlertaLeida | 61–73 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-003-api-consultas/app/Http/Controllers/Api/ConsultaController.php#L61-L73) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

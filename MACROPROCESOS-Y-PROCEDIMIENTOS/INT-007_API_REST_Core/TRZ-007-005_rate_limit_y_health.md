@@ -64,3 +64,18 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-007 API REST del Core
+- **Procedimiento:** TRZ-007-005 — Límites de uso diferenciados (sync 30/min, consultas 120/min) y health check.
+- **Rama:** [`INT-007/TRZ-007-005-rate-limit-y-health`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-007/TRZ-007-005-rate-limit-y-health)
+- **Ficha en la rama:** [TRZ-007-005_rate_limit_y_health.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-005-rate-limit-y-health/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-007_API_REST_Core/TRZ-007-005_rate_limit_y_health.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Providers/AppServiceProvider.php` | RateLimiter 'sync' | 35–37 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-005-rate-limit-y-health/app/Providers/AppServiceProvider.php#L35-L37) |
+| `app/Providers/AppServiceProvider.php` | RateLimiter 'api' | 39–41 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-005-rate-limit-y-health/app/Providers/AppServiceProvider.php#L39-L41) |
+| `app/Http/Controllers/Api/HealthController.php` | __invoke | 16–37 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-005-rate-limit-y-health/app/Http/Controllers/Api/HealthController.php#L16-L37) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

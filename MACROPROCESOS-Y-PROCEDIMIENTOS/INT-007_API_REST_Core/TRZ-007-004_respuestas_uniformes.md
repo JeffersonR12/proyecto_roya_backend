@@ -62,3 +62,16 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-007 API REST del Core
+- **Procedimiento:** TRZ-007-004 — Formato JSON uniforme y manejo centralizado de errores (401, 403, 404, 422, 429).
+- **Rama:** [`INT-007/TRZ-007-004-respuestas-uniformes`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-007/TRZ-007-004-respuestas-uniformes)
+- **Ficha en la rama:** [TRZ-007-004_respuestas_uniformes.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-004-respuestas-uniformes/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-007_API_REST_Core/TRZ-007-004_respuestas_uniformes.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `bootstrap/app.php` | withExceptions | 37–85 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-007/TRZ-007-004-respuestas-uniformes/bootstrap/app.php#L37-L85) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
