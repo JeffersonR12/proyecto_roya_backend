@@ -65,3 +65,22 @@
 | 5. Estabilidad (promedio) | 87.5 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-003 Captura e Inferencia IA en el Borde (Edge AI)
+- **Procedimiento:** TRZ-003-003 — Inferencia local (Edge AI) con ONNX Runtime Web, sin depender del servidor.
+- **Rama:** [`INT-003/TRZ-003-003-inferencia-local-onnx`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-003/TRZ-003-003-inferencia-local-onnx)
+- **Ficha en la rama:** [TRZ-003-003_inferencia_local_onnx.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-003_Captura_Inferencia_Edge_AI/TRZ-003-003_inferencia_local_onnx.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/onnxEngine.js` | wasmBaseUrl | 18–20 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/resources/js/lib/onnxEngine.js#L18-L20) |
+| `resources/js/lib/onnxEngine.js` | getOrt | 22–32 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/resources/js/lib/onnxEngine.js#L22-L32) |
+| `resources/js/lib/onnxEngine.js` | loadSession | 58–73 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/resources/js/lib/onnxEngine.js#L58-L73) |
+| `resources/js/lib/onnxEngine.js` | inferImage | 75–109 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/resources/js/lib/onnxEngine.js#L75-L109) |
+| `resources/js/lib/onnxEngine.js` | isModelMissing | 115–129 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/resources/js/lib/onnxEngine.js#L115-L129) |
+| `resources/js/lib/onnxEngine.js` | inferDataUrl | 131–138 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/resources/js/lib/onnxEngine.js#L131-L138) |
+| `scripts/copy-ort.mjs` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-003-inferencia-local-onnx/scripts/copy-ort.mjs) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

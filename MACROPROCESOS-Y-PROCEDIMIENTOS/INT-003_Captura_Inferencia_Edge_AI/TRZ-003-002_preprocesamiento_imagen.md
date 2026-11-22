@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-003 Captura e Inferencia IA en el Borde (Edge AI)
+- **Procedimiento:** TRZ-003-002 — Preprocesamiento de imagen (redimensionar 224x224, normalizar para el modelo).
+- **Rama:** [`INT-003/TRZ-003-002-preprocesamiento-imagen`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-003/TRZ-003-002-preprocesamiento-imagen)
+- **Ficha en la rama:** [TRZ-003-002_preprocesamiento_imagen.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-002-preprocesamiento-imagen/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-003_Captura_Inferencia_Edge_AI/TRZ-003-002_preprocesamiento_imagen.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/onnxEngine.js` | imageToNCHW | 34–56 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-002-preprocesamiento-imagen/resources/js/lib/onnxEngine.js#L34-L56) |
+| `resources/js/lib/inference.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-003/TRZ-003-002-preprocesamiento-imagen/resources/js/lib/inference.js) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
