@@ -66,3 +66,19 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-009 Alertas Tempranas y Monitoreo
+- **Procedimiento:** TRZ-009-005 — Consulta GET /api/alertas, marcado como leída (PATCH /api/alertas/{id}/leida), paneles Dashboard, History y AlertsPage.
+- **Rama:** [`INT-009/TRZ-009-005-gestion-alertas-paneles`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-009/TRZ-009-005-gestion-alertas-paneles)
+- **Ficha en la rama:** [TRZ-009-005_gestion_alertas_paneles.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-005-gestion-alertas-paneles/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-009_Alertas_Tempranas/TRZ-009-005_gestion_alertas_paneles.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/Api/ConsultaController.php` | alertas | 43–59 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-005-gestion-alertas-paneles/app/Http/Controllers/Api/ConsultaController.php#L43-L59) |
+| `app/Http/Controllers/Api/ConsultaController.php` | marcarAlertaLeida | 61–73 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-005-gestion-alertas-paneles/app/Http/Controllers/Api/ConsultaController.php#L61-L73) |
+| `resources/js/pages/AlertsPage.jsx` | AlertsPage | 59–110 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-005-gestion-alertas-paneles/resources/js/pages/AlertsPage.jsx#L59-L110) |
+| `resources/js/components/Dashboard.jsx` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-005-gestion-alertas-paneles/resources/js/components/Dashboard.jsx) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

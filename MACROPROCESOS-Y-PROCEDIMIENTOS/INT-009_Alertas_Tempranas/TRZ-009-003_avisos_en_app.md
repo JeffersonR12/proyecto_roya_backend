@@ -64,3 +64,20 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-009 Alertas Tempranas y Monitoreo
+- **Procedimiento:** TRZ-009-003 — Alertas en cliente: roya por lote, revisiones HITL pendientes y envíos fallidos.
+- **Rama:** [`INT-009/TRZ-009-003-avisos-en-app`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-009/TRZ-009-003-avisos-en-app)
+- **Ficha en la rama:** [TRZ-009-003_avisos_en_app.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-003-avisos-en-app/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-009_Alertas_Tempranas/TRZ-009-003_avisos_en_app.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/alertas.js` | tiempoRelativo | 19–41 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-003-avisos-en-app/resources/js/lib/alertas.js#L19-L41) |
+| `resources/js/lib/alertas.js` | buildAlertas | 47–138 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-003-avisos-en-app/resources/js/lib/alertas.js#L47-L138) |
+| `resources/js/lib/alertas.js` | contarAlertas | 141–143 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-003-avisos-en-app/resources/js/lib/alertas.js#L141-L143) |
+| `resources/js/RoyaGuard.jsx` | contarAlertas | 100 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-003-avisos-en-app/resources/js/RoyaGuard.jsx#L100) |
+| `resources/js/RoyaGuard.jsx` | contarAlertas | 101 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-003-avisos-en-app/resources/js/RoyaGuard.jsx#L101) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
