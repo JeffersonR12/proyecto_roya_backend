@@ -63,3 +63,18 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-010 Validación Humana (HITL) y Agente Asistente
+- **Procedimiento:** TRZ-010-004 — Agente conversacional RAG que responde preguntas usando el catálogo con citas.
+- **Rama:** [`INT-010/TRZ-010-004-agente-rag-catalogo`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-010/TRZ-010-004-agente-rag-catalogo)
+- **Ficha en la rama:** [TRZ-010-004_agente_rag_catalogo.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-004-agente-rag-catalogo/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-010_Validacion_HITL_Agente/TRZ-010-004_agente_rag_catalogo.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/agente.js` | recuperarCatalogo | 127–161 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-004-agente-rag-catalogo/resources/js/lib/agente.js#L127-L161) |
+| `resources/js/lib/agente.js` | consultarAgente | 370–420 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-004-agente-rag-catalogo/resources/js/lib/agente.js#L370-L420) |
+| `resources/js/lib/catalogo.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-004-agente-rag-catalogo/resources/js/lib/catalogo.js) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
