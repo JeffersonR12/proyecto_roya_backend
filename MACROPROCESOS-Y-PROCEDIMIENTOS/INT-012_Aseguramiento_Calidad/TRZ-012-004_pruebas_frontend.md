@@ -79,3 +79,32 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-012 Aseguramiento de la Calidad
+- **Procedimiento:** TRZ-012-004 — Pruebas unitarias de frontend (106 casos: cola, inferencia, alertas, agente).
+- **Rama:** [`INT-012/TRZ-012-004-pruebas-frontend`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-012/TRZ-012-004-pruebas-frontend)
+- **Ficha en la rama:** [TRZ-012-004_pruebas_frontend.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-012_Aseguramiento_Calidad/TRZ-012-004_pruebas_frontend.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `vitest.config.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/vitest.config.js) |
+| `resources/js/lib/agente.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/agente.test.js) |
+| `resources/js/lib/alertas.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/alertas.test.js) |
+| `resources/js/lib/auth.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/auth.test.js) |
+| `resources/js/lib/authAlerts.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/authAlerts.test.js) |
+| `resources/js/lib/catalogo.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/catalogo.test.js) |
+| `resources/js/lib/diagnosticosDb.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/diagnosticosDb.test.js) |
+| `resources/js/lib/fieldFlow.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/fieldFlow.test.js) |
+| `resources/js/lib/fieldOps.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/fieldOps.test.js) |
+| `resources/js/lib/inference.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/inference.test.js) |
+| `resources/js/lib/onnxEngine.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/onnxEngine.test.js) |
+| `resources/js/lib/parcelasStore.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/parcelasStore.test.js) |
+| `resources/js/lib/pwa.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/pwa.test.js) |
+| `resources/js/lib/reportes.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/reportes.test.js) |
+| `resources/js/lib/risk.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/risk.test.js) |
+| `resources/js/lib/roles.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/roles.test.js) |
+| `resources/js/lib/syncQueue.test.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-004-pruebas-frontend/resources/js/lib/syncQueue.test.js) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
