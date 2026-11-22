@@ -64,3 +64,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-008 Gestión de Parcelas (Lotes)
+- **Procedimiento:** TRZ-008-005 — Pantalla de gestión de parcelas y consulta API con conteo de diagnósticos.
+- **Rama:** [`INT-008/TRZ-008-005-visualizacion-lotes`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-008/TRZ-008-005-visualizacion-lotes)
+- **Ficha en la rama:** [TRZ-008-005_visualizacion_lotes.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-005-visualizacion-lotes/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-008_Gestion_Parcelas/TRZ-008-005_visualizacion_lotes.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/pages/ParcelasPage.jsx` | ParcelasPage | 5–145 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-005-visualizacion-lotes/resources/js/pages/ParcelasPage.jsx#L5-L145) |
+| `app/Http/Controllers/Api/ConsultaController.php` | parcelas | 28–41 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-005-visualizacion-lotes/app/Http/Controllers/Api/ConsultaController.php#L28-L41) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
