@@ -64,3 +64,20 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-004 Análisis Fitosanitario y Diagnóstico
+- **Procedimiento:** TRZ-004-005 — Baja lógica de diagnósticos (SoftDeletes) para auditoría y clasificación de riesgo.
+- **Rama:** [`INT-004/TRZ-004-005-baja-logica-riesgo`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-004/TRZ-004-005-baja-logica-riesgo)
+- **Ficha en la rama:** [TRZ-004-005_baja_logica_riesgo.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-005-baja-logica-riesgo/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-004_Analisis_Fitosanitario/TRZ-004-005_baja_logica_riesgo.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/Diagnostico.php` | SoftDeletes | 10 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-005-baja-logica-riesgo/app/Models/Diagnostico.php#L10) |
+| `app/Models/Diagnostico.php` | SoftDeletes | 15 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-005-baja-logica-riesgo/app/Models/Diagnostico.php#L15) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | destroy | 102–107 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-005-baja-logica-riesgo/app/Http/Controllers/Api/DiagnosticoController.php#L102-L107) |
+| `resources/js/lib/risk.js` | getRiskLevel | 5–19 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-005-baja-logica-riesgo/resources/js/lib/risk.js#L5-L19) |
+| `resources/js/lib/risk.js` | getRiskMeta | 21–59 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-005-baja-logica-riesgo/resources/js/lib/risk.js#L21-L59) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
