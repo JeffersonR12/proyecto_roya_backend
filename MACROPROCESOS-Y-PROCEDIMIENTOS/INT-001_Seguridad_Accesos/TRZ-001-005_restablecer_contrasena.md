@@ -64,3 +64,19 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-001 Seguridad y Accesos
+- **Procedimiento:** TRZ-001-005 — Restablecimiento de contraseña con token de un solo uso y expiración de 60 minutos.
+- **Rama:** [`INT-001/TRZ-001-005-restablecer-contrasena`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-001/TRZ-001-005-restablecer-contrasena)
+- **Ficha en la rama:** [TRZ-001-005_restablecer_contrasena.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-005-restablecer-contrasena/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-001_Seguridad_Accesos/TRZ-001-005_restablecer_contrasena.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/AuthController.php` | showReset | 83–92 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-005-restablecer-contrasena/app/Http/Controllers/AuthController.php#L83-L92) |
+| `app/Http/Controllers/AuthController.php` | resetPassword | 94–126 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-005-restablecer-contrasena/app/Http/Controllers/AuthController.php#L94-L126) |
+| `app/Http/Requests/ResetPasswordRequest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-005-restablecer-contrasena/app/Http/Requests/ResetPasswordRequest.php) |
+| `resources/js/pages/ResetPassword.jsx` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-005-restablecer-contrasena/resources/js/pages/ResetPassword.jsx) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

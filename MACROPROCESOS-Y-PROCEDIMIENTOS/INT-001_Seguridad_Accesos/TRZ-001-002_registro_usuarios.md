@@ -64,3 +64,19 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-001 Seguridad y Accesos
+- **Procedimiento:** TRZ-001-002 — Registro de usuarios con validación de correo Gmail, celular peruano y términos.
+- **Rama:** [`INT-001/TRZ-001-002-registro-usuarios`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-001/TRZ-001-002-registro-usuarios)
+- **Ficha en la rama:** [TRZ-001-002_registro_usuarios.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-002-registro-usuarios/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-001_Seguridad_Accesos/TRZ-001-002_registro_usuarios.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/AuthController.php` | register | 164–200 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-002-registro-usuarios/app/Http/Controllers/AuthController.php#L164-L200) |
+| `app/Http/Requests/RegisterRequest.php` | rules | 24–35 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-002-registro-usuarios/app/Http/Requests/RegisterRequest.php#L24-L35) |
+| `app/Support/AuthRules.php` | GMAIL_REGEX | 9 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-002-registro-usuarios/app/Support/AuthRules.php#L9) |
+| `app/Support/AuthRules.php` | PERU_PHONE_REGEX | 19 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-002-registro-usuarios/app/Support/AuthRules.php#L19) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

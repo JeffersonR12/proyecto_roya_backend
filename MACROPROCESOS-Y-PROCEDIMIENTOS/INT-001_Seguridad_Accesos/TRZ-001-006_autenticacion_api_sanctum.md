@@ -65,3 +65,20 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-001 Seguridad y Accesos
+- **Procedimiento:** TRZ-001-006 — Autenticación de API con Sanctum (SPA) con CSRF y cierre de sesión seguro.
+- **Rama:** [`INT-001/TRZ-001-006-autenticacion-api-sanctum`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-001/TRZ-001-006-autenticacion-api-sanctum)
+- **Ficha en la rama:** [TRZ-001-006_autenticacion_api_sanctum.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-006-autenticacion-api-sanctum/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-001_Seguridad_Accesos/TRZ-001-006_autenticacion_api_sanctum.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `config/sanctum.php` | 'stateful's*=> | 23–28 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-006-autenticacion-api-sanctum/config/sanctum.php#L23-L28) |
+| `config/sanctum.php` | 'guard's*=> | 42 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-006-autenticacion-api-sanctum/config/sanctum.php#L42) |
+| `bootstrap/app.php` | statefulApi | 30 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-006-autenticacion-api-sanctum/bootstrap/app.php#L30) |
+| `routes/api.php` | auth:sanctum | 12–15 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-006-autenticacion-api-sanctum/routes/api.php#L12-L15) |
+| `routes/api.php` | auth:sanctum | 17–46 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-006-autenticacion-api-sanctum/routes/api.php#L17-L46) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

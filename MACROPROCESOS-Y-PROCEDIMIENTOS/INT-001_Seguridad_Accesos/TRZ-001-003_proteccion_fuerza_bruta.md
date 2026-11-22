@@ -63,3 +63,18 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-001 Seguridad y Accesos
+- **Procedimiento:** TRZ-001-003 — Protección contra fuerza bruta (límite de 5 intentos/minuto en login y recuperación).
+- **Rama:** [`INT-001/TRZ-001-003-proteccion-fuerza-bruta`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-001/TRZ-001-003-proteccion-fuerza-bruta)
+- **Ficha en la rama:** [TRZ-001-003_proteccion_fuerza_bruta.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-003-proteccion-fuerza-bruta/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-001_Seguridad_Accesos/TRZ-001-003_proteccion_fuerza_bruta.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Providers/AppServiceProvider.php` | RateLimiter 'login' | 26–28 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-003-proteccion-fuerza-bruta/app/Providers/AppServiceProvider.php#L26-L28) |
+| `app/Providers/AppServiceProvider.php` | RateLimiter 'password' | 31–33 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-003-proteccion-fuerza-bruta/app/Providers/AppServiceProvider.php#L31-L33) |
+| `app/Http/Controllers/AuthController.php` | ensureIsNotRateLimited | 218–229 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-003-proteccion-fuerza-bruta/app/Http/Controllers/AuthController.php#L218-L229) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

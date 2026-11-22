@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-001 Seguridad y Accesos
+- **Procedimiento:** TRZ-001-001 — Inicio de sesión seguro con validación de credenciales y opción "Recordarme".
+- **Rama:** [`INT-001/TRZ-001-001-login-seguro`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-001/TRZ-001-001-login-seguro)
+- **Ficha en la rama:** [TRZ-001-001_login_seguro.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-001-login-seguro/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-001_Seguridad_Accesos/TRZ-001-001_login_seguro.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/AuthController.php` | login | 128–162 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-001-login-seguro/app/Http/Controllers/AuthController.php#L128-L162) |
+| `app/Http/Requests/LoginRequest.php` | rules | 24–31 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-001-login-seguro/app/Http/Requests/LoginRequest.php#L24-L31) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
