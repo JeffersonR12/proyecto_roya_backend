@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-009 Alertas Tempranas y Monitoreo
+- **Procedimiento:** TRZ-009-004 — Garantía de no falsos positivos: nunca alertar si el resultado es no concluyente.
+- **Rama:** [`INT-009/TRZ-009-004-sin-falsas-alarmas`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-009/TRZ-009-004-sin-falsas-alarmas)
+- **Ficha en la rama:** [TRZ-009-004_sin_falsas_alarmas.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-004-sin-falsas-alarmas/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-009_Alertas_Tempranas/TRZ-009-004_sin_falsas_alarmas.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/alertas.js` | neverAlertsRoyaIfInconclusive | 145–147 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-004-sin-falsas-alarmas/resources/js/lib/alertas.js#L145-L147) |
+| `app/Services/AlertaService.php` | tipoPara | 56–72 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-004-sin-falsas-alarmas/app/Services/AlertaService.php#L56-L72) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
