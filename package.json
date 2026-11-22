@@ -4,11 +4,13 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "prebuild": "node scripts/copy-ort.mjs",
         "build": "vite build",
         "dev": "vite",
         "test:js": "vitest run",
         "test:js:coverage": "vitest run --coverage",
         "copy:ort": "node scripts/copy-ort.mjs",
+        "modelo:meta": "node scripts/model-meta.mjs",
         "postinstall": "node scripts/copy-ort.mjs"
     },
     "devDependencies": {
