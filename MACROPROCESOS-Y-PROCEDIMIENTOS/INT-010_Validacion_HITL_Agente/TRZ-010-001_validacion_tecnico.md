@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-010 Validación Humana (HITL) y Agente Asistente
+- **Procedimiento:** TRZ-010-001 — Revisión técnica de diagnósticos (validar, rechazar, re-muestrear) en el panel HITL.
+- **Rama:** [`INT-010/TRZ-010-001-validacion-tecnico`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-010/TRZ-010-001-validacion-tecnico)
+- **Ficha en la rama:** [TRZ-010-001_validacion_tecnico.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-001-validacion-tecnico/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-010_Validacion_HITL_Agente/TRZ-010-001_validacion_tecnico.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/pages/HitlPage.jsx` | HitlPage | 22–134 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-001-validacion-tecnico/resources/js/pages/HitlPage.jsx#L22-L134) |
+| `resources/js/lib/roles.js` | canReviewHitl | 11–13 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-001-validacion-tecnico/resources/js/lib/roles.js#L11-L13) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

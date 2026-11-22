@@ -63,3 +63,20 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-010 Validación Humana (HITL) y Agente Asistente
+- **Procedimiento:** TRZ-010-005 — Barreras del agente: no diagnostica imágenes, no recomienda productos, restringe HITL.
+- **Rama:** [`INT-010/TRZ-010-005-limites-asistente`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-010/TRZ-010-005-limites-asistente)
+- **Ficha en la rama:** [TRZ-010-005_limites_asistente.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-005-limites-asistente/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-010_Validacion_HITL_Agente/TRZ-010-005_limites_asistente.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/agente.js` | STAFF_ONLY | 43 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-005-limites-asistente/resources/js/lib/agente.js#L43) |
+| `resources/js/lib/agente.js` | puedeAfirmarRoya | 61–67 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-005-limites-asistente/resources/js/lib/agente.js#L61-L67) |
+| `resources/js/lib/agente.js` | sistemaAfirma | 69–77 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-005-limites-asistente/resources/js/lib/agente.js#L69-L77) |
+| `resources/js/lib/agente.js` | detectarIntencion | 79–125 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-005-limites-asistente/resources/js/lib/agente.js#L79-L125) |
+| `resources/js/components/AgentePanel.jsx` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-005-limites-asistente/resources/js/components/AgentePanel.jsx) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
