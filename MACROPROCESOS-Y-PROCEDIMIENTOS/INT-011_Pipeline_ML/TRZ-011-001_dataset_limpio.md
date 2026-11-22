@@ -62,3 +62,18 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-011 Pipeline de Machine Learning
+- **Procedimiento:** TRZ-011-001 — Preparación del dataset: asignar fuentes a 3 clases, eliminar duplicados y generar manifest.
+- **Rama:** [`INT-011/TRZ-011-001-dataset-limpio`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-011/TRZ-011-001-dataset-limpio)
+- **Ficha en la rama:** [TRZ-011-001_dataset_limpio.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-001-dataset-limpio/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-011_Pipeline_ML/TRZ-011-001_dataset_limpio.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `scripts/prepare_dataset.py` | normalizar | 64–65 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-001-dataset-limpio/scripts/prepare_dataset.py#L64-L65) |
+| `scripts/prepare_dataset.py` | dhash | 68–76 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-001-dataset-limpio/scripts/prepare_dataset.py#L68-L76) |
+| `scripts/prepare_dataset.py` | preparar | 79–160 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-011/TRZ-011-001-dataset-limpio/scripts/prepare_dataset.py#L79-L160) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
