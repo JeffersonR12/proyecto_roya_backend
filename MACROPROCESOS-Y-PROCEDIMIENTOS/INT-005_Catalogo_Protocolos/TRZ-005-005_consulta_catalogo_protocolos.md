@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-005 Catálogo Fitosanitario y Protocolos
+- **Procedimiento:** TRZ-005-005 — Consulta del catálogo vía API y vista de protocolo.
+- **Rama:** [`INT-005/TRZ-005-005-consulta-catalogo-protocolos`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-005/TRZ-005-005-consulta-catalogo-protocolos)
+- **Ficha en la rama:** [TRZ-005-005_consulta_catalogo_protocolos.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-005-consulta-catalogo-protocolos/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-005_Catalogo_Protocolos/TRZ-005-005_consulta_catalogo_protocolos.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/Api/ConsultaController.php` | catalogo | 17–26 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-005-consulta-catalogo-protocolos/app/Http/Controllers/Api/ConsultaController.php#L17-L26) |
+| `resources/js/pages/ProtocolPage.jsx` | ProtocolPage | 7–82 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-005-consulta-catalogo-protocolos/resources/js/pages/ProtocolPage.jsx#L7-L82) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
