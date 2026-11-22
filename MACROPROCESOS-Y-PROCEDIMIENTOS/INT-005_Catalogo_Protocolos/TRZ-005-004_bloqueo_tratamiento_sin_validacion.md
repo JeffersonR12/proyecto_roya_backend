@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-005 Catálogo Fitosanitario y Protocolos
+- **Procedimiento:** TRZ-005-004 — Regla de seguridad HITL: protocolo químico solo si confianza ≥ 75% y validación técnica.
+- **Rama:** [`INT-005/TRZ-005-004-bloqueo-tratamiento-sin-validacion`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-005/TRZ-005-004-bloqueo-tratamiento-sin-validacion)
+- **Ficha en la rama:** [TRZ-005-004_bloqueo_tratamiento_sin_validacion.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-004-bloqueo-tratamiento-sin-validacion/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-005_Catalogo_Protocolos/TRZ-005-004_bloqueo_tratamiento_sin_validacion.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/catalogo.js` | protocoloPara | 66–101 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-004-bloqueo-tratamiento-sin-validacion/resources/js/lib/catalogo.js#L66-L101) |
+| `resources/js/lib/catalogo.js` | puedeActivarProtocolo | 89 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-004-bloqueo-tratamiento-sin-validacion/resources/js/lib/catalogo.js#L89) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

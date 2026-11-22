@@ -62,3 +62,16 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-005 Catálogo Fitosanitario y Protocolos
+- **Procedimiento:** TRZ-005-003 — Motor de protocolos que decide cuándo tratar según severidad y umbral.
+- **Rama:** [`INT-005/TRZ-005-003-protocolo-por-severidad`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-005/TRZ-005-003-protocolo-por-severidad)
+- **Ficha en la rama:** [TRZ-005-003_protocolo_por_severidad.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-003-protocolo-por-severidad/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-005_Catalogo_Protocolos/TRZ-005-003_protocolo_por_severidad.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/catalogo.js` | protocoloPara | 66–101 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-003-protocolo-por-severidad/resources/js/lib/catalogo.js#L66-L101) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-005 Catálogo Fitosanitario y Protocolos
+- **Procedimiento:** TRZ-005-002 — Asociación automática de cada diagnóstico con su ficha del catálogo.
+- **Rama:** [`INT-005/TRZ-005-002-vinculo-ficha-catalogo`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-005/TRZ-005-002-vinculo-ficha-catalogo)
+- **Ficha en la rama:** [TRZ-005-002_vinculo_ficha_catalogo.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-002-vinculo-ficha-catalogo/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-005_Catalogo_Protocolos/TRZ-005-002_vinculo_ficha_catalogo.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Services/DiagnosticoSyncService.php` | catalogoId | 218–227 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-002-vinculo-ficha-catalogo/app/Services/DiagnosticoSyncService.php#L218-L227) |
+| `app/Models/Diagnostico.php` | CATALOGO_POR_CLASE | 35–38 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-002-vinculo-ficha-catalogo/app/Models/Diagnostico.php#L35-L38) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
