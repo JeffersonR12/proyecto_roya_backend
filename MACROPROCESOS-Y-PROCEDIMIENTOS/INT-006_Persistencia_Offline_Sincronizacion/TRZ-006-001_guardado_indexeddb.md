@@ -63,3 +63,18 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-006 Persistencia Offline-First y Sincronización
+- **Procedimiento:** TRZ-006-001 — Almacenamiento local de diagnósticos en IndexedDB (modo offline).
+- **Rama:** [`INT-006/TRZ-006-001-guardado-indexeddb`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-006/TRZ-006-001-guardado-indexeddb)
+- **Ficha en la rama:** [TRZ-006-001_guardado_indexeddb.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-001-guardado-indexeddb/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-006_Persistencia_Offline_Sincronizacion/TRZ-006-001_guardado_indexeddb.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/diagnosticosDb.js` | saveDiagnostico | 44–56 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-001-guardado-indexeddb/resources/js/lib/diagnosticosDb.js#L44-L56) |
+| `resources/js/lib/diagnosticosDb.js` | listDiagnosticos | 58–77 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-001-guardado-indexeddb/resources/js/lib/diagnosticosDb.js#L58-L77) |
+| `resources/js/lib/inference.js` | createDiagnosticoLocal | 74–96 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-001-guardado-indexeddb/resources/js/lib/inference.js#L74-L96) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
