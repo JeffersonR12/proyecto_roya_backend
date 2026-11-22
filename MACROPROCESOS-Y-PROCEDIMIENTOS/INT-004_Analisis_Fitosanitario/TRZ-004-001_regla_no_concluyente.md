@@ -62,3 +62,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-004 Análisis Fitosanitario y Diagnóstico
+- **Procedimiento:** TRZ-004-001 — Modelo de dominio Diagnóstico con 4 clases y regla de "no concluyente" si confianza < 75%.
+- **Rama:** [`INT-004/TRZ-004-001-regla-no-concluyente`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-004/TRZ-004-001-regla-no-concluyente)
+- **Ficha en la rama:** [TRZ-004-001_regla_no_concluyente.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-001-regla-no-concluyente/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-004_Analisis_Fitosanitario/TRZ-004-001_regla_no_concluyente.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/Diagnostico.php` | booted | 75–84 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-001-regla-no-concluyente/app/Models/Diagnostico.php#L75-L84) |
+| `app/Models/Diagnostico.php` | claseEfectiva | 87–94 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-004/TRZ-004-001-regla-no-concluyente/app/Models/Diagnostico.php#L87-L94) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
