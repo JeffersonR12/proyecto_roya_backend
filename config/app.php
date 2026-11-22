@@ -56,6 +56,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Trusted Proxies
+    |--------------------------------------------------------------------------
+    |
+    | IPs (separadas por coma) o "*" de los proxies cuyas cabeceras
+    | X-Forwarded-* se respetan: un tunel HTTPS local (cloudflared, ngrok)
+    | o el balanceador del servidor. Sin esto Laravel genera las URLs de
+    | /build con http://127.0.0.1 y la PWA queda en blanco tras el proxy.
+    | Vacio = no se confia en ningun proxy.
+    |
+    */
+
+    'trusted_proxies' => env('TRUSTED_PROXIES'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

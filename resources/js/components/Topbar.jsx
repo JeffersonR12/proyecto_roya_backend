@@ -61,6 +61,8 @@ export default function Topbar({
 
     const offlineStatus = pendingCount > 0 ? `Sin internet · ${pendingCount} por enviar` : 'Sin internet';
     const status = online ? 'En línea' : offlineStatus;
+    // En el telefono no cabe el texto largo junto al logo, la campana y el avatar.
+    const shortStatus = pendingCount > 0 ? `Sin red · ${pendingCount}` : 'Sin red';
     const alertsLabel = alertCount ? `Alertas: ${alertCount}` : 'Alertas';
 
     return (
@@ -92,9 +94,12 @@ export default function Topbar({
             </label>
 
             <div className="app-topbar-end">
-                <span className={`app-online ${online ? '' : 'is-offline'}`}>
-                    <span aria-hidden="true" />
-                    {status}
+                <span className={`app-online ${online ? '' : 'is-offline'}`} role="status" title={status}>
+                    <span aria-hidden="true" className="app-online-dot" />
+                    <span className="app-online-long">{status}</span>
+                    <span className="app-online-short" aria-hidden="true">
+                        {shortStatus}
+                    </span>
                 </span>
                 <button type="button" className="app-icon-btn app-only-phone" aria-label="Buscar" onClick={() => setSearchOpen(true)}>
                     <SearchGlyph className="h-5 w-5" />

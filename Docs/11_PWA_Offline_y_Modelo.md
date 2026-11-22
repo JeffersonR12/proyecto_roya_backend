@@ -44,7 +44,7 @@ El service worker solo se registra en el build de producción y exige HTTPS (o `
 
 1. `npm run build` (no uses `npm run dev`: en desarrollo no hay service worker). Si existe `public/hot`, bórralo.
 2. Levanta la app: `php artisan serve --host=127.0.0.1 --port=8000`.
-3. Expón HTTPS con un túnel, por ejemplo `cloudflared tunnel --url http://127.0.0.1:8000` o `ngrok http 8000`. Pon esa URL en `APP_URL` del `.env` y ejecuta `php artisan config:clear`.
+3. Expón HTTPS con un túnel, por ejemplo `cloudflared tunnel --url http://127.0.0.1:8000` o `ngrok http 8000`. Pon esa URL en `APP_URL` del `.env`, agrega `TRUSTED_PROXIES=127.0.0.1` y ejecuta `php artisan config:clear`. Sin `TRUSTED_PROXIES` el HTML apunta el JS a `http://127.0.0.1:8000/build/...` y el teléfono ve la página en blanco.
 4. En el teléfono (Chrome Android) abre la URL del túnel e inicia sesión.
 5. Espera unos segundos con la app abierta. En `chrome://inspect` → el dispositivo → *Application → Service workers* debe verse `sw.js?v=…` como *activated*, y en *Cache storage* las dos cachés `roya-app-…` y `roya-runtime-…`.
 6. Menú ⋮ → **Instalar app** (o "Agregar a pantalla principal"). Debe aparecer el ícono de RiwiScan.
@@ -60,3 +60,4 @@ Si el paso 8 dice que falta el modelo, revisa en *Cache storage* que `roya-runti
 - Nginx debe servir `.wasm` como `application/wasm` y `.mjs` como `application/javascript`; con `mime.types` viejos hay que añadirlos.
 - `sw.js` y `build/version.json` no deben cachearse en el CDN o proxy (`Cache-Control: no-cache`); `build/assets/*` sí, por largo tiempo (llevan hash).
 - El despliegue puede fijar el identificador del build con `BUILD_ID=<git sha> npm run build`.
+- Si hay un proxy o balanceador delante (HTTPS terminado fuera de PHP), configura `TRUSTED_PROXIES` con su IP; si no, los assets de `/build` salen con `http://` y la PWA queda en blanco.
