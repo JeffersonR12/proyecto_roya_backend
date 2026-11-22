@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-001 Seguridad y Accesos
+- **Procedimiento:** TRZ-001-004 — Solicitud de recuperación de contraseña con envío de correo y respuesta genérica (seguridad).
+- **Rama:** [`INT-001/TRZ-001-004-solicitud-recuperacion`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-001/TRZ-001-004-solicitud-recuperacion)
+- **Ficha en la rama:** [TRZ-001-004_solicitud_recuperacion.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-004-solicitud-recuperacion/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-001_Seguridad_Accesos/TRZ-001-004_solicitud_recuperacion.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Http/Controllers/AuthController.php` | sendResetLink | 54–81 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-004-solicitud-recuperacion/app/Http/Controllers/AuthController.php#L54-L81) |
+| `app/Notifications/ResetPasswordNotification.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-001/TRZ-001-004-solicitud-recuperacion/app/Notifications/ResetPasswordNotification.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
