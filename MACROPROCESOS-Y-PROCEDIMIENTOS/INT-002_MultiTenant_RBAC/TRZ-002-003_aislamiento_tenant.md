@@ -62,3 +62,16 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-002 Multi-Tenant y Control de Acceso por Roles (RBAC)
+- **Procedimiento:** TRZ-002-003 — Aislamiento de datos por tenant (filtrado automático por tenant_id).
+- **Rama:** [`INT-002/TRZ-002-003-aislamiento-tenant`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-002/TRZ-002-003-aislamiento-tenant)
+- **Ficha en la rama:** [TRZ-002-003_aislamiento_tenant.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-003-aislamiento-tenant/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-002_MultiTenant_RBAC/TRZ-002-003_aislamiento_tenant.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/BelongsToTenant.php` | bootBelongsToTenant | 11–26 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-003-aislamiento-tenant/app/Models/BelongsToTenant.php#L11-L26) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
