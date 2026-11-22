@@ -62,3 +62,16 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-012 Aseguramiento de la Calidad
+- **Procedimiento:** TRZ-012-002 — Pruebas de API de sincronización (18 casos: idempotencia, conflictos, RBAC).
+- **Rama:** [`INT-012/TRZ-012-002-pruebas-sincronizacion`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-012/TRZ-012-002-pruebas-sincronizacion)
+- **Ficha en la rama:** [TRZ-012-002_pruebas_sincronizacion.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-002-pruebas-sincronizacion/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-012_Aseguramiento_Calidad/TRZ-012-002_pruebas_sincronizacion.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `tests/Feature/SyncDiagnosticosApiTest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-002-pruebas-sincronizacion/tests/Feature/SyncDiagnosticosApiTest.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
