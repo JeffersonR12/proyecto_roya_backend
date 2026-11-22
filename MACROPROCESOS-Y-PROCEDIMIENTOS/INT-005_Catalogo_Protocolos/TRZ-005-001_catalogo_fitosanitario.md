@@ -64,3 +64,18 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-005 Catálogo Fitosanitario y Protocolos
+- **Procedimiento:** TRZ-005-001 — Catálogo fitosanitario con agente causal, síntomas y umbral de alerta.
+- **Rama:** [`INT-005/TRZ-005-001-catalogo-fitosanitario`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-005/TRZ-005-001-catalogo-fitosanitario)
+- **Ficha en la rama:** [TRZ-005-001_catalogo_fitosanitario.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-001-catalogo-fitosanitario/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-005_Catalogo_Protocolos/TRZ-005-001_catalogo_fitosanitario.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/CatalogoFitosanitario.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-001-catalogo-fitosanitario/app/Models/CatalogoFitosanitario.php) |
+| `database/migrations/2026_10_04_180005_create_catalogo_fitosanitario_table.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-001-catalogo-fitosanitario/database/migrations/2026_10_04_180005_create_catalogo_fitosanitario_table.php) |
+| `database/seeders/CatalogoFitosanitarioSeeder.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-005/TRZ-005-001-catalogo-fitosanitario/database/seeders/CatalogoFitosanitarioSeeder.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
