@@ -64,3 +64,18 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-002 Multi-Tenant y Control de Acceso por Roles (RBAC)
+- **Procedimiento:** TRZ-002-001 — Gestión de organizaciones (tenants) por código único (slug) al registrar usuario.
+- **Rama:** [`INT-002/TRZ-002-001-gestion-tenants`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-002/TRZ-002-001-gestion-tenants)
+- **Ficha en la rama:** [TRZ-002-001_gestion_tenants.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-001-gestion-tenants/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-002_MultiTenant_RBAC/TRZ-002-001_gestion_tenants.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/Tenant.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-001-gestion-tenants/app/Models/Tenant.php) |
+| `database/migrations/2026_10_04_180001_create_tenants_table.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-001-gestion-tenants/database/migrations/2026_10_04_180001_create_tenants_table.php) |
+| `app/Http/Controllers/AuthController.php` | register | 164–200 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-002/TRZ-002-001-gestion-tenants/app/Http/Controllers/AuthController.php#L164-L200) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
