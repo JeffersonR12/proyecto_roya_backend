@@ -63,3 +63,20 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-006 Persistencia Offline-First y Sincronización
+- **Procedimiento:** TRZ-006-002 — Cola de sincronización con estados (pending, sending, confirmed, error).
+- **Rama:** [`INT-006/TRZ-006-002-estados-envio`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-006/TRZ-006-002-estados-envio)
+- **Ficha en la rama:** [TRZ-006-002_estados_envio.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-002-estados-envio/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-006_Persistencia_Offline_Sincronizacion/TRZ-006-002_estados_envio.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/syncQueue.js` | successPatch | 73–82 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-002-estados-envio/resources/js/lib/syncQueue.js#L73-L82) |
+| `resources/js/lib/syncQueue.js` | failurePatch | 84–95 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-002-estados-envio/resources/js/lib/syncQueue.js#L84-L95) |
+| `resources/js/lib/syncQueue.js` | finalErrorPatch | 97–105 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-002-estados-envio/resources/js/lib/syncQueue.js#L97-L105) |
+| `resources/js/lib/syncQueue.js` | patchForResult | 108–122 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-002-estados-envio/resources/js/lib/syncQueue.js#L108-L122) |
+| `resources/js/lib/diagnosticosDb.js` | markSyncStatus | 116–118 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-002-estados-envio/resources/js/lib/diagnosticosDb.js#L116-L118) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
