@@ -66,3 +66,22 @@
 | 5. Estabilidad (promedio) | 87.5 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-006 Persistencia Offline-First y Sincronización
+- **Procedimiento:** TRZ-006-006 — Service Worker y PWA para precachear modelo ONNX y WASM sin conexión.
+- **Rama:** [`INT-006/TRZ-006-006-pwa-offline`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-006/TRZ-006-006-pwa-offline)
+- **Ficha en la rama:** [TRZ-006-006_pwa_offline.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-006_Persistencia_Offline_Sincronizacion/TRZ-006-006_pwa_offline.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `public/sw.js` | precache | 72–77 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/public/sw.js#L72-L77) |
+| `public/sw.js` | precacheShell | 82–92 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/public/sw.js#L82-L92) |
+| `public/sw.js` | buildAssets | 94–112 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/public/sw.js#L94-L112) |
+| `public/sw.js` | networkFirstShell | 114–133 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/public/sw.js#L114-L133) |
+| `public/sw.js` | cacheFirstResponse | 135–149 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/public/sw.js#L135-L149) |
+| `public/manifest.webmanifest` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/public/manifest.webmanifest) |
+| `resources/js/lib/pwa.js` | registerEdgeWorker | 1–11 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-006/TRZ-006-006-pwa-offline/resources/js/lib/pwa.js#L1-L11) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
