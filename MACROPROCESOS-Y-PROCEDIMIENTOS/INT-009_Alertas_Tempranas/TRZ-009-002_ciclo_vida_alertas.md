@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-009 Alertas Tempranas y Monitoreo
+- **Procedimiento:** TRZ-009-002 — Ciclo de vida de la alerta: una por diagnóstico, se actualiza o descarta según validación.
+- **Rama:** [`INT-009/TRZ-009-002-ciclo-vida-alertas`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-009/TRZ-009-002-ciclo-vida-alertas)
+- **Ficha en la rama:** [TRZ-009-002_ciclo_vida_alertas.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-002-ciclo-vida-alertas/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-009_Alertas_Tempranas/TRZ-009-002_ciclo_vida_alertas.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Services/AlertaService.php` | evaluar | 18–54 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-002-ciclo-vida-alertas/app/Services/AlertaService.php#L18-L54) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | update | 88–99 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-009/TRZ-009-002-ciclo-vida-alertas/app/Http/Controllers/Api/DiagnosticoController.php#L88-L99) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
