@@ -66,3 +66,18 @@
 | 5. Estabilidad (promedio) | 75 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-010 Validación Humana (HITL) y Agente Asistente
+- **Procedimiento:** TRZ-010-002 — Envío de decisión HITL: PATCH si está en nube, reencolado si está en dispositivo.
+- **Rama:** [`INT-010/TRZ-010-002-registro-decision-tecnica`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-010/TRZ-010-002-registro-decision-tecnica)
+- **Ficha en la rama:** [TRZ-010-002_registro_decision_tecnica.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-002-registro-decision-tecnica/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-010_Validacion_HITL_Agente/TRZ-010-002_registro_decision_tecnica.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/RoyaGuard.jsx` | patchDiagnostico | 222–236 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-002-registro-decision-tecnica/resources/js/RoyaGuard.jsx#L222-L236) |
+| `app/Http/Controllers/Api/DiagnosticoController.php` | update | 88–99 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-002-registro-decision-tecnica/app/Http/Controllers/Api/DiagnosticoController.php#L88-L99) |
+| `app/Http/Requests/UpdateDiagnosticoRequest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-010/TRZ-010-002-registro-decision-tecnica/app/Http/Requests/UpdateDiagnosticoRequest.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
