@@ -70,3 +70,19 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-012 Aseguramiento de la Calidad
+- **Procedimiento:** TRZ-012-005 — Prueba de humo E2E en servidor real y análisis estático con SonarQube.
+- **Rama:** [`INT-012/TRZ-012-005-validacion-e2e-y-estatica`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-012/TRZ-012-005-validacion-e2e-y-estatica)
+- **Ficha en la rama:** [TRZ-012-005_validacion_e2e_y_estatica.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-005-validacion-e2e-y-estatica/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-012_Aseguramiento_Calidad/TRZ-012-005_validacion_e2e_y_estatica.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `cypress.config.js` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-005-validacion-e2e-y-estatica/cypress.config.js) |
+| `cypress/e2e` | (carpeta) | carpeta | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-012/TRZ-012-005-validacion-e2e-y-estatica/cypress/e2e) |
+| `cypress/support` | (carpeta) | carpeta | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-012/TRZ-012-005-validacion-e2e-y-estatica/cypress/support) |
+| `sonar-project.properties` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-005-validacion-e2e-y-estatica/sonar-project.properties) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

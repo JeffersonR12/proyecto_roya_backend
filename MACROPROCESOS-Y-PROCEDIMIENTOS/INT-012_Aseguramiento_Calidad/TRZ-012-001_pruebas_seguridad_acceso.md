@@ -65,3 +65,19 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-012 Aseguramiento de la Calidad
+- **Procedimiento:** TRZ-012-001 — Pruebas de autenticación y recuperación de contraseña (token un solo uso, revocación).
+- **Rama:** [`INT-012/TRZ-012-001-pruebas-seguridad-acceso`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-012/TRZ-012-001-pruebas-seguridad-acceso)
+- **Ficha en la rama:** [TRZ-012-001_pruebas_seguridad_acceso.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-001-pruebas-seguridad-acceso/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-012_Aseguramiento_Calidad/TRZ-012-001_pruebas_seguridad_acceso.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `tests/Feature/AuthLoginTest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-001-pruebas-seguridad-acceso/tests/Feature/AuthLoginTest.php) |
+| `tests/Feature/AuthSessionTest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-001-pruebas-seguridad-acceso/tests/Feature/AuthSessionTest.php) |
+| `tests/Feature/PasswordResetTest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-001-pruebas-seguridad-acceso/tests/Feature/PasswordResetTest.php) |
+| `tests/Unit/AuthRulesTest.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-012/TRZ-012-001-pruebas-seguridad-acceso/tests/Unit/AuthRulesTest.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
