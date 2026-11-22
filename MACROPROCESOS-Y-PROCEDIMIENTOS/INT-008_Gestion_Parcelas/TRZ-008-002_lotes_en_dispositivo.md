@@ -62,3 +62,20 @@
 | 5. Estabilidad (promedio) | 100 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-008 Gestión de Parcelas (Lotes)
+- **Procedimiento:** TRZ-008-002 — Gestión de lotes en cliente (crear, actualizar, eliminar) recordando el último usado.
+- **Rama:** [`INT-008/TRZ-008-002-lotes-en-dispositivo`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-008/TRZ-008-002-lotes-en-dispositivo)
+- **Ficha en la rama:** [TRZ-008-002_lotes_en_dispositivo.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-002-lotes-en-dispositivo/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-008_Gestion_Parcelas/TRZ-008-002_lotes_en_dispositivo.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `resources/js/lib/parcelasStore.js` | listParcelas | 13–16 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-002-lotes-en-dispositivo/resources/js/lib/parcelasStore.js#L13-L16) |
+| `resources/js/lib/parcelasStore.js` | upsertParcela | 23–48 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-002-lotes-en-dispositivo/resources/js/lib/parcelasStore.js#L23-L48) |
+| `resources/js/lib/parcelasStore.js` | removeParcela | 50–52 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-002-lotes-en-dispositivo/resources/js/lib/parcelasStore.js#L50-L52) |
+| `resources/js/lib/parcelasStore.js` | getLastLote | 54–60 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-002-lotes-en-dispositivo/resources/js/lib/parcelasStore.js#L54-L60) |
+| `resources/js/lib/parcelasStore.js` | setLastLote | 62–68 | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-002-lotes-en-dispositivo/resources/js/lib/parcelasStore.js#L62-L68) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*

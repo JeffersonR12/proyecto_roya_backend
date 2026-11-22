@@ -63,3 +63,17 @@
 | 5. Estabilidad (promedio) | 83.34 |
 
 *Generado el 2026-11-16 a partir del código. Los valores "Pendiente" deben completarse con evidencia real; ver `DECISIONES.md`.*
+
+## Código del procedimiento en GitHub
+
+- **Macroproceso:** INT-008 Gestión de Parcelas (Lotes)
+- **Procedimiento:** TRZ-008-001 — Tabla de parcelas con tenant, usuario, coordenadas, área y cultivo.
+- **Rama:** [`INT-008/TRZ-008-001-registro-lotes`](https://github.com/JeffersonR12/proyecto_roya_backend/tree/INT-008/TRZ-008-001-registro-lotes)
+- **Ficha en la rama:** [TRZ-008-001_registro_lotes.md](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-001-registro-lotes/MACROPROCESOS-Y-PROCEDIMIENTOS/INT-008_Gestion_Parcelas/TRZ-008-001_registro_lotes.md)
+
+| Archivo | Elemento | Líneas | Enlace |
+|---|---|---|---|
+| `app/Models/Parcela.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-001-registro-lotes/app/Models/Parcela.php) |
+| `database/migrations/2026_10_04_180004_create_parcelas_table.php` | (archivo completo) | archivo completo | [ver código](https://github.com/JeffersonR12/proyecto_roya_backend/blob/INT-008/TRZ-008-001-registro-lotes/database/migrations/2026_10_04_180004_create_parcelas_table.php) |
+
+*Las líneas corresponden al commit base `22a0ebe` (rama `trazabilidad/base`), del que parte esta rama.*
