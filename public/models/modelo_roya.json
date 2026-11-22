@@ -1,0 +1,18 @@
+{
+    "version": "roya-mobilenetv3-small-v1",
+    "archivo": "modelo_roya.onnx",
+    "sha256": "1cf92a1f852907c3e43e77f171b95fe7f7c81cace9855ef0c63c4724c13feebc",
+    "bytes": 6098112,
+    "clases": [
+        "sana",
+        "roya_amarilla",
+        "otra_enfermedad"
+    ],
+    "entrada": [
+        1,
+        3,
+        224,
+        224
+    ],
+    "fecha": "2026-11-20"
+}

@@ -6,8 +6,7 @@ import {
     MODELO_VERSION,
     fromLogits,
 } from './inference.js';
-
-const MODEL_URL = '/models/modelo_roya.onnx';
+import { MODEL_META_URL, MODEL_URL, ModeloIncompatibleError, verificarModelo } from './modelo.js';
 
 let sessionPromise = null;
 let ortModule = null;
@@ -48,11 +47,30 @@ export function imageToNCHW(imageEl) {
     return tensor;
 }
 
+async function fetchModelo() {
+    const [metaResponse, modelResponse] = await Promise.all([fetch(MODEL_META_URL), fetch(MODEL_URL)]);
+
+    if (!modelResponse.ok) {
+        // Conserva "404" en el mensaje: isModelMissing lo usa para el modo sin pesos.
+        throw new Error(`${modelResponse.status} al descargar ${MODEL_URL}`);
+    }
+
+    if (!metaResponse.ok) {
+        throw new ModeloIncompatibleError('Falta modelo_roya.json en el servidor: no se puede verificar el modelo.');
+    }
+
+    const meta = await metaResponse.json();
+    const bytes = new Uint8Array(await modelResponse.arrayBuffer());
+    await verificarModelo(meta, bytes);
+
+    return bytes;
+}
+
 export async function loadSession() {
     if (!sessionPromise) {
-        sessionPromise = getOrt()
-            .then((ort) =>
-                ort.InferenceSession.create(MODEL_URL, {
+        sessionPromise = Promise.all([getOrt(), fetchModelo()])
+            .then(([ort, bytes]) =>
+                ort.InferenceSession.create(bytes, {
                     executionProviders: ['wasm'],
                 }),
             )
@@ -100,6 +118,10 @@ export async function inferImage(imageEl) {
 }
 
 function isModelMissing(error) {
+    if (error instanceof ModeloIncompatibleError) {
+        return false;
+    }
+
     const message = String(error?.message || error).toLowerCase();
 
     return (
@@ -131,6 +153,10 @@ function loadImage(src) {
 
 export function describeEngineError(error) {
     const message = String(error?.message || error);
+
+    if (error instanceof ModeloIncompatibleError) {
+        return `${message} Recarga la app con internet para descargar el modelo correcto.`;
+    }
 
     if (message.includes('404') || message.toLowerCase().includes('fetch') || message.toLowerCase().includes('failed to fetch')) {
         return 'No se encontró /models/modelo_roya.onnx. Coloca el ONNX exportado (MobileNetV3-Small, 3 clases) para activar la CNN.';

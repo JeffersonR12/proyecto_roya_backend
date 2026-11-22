@@ -18,7 +18,6 @@
 /public/storage
 /public/onnx/*.wasm
 /public/onnx/*.mjs
-/public/models/*.onnx
 /storage/ml
 /coverage
 /.scannerwork

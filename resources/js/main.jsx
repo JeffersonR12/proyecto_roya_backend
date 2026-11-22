@@ -6,7 +6,8 @@ import RoyaGuard from './RoyaGuard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
-import { registerEdgeWorker } from './lib/pwa.js';
+import UpdateToast from './components/UpdateToast.jsx';
+import { forgetAppShell, registerEdgeWorker } from './lib/pwa.js';
 import { clearSession, setSession } from './lib/session.js';
 
 void registerEdgeWorker();
@@ -19,9 +20,20 @@ if (config.page === 'app' && config.authUser) {
     setSession(config.authUser);
 } else {
     clearSession();
+    // Sin sesion no debe quedar la copia offline de la pagina de la cuenta anterior.
+    forgetAppShell();
 }
 
 function Root() {
+    return (
+        <>
+            <Page />
+            <UpdateToast />
+        </>
+    );
+}
+
+function Page() {
     if (config.page === 'login') {
         return <Login urls={config.urls} />;
     }

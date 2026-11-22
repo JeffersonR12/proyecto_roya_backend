@@ -9,6 +9,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" href="/imagenes/riwiscan-logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <script>
         window.RoyaGuard = {
             page: @json($page),
