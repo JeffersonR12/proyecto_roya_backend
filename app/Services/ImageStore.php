@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\ImageStorageException;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
+use Throwable;
 
 /**
  * Guarda las imagenes de diagnostico que llegan en base64 desde la PWA.
@@ -67,7 +68,14 @@ class ImageStore
         // Con 'throw' => false el disco devuelve false en vez de lanzar (p. ej. S3 caido o
         // credenciales mal puestas). Sin esta comprobacion el diagnostico quedaria guardado
         // apuntando a una foto que no existe y el telefono no reintentaria.
-        if (! Storage::disk($this->disk)->put($path, $bytes)) {
+        try {
+            $saved = Storage::disk($this->disk)->put($path, $bytes);
+        } catch (Throwable $e) {
+            report($e); // el detalle (credenciales, bucket, endpoint) queda en el log del servidor
+            $saved = false;
+        }
+
+        if (! $saved) {
             throw new ImageStorageException("No se pudo guardar la imagen en el disco [{$this->disk}].");
         }
 
@@ -76,8 +84,15 @@ class ImageStore
 
     public function delete(?string $path): void
     {
-        if ($path) {
+        if (! $path) {
+            return;
+        }
+
+        // Se llama al limpiar tras otro error: si el disco tambien falla, se registra y no se propaga.
+        try {
             Storage::disk($this->disk)->delete($path);
+        } catch (Throwable $e) {
+            report($e);
         }
     }
 }

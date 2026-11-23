@@ -64,7 +64,11 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
+            // El SDK manda sumas CRC por defecto; Supabase y otros S3 compatibles las rechazan.
+            'request_checksum_calculation' => env('AWS_REQUEST_CHECKSUM_CALCULATION', 'when_required'),
+            'response_checksum_validation' => env('AWS_RESPONSE_CHECKSUM_VALIDATION', 'when_required'),
+            // Que los fallos lancen y lleguen al log: con false se perdian en silencio.
+            'throw' => true,
             'report' => false,
         ],
 
