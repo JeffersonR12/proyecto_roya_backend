@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ImageStorageException;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 
@@ -62,7 +63,13 @@ class ImageStore
         [$bytes, $extension] = $this->decode($base64);
 
         $path = "diagnosticos/{$tenantId}/{$uuid}.{$extension}";
-        Storage::disk($this->disk)->put($path, $bytes);
+
+        // Con 'throw' => false el disco devuelve false en vez de lanzar (p. ej. S3 caido o
+        // credenciales mal puestas). Sin esta comprobacion el diagnostico quedaria guardado
+        // apuntando a una foto que no existe y el telefono no reintentaria.
+        if (! Storage::disk($this->disk)->put($path, $bytes)) {
+            throw new ImageStorageException("No se pudo guardar la imagen en el disco [{$this->disk}].");
+        }
 
         return $path;
     }

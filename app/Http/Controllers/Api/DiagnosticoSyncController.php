@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\ImageStorageException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SyncDiagnosticosRequest;
 use App\Models\Diagnostico;
@@ -88,6 +89,10 @@ class DiagnosticoSyncController extends Controller
             return $existente
                 ? $this->resolverExistente($existente, $user)
                 : ['error', 'No se pudo guardar el diagnostico.'];
+        } catch (ImageStorageException $exception) {
+            // Fallo temporal del almacenamiento: corta el lote con 503 para que la PWA
+            // lo reintente. Los ya guardados se confirman en el reintento (idempotente).
+            throw $exception;
         } catch (Throwable $exception) {
             $this->images->delete($path);
             report($exception);

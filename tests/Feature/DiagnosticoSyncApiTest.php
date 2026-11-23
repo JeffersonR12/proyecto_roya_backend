@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Diagnostico;
 use App\Models\SyncEvent;
 use App\Models\User;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -69,6 +70,31 @@ class DiagnosticoSyncApiTest extends TestCase
         $this->assertNotNull($diagnostico->synced_at);
         Storage::disk('local')->assertExists($diagnostico->imagen_path);
         $this->assertStringStartsWith("diagnosticos/{$user->tenant_id}/", $diagnostico->imagen_path);
+    }
+
+    public function test_storage_failure_returns_503_and_saves_nothing_so_the_pwa_retries(): void
+    {
+        $user = User::factory()->agricultor()->create();
+        $item = $this->item();
+
+        // Disco que rechaza la escritura sin lanzar (asi se comporta S3 con 'throw' => false).
+        $disk = \Mockery::mock(Filesystem::class);
+        $disk->shouldReceive('put')->andReturnFalse();
+        $disk->shouldReceive('delete')->andReturnTrue();
+        Storage::set(config('filesystems.diagnosticos_disk'), $disk);
+
+        $this->sync($user, [$item])
+            ->assertStatus(503)
+            ->assertHeader('Retry-After', '60');
+
+        $this->assertFalse(
+            Diagnostico::query()->withoutGlobalScopes()->where('uuid_local', $item['uuid_local'])->exists(),
+            'No debe quedar un diagnostico apuntando a una foto que no se guardo.'
+        );
+
+        // Cuando el almacenamiento vuelve, el mismo lote entra normal.
+        Storage::fake(config('filesystems.diagnosticos_disk'));
+        $this->sync($user, [$item])->assertOk()->assertJson(['confirmados' => [$item['uuid_local']]]);
     }
 
     public function test_sending_the_same_batch_three_times_keeps_one_row_per_uuid(): void
