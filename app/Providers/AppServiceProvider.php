@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Services\ImageStore;
 use App\Support\AuthRules;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(ImageStore::class, fn () => new ImageStore(config('filesystems.diagnosticos_disk')));
     }
 
     /**
@@ -25,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureTrustedProxies(config('app.trusted_proxies'));
+
+        // Detras del proxy de Render o de Nginx con Certbot, todas las URL salen en https.
+        if ($this->app->isProduction()) {
+            URL::forceScheme('https');
+        }
 
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(AuthRules::LOGIN_ATTEMPTS)->by($request->ip());
