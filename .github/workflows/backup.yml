@@ -1,0 +1,105 @@
+# Copia diaria de la base de produccion (TiDB) a un bucket privado de Supabase, cifrada.
+# Cada copia se restaura en un MySQL de prueba antes de subirse: si no restaura, el job falla
+# y GitHub avisa por correo. Retencion: 7 diarias + 4 semanales (domingos).
+#
+# El repo es publico: NUNCA subir la copia como artifact ni imprimir datos en el log.
+# Secretos necesarios (Settings > Secrets and variables > Actions): ver deploy/README-operacion.md
+name: Backup base de datos
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # 03:00 en Peru (UTC-5)
+  workflow_dispatch:
+
+concurrency:
+  group: backup-db
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    services:
+      restore-test:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: restore
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -prestore --silent"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+
+    env:
+      BUCKET: ${{ secrets.BACKUP_S3_BUCKET || 'backups' }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.BACKUP_S3_REGION }}
+      S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+      # Supabase (y otros S3 compatibles) rechazan las sumas CRC que la CLI nueva manda por defecto.
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Crear copia cifrada
+        id: dump
+        env:
+          DB_HOST: ${{ secrets.BACKUP_DB_HOST }}
+          DB_PORT: ${{ secrets.BACKUP_DB_PORT || '4000' }}
+          DB_DATABASE: ${{ secrets.BACKUP_DB_DATABASE || 'roya' }}
+          DB_USERNAME: ${{ secrets.BACKUP_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.BACKUP_DB_PASSWORD }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          OUT_DIR: ${{ runner.temp }}/backups
+        run: |
+          file="$(bash scripts/backup-db.sh)"
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          echo "Copia creada: $(basename "$file") ($(stat -c%s "$file") bytes)"
+
+      - name: Restaurar en MySQL de prueba
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          DB_DATABASE: ${{ secrets.BACKUP_DB_DATABASE || 'roya' }}
+          MYSQL_PWD: restore
+        run: |
+          gpg --batch --quiet --decrypt --passphrase-fd 3 "${{ steps.dump.outputs.file }}" 3<<<"$BACKUP_PASSPHRASE" \
+            | gunzip | mysql -h 127.0.0.1 -P 3306 -uroot
+          tablas=$(mysql -h 127.0.0.1 -P 3306 -uroot -N -e "select count(*) from information_schema.tables where table_schema='$DB_DATABASE'")
+          roles=$(mysql -h 127.0.0.1 -P 3306 -uroot -N -e "select count(*) from \`$DB_DATABASE\`.roles")
+          echo "Restaurada: $tablas tablas, $roles roles"
+          test "$tablas" -ge 10 && test "$roles" -ge 1
+
+      - name: Subir al bucket
+        run: |
+          aws configure set default.s3.addressing_style path
+          file="${{ steps.dump.outputs.file }}"
+          name="$(basename "$file")"
+          aws s3 cp "$file" "s3://$BUCKET/db/daily/$name" --endpoint-url "$S3_ENDPOINT" --only-show-errors
+          if [ "$(date -u +%u)" = "7" ]; then
+            aws s3 cp "$file" "s3://$BUCKET/db/weekly/$name" --endpoint-url "$S3_ENDPOINT" --only-show-errors
+          fi
+          echo "Subida: db/daily/$name"
+
+      - name: Borrar copias antiguas
+        run: |
+          prune() { # prune <carpeta> <cuantas conservar>
+            # ls falla si la carpeta aun no existe (p. ej. weekly antes del primer domingo).
+            listado="$(aws s3 ls "s3://$BUCKET/db/$1/" --endpoint-url "$S3_ENDPOINT" || true)"
+            { grep -o 'roya-[0-9-]*\.sql\.gz\.gpg' <<<"$listado" || true; } | sort | head -n "-$2" \
+              | while read -r old; do
+                  aws s3 rm "s3://$BUCKET/db/$1/$old" --endpoint-url "$S3_ENDPOINT" --only-show-errors
+                  echo "Borrada: db/$1/$old"
+                done
+          }
+          prune daily 7
+          prune weekly 4
+
+      - name: Limpiar
+        if: always()
+        run: rm -rf "${{ runner.temp }}/backups"
