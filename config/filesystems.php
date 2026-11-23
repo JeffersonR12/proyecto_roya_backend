@@ -16,6 +16,14 @@ return [
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     /*
+    | Disco de las fotos de diagnostico. En local: "local" (storage/app/private).
+    | En hosting con disco efimero (Render): "s3" contra un bucket privado
+    | compatible con S3 (Supabase Storage, Cloudflare R2...).
+    */
+
+    'diagnosticos_disk' => env('DIAGNOSTICOS_DISK', 'local'),
+
+    /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------

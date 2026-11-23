@@ -88,12 +88,14 @@ class DiagnosticoController extends Controller
         $diagnostico = $this->encontrar($uuid);
         Gate::authorize('view', $diagnostico);
 
+        $disk = Storage::disk(config('filesystems.diagnosticos_disk'));
+
         abort_unless(
-            $diagnostico->imagen_path && Storage::disk('local')->exists($diagnostico->imagen_path),
+            $diagnostico->imagen_path && $disk->exists($diagnostico->imagen_path),
             404
         );
 
-        return Storage::disk('local')->response($diagnostico->imagen_path, null, [
+        return $disk->response($diagnostico->imagen_path, null, [
             'Cache-Control' => 'private, max-age=86400',
         ]);
     }
